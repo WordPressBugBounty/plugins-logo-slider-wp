@@ -1,0 +1,1 @@
+# plugins-logo-slider-wp
