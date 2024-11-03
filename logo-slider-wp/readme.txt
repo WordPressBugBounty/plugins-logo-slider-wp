@@ -1,14 +1,14 @@
-=== Logo Slider - Logo Carousel, Logo Showcase & Client Logo Slider WordPress Plugin ===
+=== Logo Slider - Logo Carousel, Logo Showcase & Client Logo Slider Plugin ===
 Contributors: LogicHunt, themearth, vaskarjewel, sudarshan955
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=vaspal%2ekt%40gmail%2ecom&lc=US&item_name=LogicHunt&item_number=wp&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted
 TagsTags: logo slider, logo carousel, logo showcase, logo grid, wordpress logo slider, client logo slider, brand logo carousel slider, sponsors logo slider, logo carousel slider, responsive slider, wordpress logo slider, logo ticker, wordpress logo carousel, logo slideshow, partners slider, affiliates, supporters logo slider, team slider, team showcase, wordpress logo showcase, wp logo slider
 Requires at least: 4.3
-Tested up to: 6.6.2
-Stable tag: 4.1.0
+Tested up to: 6.7.0
+Stable tag: 4.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Logo Slider is a 100% Responsive Logo Carousel Slider & Grid Showcase WordPress Plugin. This Highly Customizable Logo Carousel Slider Can Display Unlimited Logo with Infinity Slides Loop.
+Responsive Logo Slider & Grid Showcase plugin for WordPress. Display unlimited logos with customizable carousel and infinite loop.
 
 == Description ==
 
@@ -198,6 +198,10 @@ The number of displayed slides in the viewport must be less or equal to the tota
 10. Demo Preview
 
 == Changelog ==
+
+= 4.5.0 = 
+* Fixed Cross-Site Scripting Issue.
+* Check Latest Compatibility.
 
 = 4.1.0 = 
 * Improved Plugin Securities. 

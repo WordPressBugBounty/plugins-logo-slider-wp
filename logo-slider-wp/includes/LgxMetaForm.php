@@ -43,9 +43,8 @@ class LogoSLiderWpMetaForm {
        //Text
        $default_value_text = isset( $args['default_text'] ) ? $args['default_text'] : '';
        $meta_text          = get_post_meta( $post->ID, '_lgx_lsp_shortcodes_meta', true );
-       $meta_value_text    = (! empty( $meta[$args['id_text']] ) ? $meta[$args['id_text']] : $default_value_text);
-
-
+       $meta_value_text    = (! empty( $meta[$args['id_text']] ) ? esc_html(esc_js($meta[$args['id_text']])) : $default_value_text);
+       
         $output.= '<td>';
         $output.= '<div class="lgx_group_field_wrap">';
         $output.= '<div class="lgx_group_field_item">';

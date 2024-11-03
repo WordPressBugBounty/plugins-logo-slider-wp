@@ -21,9 +21,11 @@ $lgx_tooltip_content_type   = $lgx_shortcodes_meta['lgx_tooltip_content_type'];
 //Post data
 $post_id            = get_the_ID();
 $metavalues         = get_post_meta( $post_id, '_logosliderwpmeta', true );
-$company_name       = ( (isset($metavalues['company_name'])) ? $metavalues['company_name'] : '' );
+//$company_name       = ( (isset($metavalues['company_name'])) ? $metavalues['company_name'] : '' );
+$company_name = (! empty( $fieldValues['company_name']) ? esc_html(esc_js($fieldValues['company_name'])) : '');
 $company_url        = ( (isset($metavalues['company_url'])) ? $metavalues['company_url'] : 'javascript:void(0);' );
-$tooltip_text       = ( (isset($metavalues['tooltip_text'])) ? $metavalues['tooltip_text'] : '' );
+//$tooltip_text       = ( (isset($metavalues['tooltip_text'])) ? $metavalues['tooltip_text'] : '' );
+$tooltip_text = (! empty( $fieldValues['tooltip_text']) ? esc_html(esc_js($fieldValues['tooltip_text'])) : '');
 $company_desc        = (!empty($metavalues['company_desc']) ? $metavalues['company_desc'] : '');
 $thumb_url          = '';
 if (has_post_thumbnail( $post_id )) {

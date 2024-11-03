@@ -20,10 +20,14 @@ $fieldValues = get_post_meta( $post->ID, '_logosliderwpmeta', true );
 wp_nonce_field( 'metaboxlogosliderwp', 'metaboxlogosliderwp[nonce]' );
 
 $company_url         = isset( $fieldValues['company_url'] ) ? esc_url($fieldValues['company_url'] ): '';
-$company_name        = isset( $fieldValues['company_name'] ) ? esc_attr($fieldValues['company_name']) : '';
-$tooltip_text        = isset( $fieldValues['tooltip_text'] ) ? esc_attr($fieldValues['tooltip_text'] ): '';
+$company_name = (! empty( $fieldValues['company_name']) ? esc_html(esc_js($fieldValues['company_name'])) : '');
+//$company_name        = isset( $fieldValues['company_name'] ) ? esc_attr($fieldValues['company_name']) : '';
+//$tooltip_text        = isset( $fieldValues['tooltip_text'] ) ? esc_attr($fieldValues['tooltip_text'] ): '';
+$tooltip_text = (! empty( $fieldValues['tooltip_text']) ? esc_html(esc_js($fieldValues['tooltip_text'])) : '');
 $company_desc        = isset( $fieldValues['company_desc'] ) ? esc_attr($fieldValues['company_desc'] ): '';
 
+
+       
 
 ?>
 

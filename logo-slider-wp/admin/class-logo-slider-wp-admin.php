@@ -228,8 +228,10 @@ class Logo_Slider_WP_Admin {
             if ( $this->user_can_save_for_logo_slider_meta( $post_id, 'metaboxlogosliderwp', $postData['nonce'] ) ) {
 
                 $savable_Data['company_url']   = sanitize_url( $postData['company_url'] );
-                $savable_Data['company_name']  = sanitize_text_field( $postData['company_name'] );
-                $savable_Data['tooltip_text']  = sanitize_text_field( $postData['tooltip_text'] );
+              //  $savable_Data['company_name']  = sanitize_text_field( $postData['company_name'] );
+                $savable_Data['company_name']  = (( isset($postData['company_name'])) ? sanitize_text_field( esc_html(esc_js($postData['company_name']) )): '');
+               // $savable_Data['tooltip_text']  = sanitize_text_field( $postData['tooltip_text'] );
+                $savable_Data['tooltip_text']  = (( isset($postData['tooltip_text'])) ? sanitize_text_field( esc_html(esc_js($postData['tooltip_text']) )): '');
                 $savable_Data['company_desc']  = sanitize_textarea_field( $postData['company_desc'] );
 
                 update_post_meta( $post_id, '_logosliderwpmeta', $savable_Data );
@@ -862,10 +864,12 @@ class Logo_Slider_WP_Admin {
                 $savable_Data['lgx_item_sort_order']    = (( isset($postData['lgx_item_sort_order'])) ? sanitize_text_field( $postData['lgx_item_sort_order']) : 'ASC');
                 $savable_Data['lgx_item_sort_order_by'] = (( isset($postData['lgx_item_sort_order_by'])) ? sanitize_text_field( $postData['lgx_item_sort_order_by']) :'menu_order');
                
-                $savable_Data['lgx_logo_height']                = (( isset($postData['lgx_logo_height'])) ? sanitize_text_field( $postData['lgx_logo_height']) : 'auto');
+                //$savable_Data['lgx_logo_height']                = (( isset($postData['lgx_logo_height'])) ? sanitize_text_field( $postData['lgx_logo_height']) : 'auto');
+                $savable_Data['lgx_logo_height']                 = (( isset($postData['lgx_logo_height'])) ? sanitize_text_field( esc_html(esc_js($postData['lgx_logo_height']) )): 'auto');
                 $savable_Data['lgx_logo_height_property']        = (( isset($postData['lgx_logo_height_property'])) ? sanitize_text_field( $postData['lgx_logo_height_property']) : 'max-height');
 
-                $savable_Data['lgx_logo_width']         = (( isset($postData['lgx_logo_width'])) ? sanitize_text_field( $postData['lgx_logo_width'])  : '100%');
+                //$savable_Data['lgx_logo_width']         = (( isset($postData['lgx_logo_width'])) ? sanitize_text_field( $postData['lgx_logo_width'])  : '100%');
+                $savable_Data['lgx_logo_width']             = (( isset($postData['lgx_logo_width'])) ? sanitize_text_field( esc_html(esc_js($postData['lgx_logo_width']) )): '100%');
                 $savable_Data['lgx_logo_width_property']         = (( isset($postData['lgx_logo_width_property'])) ? sanitize_text_field( $postData['lgx_logo_width_property'])  : 'max-width');
                 
 
