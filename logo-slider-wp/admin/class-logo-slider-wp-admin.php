@@ -986,7 +986,11 @@ class Logo_Slider_WP_Admin {
                 $savable_Data['lgx_carousel_transition_effect']      = (( isset($postData['lgx_carousel_transition_effect'])) ? sanitize_text_field( $postData['lgx_carousel_transition_effect'] ): 'all');
                 $savable_Data['lgx_carousel_infinite_en']            = ((isset($postData['lgx_carousel_infinite_en'])) ? 'yes' : 'no');
 
-                $savable_Data['lgx_carousel_transition_speed']       = (( isset($postData['lgx_carousel_transition_speed'])) ? sanitize_text_field( $postData['lgx_carousel_transition_speed'] ): 450);
+                //$savable_Data['lgx_carousel_transition_speed']       = (( isset($postData['lgx_carousel_transition_speed'])) ? sanitize_text_field( $postData['lgx_carousel_transition_speed'] ): 450);
+
+                $savable_Data['lgx_carousel_transition_speed']       = '450';
+
+
                 $savable_Data['lgx_carousel_autoplay_en']            = ((isset($postData['lgx_carousel_autoplay_en'])) ? 'yes' : 'no');
                 $savable_Data['lgx_carousel_autoplay_delay']         = (( isset($postData['lgx_carousel_autoplay_delay'])) ? sanitize_text_field( $postData['lgx_carousel_autoplay_delay'] ): 1500);
                 $savable_Data['lgx_carousel_pause_mouse_enter_en']   = ((isset($postData['lgx_carousel_pause_mouse_enter_en'])) ? 'yes' : 'no');

@@ -252,7 +252,9 @@ class LogoSLiderWpMetaForm {
 
         $default_value = isset( $args['default'] ) ? $args['default'] : '';
         $meta          = get_post_meta( $post->ID, '_lgx_lsp_shortcodes_meta', true );
-        $meta_value    = (! empty( $meta[$args['id']] ) ? $meta[$args['id']] : $default_value);
+       // $meta_value    = (! empty( $meta[$args['id']] ) ? $meta[$args['id']] : $default_value);
+        $meta_value    = ( (!empty( $meta[$args['id']] ) && is_numeric($meta[$args['id']] ) ) ? esc_html(esc_js($meta[$args['id']])) : $default_value);
+
 
         $output.= '<td>';
         $output.= '<input type="number" value="'.$meta_value.'" placeholder="'.$meta_value.'"  id="'.$args['id'].'" class="lgx_input_width lgx_app_meta_filed lgx_app_meta_number" name="'. $args['name'].'" '.$is_pro.'>';

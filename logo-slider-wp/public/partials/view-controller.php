@@ -124,9 +124,11 @@ if ( 'grid' == $lgx_showcase_type ) {
     
     $carouselDataAttr_Arr = array();
 
-    $carouselDataAttr_Arr['effect']   = $lgx_shortcodes_meta['lgx_carousel_transition_effect'];
-    $carouselDataAttr_Arr['infinite'] = ($lgx_shortcodes_meta['lgx_carousel_infinite_en'] == 'no') ? 'false' : 'true';
-    $carouselDataAttr_Arr['speed'] = $lgx_shortcodes_meta['lgx_carousel_transition_speed'];
+    $carouselDataAttr_Arr['effect']     = $lgx_shortcodes_meta['lgx_carousel_transition_effect'];
+    $carouselDataAttr_Arr['infinite']   = ($lgx_shortcodes_meta['lgx_carousel_infinite_en'] == 'no') ? 'false' : 'true';
+    //$carouselDataAttr_Arr['speed']    = $lgx_shortcodes_meta['lgx_carousel_transition_speed'];
+    $carouselDataAttr_Arr['speed']      = (is_numeric($lgx_shortcodes_meta['lgx_carousel_transition_speed']) ? $lgx_shortcodes_meta['lgx_carousel_transition_speed'] : '450');
+
     $carouselDataAttr_Arr['autoplay'] = ($lgx_shortcodes_meta['lgx_carousel_autoplay_en'] == 'no') ? 'false' : 'true';
     $carouselDataAttr_Arr['delay']  = (($lgx_carousel_ticker_en == 'yes') ? 1 : $lgx_shortcodes_meta['lgx_carousel_autoplay_delay']) ;
     $carouselDataAttr_Arr['pause']  = ($lgx_shortcodes_meta['lgx_carousel_pause_mouse_enter_en'] == 'no') ? 'false' : 'true';
