@@ -10,7 +10,7 @@
  * Plugin Name:       Logo Slider
  * Plugin URI:        https://logichunt.com/product/wordpress-logo-slider/
  * Description:       Ultimate & Most Popular Responsive Logo Showcase Slider. Display Unlimited Client, Supporter, Partner, Sponsor, or Brand Logo with Infinite Slides Loop.
- * Version:           4.7.0
+ * Version:           4.8.0
  * Author:            LogicHunt Inc.
  * Author URI:        http://logichunt.com
  * License:           GPL-2.0+
@@ -27,7 +27,7 @@ if ( ! defined( 'WPINC' ) ) {
 
 
 //plugin definition specific constants
-defined( 'LGX_LS_PLUGIN_VERSION' )        or define( 'LGX_LS_PLUGIN_VERSION', '4.7.0' );
+defined( 'LGX_LS_PLUGIN_VERSION' )        or define( 'LGX_LS_PLUGIN_VERSION', '4.8.0' );
 defined( 'LGX_LS_WP_PLUGIN' )             or define( 'LGX_LS_WP_PLUGIN', 'logo-slider-wp' );
 defined( 'LGX_LS_PLUGIN_BASE' )           or define( 'LGX_LS_PLUGIN_BASE', plugin_basename( __FILE__ ) );
 defined( 'LGX_LS_PLUGIN_ROOT_PATH' )      or define( 'LGX_LS_PLUGIN_ROOT_PATH', plugin_dir_path( __FILE__ ) );
