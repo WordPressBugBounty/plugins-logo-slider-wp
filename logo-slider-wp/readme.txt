@@ -3,8 +3,8 @@ Contributors: LogicHunt, themearth, vaskarjewel, sudarshan955
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=vaspal%2ekt%40gmail%2ecom&lc=US&item_name=LogicHunt&item_number=wp&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted
 TagsTags: logo slider, logo carousel, logo showcase, logo grid, wordpress logo slider, client logo slider, brand logo carousel slider, sponsors logo slider, logo carousel slider, responsive slider, wordpress logo slider, logo ticker, wordpress logo carousel, logo slideshow, partners slider, affiliates, supporters logo slider, team slider, team showcase, wordpress logo showcase, wp logo slider
 Requires at least: 4.3
-Tested up to: 6.8.1
-Stable tag: 4.8.0
+Tested up to: 6.9
+Stable tag: 4.9.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -198,6 +198,12 @@ The number of displayed slides in the viewport must be less or equal to the tota
 10. Demo Preview
 
 == Changelog ==
+
+*= 4.9.0 = 
+* Security: Fixed stored XSS vulnerability in multiple color picker fields.
+* Security: Added sanitization on save and escaping on output for all color settings.
+* Security: Improved validation for Shortcode Generator user input.
+* Enhancement: Confirmed compatibility with WordPress 6.9.
 
 = 4.8.0 = 
 * Check Latest Compatibility.

@@ -1002,7 +1002,9 @@ class Logo_Slider_WP_Admin {
                 $savable_Data['lgx_carousel_nav_hover_en']          = ((isset($postData['lgx_carousel_nav_hover_en'])) ? 'yes' : 'no');
 
                 $savable_Data['lgx_carousel_nav_position']          = (( isset($postData['lgx_carousel_nav_position'])) ? sanitize_text_field( $postData['lgx_carousel_nav_position'] ): 'top_right');
+              
                 $savable_Data['lgx_carousel_nav_color']             = (( isset($postData['lgx_carousel_nav_color'])) ? sanitize_text_field( $postData['lgx_carousel_nav_color'] ): '#ffffff');
+
                 $savable_Data['lgx_carousel_nav_color_hover']       = (( isset($postData['lgx_carousel_nav_color_hover'])) ? sanitize_text_field( $postData['lgx_carousel_nav_color_hover'] ): '#ffffff');
                 $savable_Data['lgx_carousel_nav_bg_color']          = (( isset($postData['lgx_carousel_nav_bg_color'])) ? sanitize_text_field( $postData['lgx_carousel_nav_bg_color'] ): '#222b30');
                 $savable_Data['lgx_carousel_nav_bg_color_hover']    = (( isset($postData['lgx_carousel_nav_bg_color_hover'])) ? sanitize_text_field( $postData['lgx_carousel_nav_bg_color_hover'] ): '#222b30');

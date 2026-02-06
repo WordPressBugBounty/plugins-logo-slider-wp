@@ -439,43 +439,43 @@ class LogoSLiderWpMetaForm {
 
 
 
+/**
+ * @param array $args
+ * hexa, rgba
+ */
+public function color( array $args ) {
+    global $post;
 
-    /**
-     * @param array $args
-     *  hexa, rgba
-     */
-    public function color( array $args ) {
-        global $post;
-
-        if ( ! isset( $args['id'], $args['name'] , $args['label'] ) ) {
-            return;
-        }
-
-        $status        = isset( $args['status'] ) ? $args['status'] : '';
-        $is_pro       = (( $status == 'disabled') ? 'disabled' : '');
-        $is_pro_label = (( $status== 'disabled') ? '<span class="lgx_meta_field_mark_pro_wrap"><span class="lgx_meta_field_mark">'.__('Pro', 'logo-slider-wp').'</span></span>' : '');
-
-        $output= '<tr>';
-
-        $output.= '<th scope="row">';
-        $output.= '<h4 class="lgx_app_meta_label"><label for="'.$args['id'].'">'. $args['label'].'</label></h4>';
-        $output.= '<p class="lgx_input_desc lgx_app_meta_desc">'. $args['desc'].'</p>';
-        $output.= '</th>';
-
-        $default_value = isset( $args['default'] ) ? $args['default'] : '';
-        $meta          = get_post_meta( $post->ID, '_lgx_lsp_shortcodes_meta', true );
-        $meta_value    = (! empty( $meta[$args['id']] ) ? $meta[$args['id']] : $default_value);
-
-        $output.= '<td>';
-        $output.= '<input type="text" value="'.$meta_value.'" id="'.$args['id'].'" class="lgx_app_meta_filed lgx_color_picker" name="'. $args['name'].'" data-default-color="'.$meta_value.'" data-alpha-enabled="true" '.$is_pro.'>';
-        $output.= $is_pro_label;
-        $output.= '</td>';
-
-        $output.= '</tr>';
-
-        echo force_balance_tags($output);
+    if ( ! isset( $args['id'], $args['name'], $args['label'] ) ) {
+        return;
     }
 
+    $status        = isset( $args['status'] ) ? $args['status'] : '';
+    $is_pro        = ( $status === 'disabled' ) ? 'disabled' : '';
+    $is_pro_label  = ( $status === 'disabled' ) 
+        ? '<span class="lgx_meta_field_mark_pro_wrap"><span class="lgx_meta_field_mark">'.esc_html__('Pro', 'logo-slider-wp').'</span></span>'
+        : '';
+
+    $output  = '<tr>';
+    $output .= '<th scope="row">';
+    $output .= '<h4 class="lgx_app_meta_label"><label for="' . esc_attr($args['id']) . '">' . esc_html($args['label']) . '</label></h4>';
+    $output .= '<p class="lgx_input_desc lgx_app_meta_desc">' . esc_html($args['desc']) . '</p>';
+    $output .= '</th>';
+
+    $default_value = isset( $args['default'] ) ? $args['default'] : '';
+    $meta          = get_post_meta( $post->ID, '_lgx_lsp_shortcodes_meta', true );
+
+    $meta_raw      = ! empty( $meta[$args['id']] ) ? $meta[$args['id']] : $default_value;
+    $meta_value    = esc_attr( $meta_raw ); // <-- ONLY THIS is correct for output
+
+    $output .= '<td>';
+    $output .= '<input type="text" value="' . $meta_value . '" id="' . esc_attr($args['id']) . '" class="lgx_app_meta_filed lgx_color_picker" name="' . esc_attr($args['name']) . '" data-default-color="' . esc_attr($meta_value) . '" data-alpha-enabled="true" ' . $is_pro . '>';
+    $output .= $is_pro_label;
+    $output .= '</td>';
+    $output .= '</tr>';
+
+    echo $output;
+}
 
 
     /**
