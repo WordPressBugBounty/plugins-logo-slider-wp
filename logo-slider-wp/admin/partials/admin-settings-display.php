@@ -19,7 +19,7 @@ if (!defined('WPINC')) {
 
 <div class="wrap">
     <div id="icon-options-general" class="icon32"></div>
-    <h2><?php _e('Logo Slider: Settings', 'logo-slider-wp'); ?></h2>
+    <h2><?php esc_html_e('Logo Slider: Settings', 'logo-slider-wp'); ?></h2>
 
     <div id="poststuff">
 

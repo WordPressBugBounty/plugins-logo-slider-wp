@@ -129,8 +129,8 @@ $settings_fields = array(
 
         array(
             'name'    => 'logosliderwp_settings_bgcolor',
-            'label'   => __('Background  Color', 'lgxcarousel-domain'),
-            'desc'    => __('Please select Carousel Background color.', 'lgxcarousel-domain'),
+            'label'   => __('Background  Color', 'logo-slider-wp' ),
+            'desc'    => __('Please select Carousel Background color.', 'logo-slider-wp' ),
             'type'    => 'color',
             'default' => '#f1f1f1'
         ),
@@ -148,7 +148,7 @@ $settings_fields = array(
 
         array(
             'name'    => 'logosliderwp_settings_bordercolor',
-            'label'   => __('Border Color', 'lgxcarousel-domain'),
+            'label'   => __('Border Color', 'logo-slider-wp' ),
             'type'    => 'color',
             'default' => '#d02c21'
         ),

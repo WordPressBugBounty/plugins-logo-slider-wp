@@ -42,8 +42,8 @@ $company_desc        = isset( $fieldValues['company_desc'] ) ? esc_attr($fieldVa
 
             <tr>
                 <th valign="top">
-                    <h4 class="lgx_app_meta_label"><label for="lgx_target_type"><?php _e( 'Brand Name', $this->plugin_name ) ?></label></h4>
-                    <p class="lgx_input_desc lgx_app_meta_desc"><?php _e( 'Add Company/ Brand/ Client\'s name here.', $this->plugin_name ) ?></p>
+                    <h4 class="lgx_app_meta_label"><label for="lgx_target_type"><?php esc_html_e( 'Brand Name', 'logo-slider-wp') ?></label></h4>
+                    <p class="lgx_input_desc lgx_app_meta_desc"><?php esc_html_e( 'Add Company/ Brand/ Client\'s name here.', 'logo-slider-wp') ?></p>
                 </th>
                 <td>
                     <input type="text" name="metaboxlogosliderwp[company_name]"  style="width: 25%;" value='<?php echo esc_attr($company_name); ?>'/>
@@ -53,8 +53,7 @@ $company_desc        = isset( $fieldValues['company_desc'] ) ? esc_attr($fieldVa
 
             <tr valign="top">
                 <th valign="top">
-                    <h4 class="lgx_app_meta_label"><label for="lgx_target_type"><?php _e( 'Brand URL', $this->plugin_name ) ?></label></h4>
-                    <p class="lgx_input_desc lgx_app_meta_desc"><?php _e( 'Add a Company/ Brand/ Client\'s URL to link up the item.', $this->plugin_name ) ?></p>
+                    <p class="lgx_input_desc lgx_app_meta_desc"><?php esc_html_e( 'Add a Company/ Brand/ Client\'s URL to link up the item.', 'logo-slider-wp') ?></p>
                 </th>
                 <td>
                     <input type="url" name="metaboxlogosliderwp[company_url]" style="width: 25%;" value='<?php echo esc_url($company_url); ?>'/>
@@ -63,8 +62,8 @@ $company_desc        = isset( $fieldValues['company_desc'] ) ? esc_attr($fieldVa
 
             <tr valign="top">
                 <th valign="top">
-                    <h4 class="lgx_app_meta_label"><label for="lgx_target_type"><?php _e( 'Description', $this->plugin_name ) ?></label></h4>
-                    <p class="lgx_input_desc lgx_app_meta_desc"><?php _e( 'Add company or brand details here.', $this->plugin_name ) ?></p>
+                    <h4 class="lgx_app_meta_label"><label for="lgx_target_type"><?php esc_html_e( 'Description', 'logo-slider-wp') ?></label></h4>
+                    <p class="lgx_input_desc lgx_app_meta_desc"><?php esc_html_e( 'Add company or brand details here.', 'logo-slider-wp') ?></p>
                 </th>
                 <td>
                     <textarea rows="5" cols="45"  name="metaboxlogosliderwp[company_desc]" style="width: 25%;" placeholder="Brand description"><?php echo esc_attr($company_desc); ?></textarea>
@@ -73,8 +72,8 @@ $company_desc        = isset( $fieldValues['company_desc'] ) ? esc_attr($fieldVa
 
             <tr valign="top">
                 <th valign="top">
-                    <h4 class="lgx_app_meta_label"><label for="lgx_target_type"><?php _e( 'Tooltip Text', $this->plugin_name ) ?></label></h4>
-                    <p class="lgx_input_desc lgx_app_meta_desc"><?php _e( 'You can use either tooltip text or brand name as tooltip content.', $this->plugin_name ) ?></p>
+                    <h4 class="lgx_app_meta_label"><label for="lgx_target_type"><?php esc_html_e( 'Tooltip Text', 'logo-slider-wp') ?></label></h4>
+                    <p class="lgx_input_desc lgx_app_meta_desc"><?php esc_html_e( 'You can use either tooltip text or brand name as tooltip content.', 'logo-slider-wp') ?></p>
                 </th>
                 <td>
                     <input type="text" name="metaboxlogosliderwp[tooltip_text]" style="width: 25%;" value='<?php echo esc_attr($tooltip_text); ?>'/>

@@ -1,3 +1,9 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+?>
+
 <ul class="lgx-inline lgx-admin-list-get-pro">
     <li>
         <div class="circle-wrapper">

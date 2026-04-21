@@ -12,10 +12,10 @@ $this->meta_form->buy_pro(
 
 $this->meta_form->switch(
     array(
-        'yes_label' => __( 'Enabled', $this->plugin_name ),
-        'no_label' => __( 'Disabled', $this->plugin_name ),
-        'label'   => __( 'Section Header', $this->plugin_name ),
-        'desc'    => __( 'Enable Header Section in your showcase.', $this->plugin_name ),
+        'yes_label' => __( 'Enabled', 'logo-slider-wp'),
+        'no_label' => __( 'Disabled', 'logo-slider-wp'),
+        'label'   => __( 'Section Header', 'logo-slider-wp'),
+        'desc'    => __( 'Enable Header Section in your showcase.', 'logo-slider-wp'),
         'name'    => 'meta_lgx_lsp_shortcodes[lgx_header_en]',
         'id'      => 'lgx_header_en',
        // 'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
@@ -25,16 +25,16 @@ $this->meta_form->switch(
 
 $this->meta_form->select(
     array(
-        'label'     => __( 'Header Alignment', $this->plugin_name ),
-        'desc'      => __( 'Section Header Alignment.', $this->plugin_name ),
+        'label'     => __( 'Header Alignment', 'logo-slider-wp'),
+        'desc'      => __( 'Section Header Alignment.', 'logo-slider-wp'),
         'name'      => 'meta_lgx_lsp_shortcodes[lgx_header_align]',
         'id'        => 'lgx_header_align',
         'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
         'default'   => 'center',
         'options'   => array(
-            'center' => __( 'Center', $this->plugin_name ),
-            'left' => __( 'Left', $this->plugin_name ),
-            'right' => __( 'Right', $this->plugin_name )
+            'center' => __( 'Center', 'logo-slider-wp'),
+            'left' => __( 'Left', 'logo-slider-wp'),
+            'right' => __( 'Right', 'logo-slider-wp')
         )
     )
 );
@@ -42,8 +42,8 @@ $this->meta_form->select(
 
 $this->meta_form->text(
     array(
-        'label'     => __( 'Title', $this->plugin_name ),
-        'desc'      => __( 'Add your section header title.', $this->plugin_name ),
+        'label'     => __( 'Title', 'logo-slider-wp'),
+        'desc'      => __( 'Add your section header title.', 'logo-slider-wp'),
         'name'      => 'meta_lgx_lsp_shortcodes[lgx_header_title]',
         'id'        => 'lgx_header_title',
 //'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
@@ -54,8 +54,8 @@ $this->meta_form->text(
 
 $this->meta_form->text(
     array(
-        'label'     => __( 'Title Font Size', $this->plugin_name ),
-        'desc'      => __( 'Add Title Font Size.', $this->plugin_name ),
+        'label'     => __( 'Title Font Size', 'logo-slider-wp'),
+        'desc'      => __( 'Add Title Font Size.', 'logo-slider-wp'),
         'name'      => 'meta_lgx_lsp_shortcodes[lgx_header_title_font_size]',
         'id'        => 'lgx_header_title_font_size',
         'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
@@ -67,8 +67,8 @@ $this->meta_form->text(
 
 $this->meta_form->color(
     array(
-        'label'     => __( 'Title Color', $this->plugin_name ),
-        'desc'      => __( 'Please select title color.', $this->plugin_name ),
+        'label'     => __( 'Title Color', 'logo-slider-wp'),
+        'desc'      => __( 'Please select title color.', 'logo-slider-wp'),
         'name'      => 'meta_lgx_lsp_shortcodes[lgx_header_title_color]',
         'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
         'id'        => 'lgx_header_title_color',
@@ -79,8 +79,8 @@ $this->meta_form->color(
 
 $this->meta_form->text(
     array(
-        'label'     => __( 'Title Font Weight', $this->plugin_name ),
-        'desc'      => __( 'Set Title Font Weight.', $this->plugin_name ),
+        'label'     => __( 'Title Font Weight', 'logo-slider-wp'),
+        'desc'      => __( 'Set Title Font Weight.', 'logo-slider-wp'),
         'name'      => 'meta_lgx_lsp_shortcodes[lgx_header_title_font_weight]',
         'id'        => 'lgx_header_title_font_weight',
         'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
@@ -90,8 +90,8 @@ $this->meta_form->text(
 
 $this->meta_form->text(
     array(
-        'label'     => __( 'Title Bottom Margin', $this->plugin_name ),
-        'desc'      => __( 'Add Title Font Size.', $this->plugin_name ),
+        'label'     => __( 'Title Bottom Margin', 'logo-slider-wp'),
+        'desc'      => __( 'Add Title Font Size.', 'logo-slider-wp'),
         'name'      => 'meta_lgx_lsp_shortcodes[lgx_header_title_bottom_margin]',
         'id'        => 'lgx_header_title_bottom_margin',
         'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
@@ -102,8 +102,8 @@ $this->meta_form->text(
 
 $this->meta_form->text(
     array(
-        'label'     => __( 'Sub Title', $this->plugin_name ),
-        'desc'      => __( 'Add your section header Sub title.', $this->plugin_name ),
+        'label'     => __( 'Sub Title', 'logo-slider-wp'),
+        'desc'      => __( 'Add your section header Sub title.', 'logo-slider-wp'),
         'name'      => 'meta_lgx_lsp_shortcodes[lgx_header_subtitle]',
         'id'        => 'lgx_header_subtitle',
        // 'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
@@ -114,8 +114,8 @@ $this->meta_form->text(
 
 $this->meta_form->text(
     array(
-        'label'     => __( 'Sub Title Font Size', $this->plugin_name ),
-        'desc'      => __( 'Add Sub Title Font Size.', $this->plugin_name ),
+        'label'     => __( 'Sub Title Font Size', 'logo-slider-wp'),
+        'desc'      => __( 'Add Sub Title Font Size.', 'logo-slider-wp'),
         'name'      => 'meta_lgx_lsp_shortcodes[lgx_header_subtitle_font_size]',
         'id'        => 'lgx_header_subtitle_font_size',
         'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
@@ -127,8 +127,8 @@ $this->meta_form->text(
 
 $this->meta_form->color(
     array(
-        'label'     => __( 'Sub Title Color', $this->plugin_name ),
-        'desc'      => __( 'Please select Sub title color.', $this->plugin_name ),
+        'label'     => __( 'Sub Title Color', 'logo-slider-wp'),
+        'desc'      => __( 'Please select Sub title color.', 'logo-slider-wp'),
         'name'      => 'meta_lgx_lsp_shortcodes[lgx_header_subtitle_color]',
         'id'        => 'lgx_header_subtitle_color',
         'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
@@ -139,8 +139,8 @@ $this->meta_form->color(
 
 $this->meta_form->text(
     array(
-        'label'     => __( 'Sub Title Font Weight', $this->plugin_name ),
-        'desc'      => __( 'Set Sub Title Font Weight.', $this->plugin_name ),
+        'label'     => __( 'Sub Title Font Weight', 'logo-slider-wp'),
+        'desc'      => __( 'Set Sub Title Font Weight.', 'logo-slider-wp'),
         'name'      => 'meta_lgx_lsp_shortcodes[lgx_header_subtitle_font_weight]',
         'id'        => 'lgx_header_subtitle_font_weight',
         'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
@@ -150,8 +150,8 @@ $this->meta_form->text(
 
 $this->meta_form->text(
     array(
-        'label'     => __( 'Sub Title Bottom Margin', $this->plugin_name ),
-        'desc'      => __( 'Add Sub Title Font Size.', $this->plugin_name ),
+        'label'     => __( 'Sub Title Bottom Margin', 'logo-slider-wp'),
+        'desc'      => __( 'Add Sub Title Font Size.', 'logo-slider-wp'),
         'name'      => 'meta_lgx_lsp_shortcodes[lgx_header_subtitle_bottom_margin]',
         'id'        => 'lgx_header_subtitle_bottom_margin',
         'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,

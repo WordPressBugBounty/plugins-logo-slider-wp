@@ -291,54 +291,75 @@ class Logo_Slider_WP_Public {
         wp_enqueue_script( 'lgx-logo-slider-script-dep' );
 
         // The Loop
-        if ( $logo_post->have_posts() ) {
+       if ( $logo_post->have_posts() ) {
 
-            while ( $logo_post->have_posts() ) {
+                $logo_item = '';
 
-                $logo_post->the_post();
-                $post_id            = get_the_ID();
-                $metavalues         = get_post_meta( $post_id, '_logosliderwpmeta', true );
-                $company_name       = $metavalues['company_name'];
-                $company_url        = $metavalues['company_url'];
-                $company_desc       = (!empty($metavalues['company_desc']) ? $metavalues['company_desc'] : '');
+                while ( $logo_post->have_posts() ) {
 
-                $logo_img = '';
-                if (has_post_thumbnail( $post_id )) {
-                    $thumb_url = wp_get_attachment_image_src( get_post_thumbnail_id( $post_id), true );
-                    $thumb_url      = $thumb_url[0];
-                    $alt_text = get_post_meta( get_post_thumbnail_id($post_id), '_wp_attachment_image_alt', true );
+                    $logo_post->the_post();
 
+                    $post_id    = get_the_ID();
+                    $metavalues = get_post_meta( $post_id, '_logosliderwpmeta', true );
 
-                    $logo_img .= '<div class="lgx-logo-item" '.esc_js($border_color_style).'>';
-                    $logo_img .= (!empty($company_url) ? '<a href="'.$company_url.'" target="'.$target .'">' : '');
-                    $logo_img .= '<img class="lgx-logo-img skip-lazy" src="'.$thumb_url.'" '.$logo_style.'   alt="'.$alt_text.'" title="'.(!empty($company_name)? $company_name : 'Company').'" />';
-                    $logo_img .= (!empty($company_url) ? '</a>' : '');
-                    $logo_img .= ( (!empty($company_name) && $compnayanme_en == 'yes' ) ? '<h6 class="logo-company-name">'.$company_name.'</h6>': '');
-                    $logo_img .= ( (!empty($company_desc) && $compnaydesc_en == 'yes' ) ? '<p class="logo-company-desc">'.$company_desc.'</p>': '');
-                    $logo_img .= '</div>';
+                    $company_name = ! empty( $metavalues['company_name'] ) ? $metavalues['company_name'] : '';
+                    $company_url  = ! empty( $metavalues['company_url'] ) ? $metavalues['company_url'] : '';
+                    $company_desc = ! empty( $metavalues['company_desc'] ) ? $metavalues['company_desc'] : '';
 
+                    $logo_img = '';
+
+                    if ( has_post_thumbnail( $post_id ) ) {
+
+                        $thumb_data = wp_get_attachment_image_src( get_post_thumbnail_id( $post_id ), 'full' );
+                        $thumb_url  = ! empty( $thumb_data[0] ) ? $thumb_data[0] : '';
+
+                        $alt_text = get_post_meta( get_post_thumbnail_id( $post_id ), '_wp_attachment_image_alt', true );
+
+                        $logo_img .= '<div class="lgx-logo-item" ' . wp_kses_post( $border_color_style ) . '>';
+
+                        if ( ! empty( $company_url ) ) {
+                            $logo_img .= '<a href="' . esc_url( $company_url ) . '" target="' . esc_attr( $target ) . '">';
+                        }
+
+                        $logo_img .= '<img class="lgx-logo-img skip-lazy" src="' . esc_url( $thumb_url ) . '" ' . wp_kses_post( $logo_style ) . ' alt="' . esc_attr( $alt_text ) . '" title="' . esc_attr( ! empty( $company_name ) ? $company_name : 'Company' ) . '" />';
+
+                        if ( ! empty( $company_url ) ) {
+                            $logo_img .= '</a>';
+                        }
+
+                        if ( ! empty( $company_name ) && $compnayanme_en === 'yes' ) {
+                            $logo_img .= '<h6 class="logo-company-name">' . esc_html( $company_name ) . '</h6>';
+                        }
+
+                        if ( ! empty( $company_desc ) && $compnaydesc_en === 'yes' ) {
+                            $logo_img .= '<p class="logo-company-desc">' . esc_html( $company_desc ) . '</p>';
+                        }
+
+                        $logo_img .= '</div>';
+                    }
+
+                    $logo_item .= '<div class="item lgx-log-item">';
+                    $logo_item .= $logo_img;
+                    $logo_item .= '</div>';
                 }
 
-                $logo_item .= '<div class="item lgx-log-item" >';
-                $logo_item .= $logo_img;
-                $logo_item .=  '</div>';
+                wp_reset_postdata();
 
-            }
-            wp_reset_postdata();// Restore original Post Data
+                // Wrapper Output
+                $output  = '<div class="lgx_logo_slider_app_wrapper lgx-logo-slider-wp">';
+                $output .= '<div class="lgx-logo-wrapper ' . esc_attr( $border_class ) . ' nav-position-' . esc_attr( $navposition ) . ' hover-' . esc_attr( $hovertype ) . '" ' . wp_kses_post( $bg_style ) . '>';
+                $output .= '<div class="owl-carousel lgx-logo-carousel" ' . wp_kses_post( $data_attr_str ) . '>';
+                $output .= $logo_item;
+                $output .= '</div>';
+                $output .= '</div>';
+                $output .= '</div>';
 
-            //Output String
-            $output  = '<div  class="lgx_logo_slider_app_wrapper lgx-logo-slider-wp">';
-            $output .= '<div class="lgx-logo-wrapper '.$border_class.' nav-position-'.$navposition.' hover-'.$hovertype.'" '.$bg_style.' >';
-            $output .= '<div class="owl-carousel lgx-logo-carousel" ' . $data_attr_str . ' >' . $logo_item . '</div>';
-            $output .= '</div>';
-            $output .= '</div>';
+                return wp_kses_post( $output );
 
-            return $output;
+            } else {
 
-        } // Check post exist
-        else {
-            _e('There are no logo item. Please add some logo Item', 'logo-slider-wp');
-        }
+                return '<p>' . esc_html__( 'There are no logo item. Please add some logo Item', 'logo-slider-wp' ) . '</p>';
+            }   
 
 
 
@@ -485,13 +506,6 @@ class Logo_Slider_WP_Public {
     }
 
 
-
-
-    /**
-     *
-     *  Version 3 End ***************************************************************************
-     *
-     */
 
 
 

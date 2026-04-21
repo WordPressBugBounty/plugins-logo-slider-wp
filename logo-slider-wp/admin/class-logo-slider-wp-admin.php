@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 
 /**
  * The admin-specific functionality of the plugin.
@@ -96,7 +99,7 @@ class Logo_Slider_WP_Admin {
      */
     private function init_meta_form() {
         //wp_die( trailingslashit( dirname(  ) )  );
-        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/LgxMetaForm.php';
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-lgx-meta-fields.php';
         $this->meta_form = new LogoSLiderWpMetaForm();
     }
 
@@ -175,7 +178,7 @@ class Logo_Slider_WP_Admin {
 
         //v_logo_metabox_logosliderwp //metabox_logosliderwp_display
         add_meta_box(
-            'lgx_logosliderwp_metabox_postbox', __( 'Company Information', $this->plugin_name ), array(
+            'lgx_logosliderwp_metabox_postbox', __( 'Company Information', 'logo-slider-wp' ), array(
             $this,
             'meta_fields_display_for_logosliderwp'
         ), 'logosliderwp', 'normal', 'high'
@@ -281,10 +284,19 @@ class Logo_Slider_WP_Admin {
      * old: logo_slider_wp_img_box
      * new: changing_meta_box_position_of_brand_logo
      */
-    public  function changing_meta_box_position_of_brand_logo(){
-        remove_meta_box( 'postimagediv', 'logosliderwp', 'side' );
-        add_meta_box('postimagediv', __('Brand Logo'), 'post_thumbnail_meta_box', 'logosliderwp', 'normal', 'high');
-    }
+
+    public function changing_meta_box_position_of_brand_logo() {
+    remove_meta_box('postimagediv', 'logosliderwp', 'side');
+
+    add_meta_box(
+        'postimagediv',
+        __('Brand Logo', 'logo-slider-wp'),
+        'post_thumbnail_meta_box',
+        'logosliderwp',
+        'normal',
+        'high'
+    );
+}
 
 
 
@@ -394,7 +406,7 @@ class Logo_Slider_WP_Admin {
             ),
             array(
                 'id'    => 'logosliderwp_style',
-                'title' => __('Style Settings', 'logosliderwp-domain'),
+                'title' => __('Style Settings','logo-slider-wp'),
             ),
 
             array(
@@ -492,7 +504,7 @@ class Logo_Slider_WP_Admin {
      * @param $column
      * @param $post_id
      */
-    public function define_admin_column_value_for_logosliderwp($column, $post_id) {
+    /*public function define_admin_column_value_for_logosliderwp($column, $post_id) {
         switch ($column) {
             case 'lgx_ls_category': 
 
@@ -503,7 +515,7 @@ class Logo_Slider_WP_Admin {
                         $lgx_categories_name = wp_list_pluck( $lgx_logo_categories, 'name' );
                 
                         foreach ($lgx_categories_name as $lgx_cat_name) {
-                            echo '<span class="button button-secondary" style="margin: 0 2px 2px 0; border-color:#a5adc3; color:#2c3338">' . $lgx_cat_name . '</span>';
+                            echo '<span class="button button-secondary" style="margin: 0 2px 2px 0; border-color:#a5adc3; color:#2c3338">' . esc_html( $lgx_cat_name ) . '</span>';
                           }
 
                     }
@@ -511,7 +523,7 @@ class Logo_Slider_WP_Admin {
 
             case 'lgx_ls_brand':
                 $metavalues         = get_post_meta( $post_id, '_logosliderwpmeta', true );
-                echo  ( (!empty($metavalues['company_name'] ) ? $metavalues['company_name']: '' ));
+                echo  ( (!empty($metavalues['company_name'] ) ? esc_html( $metavalues['company_name'] ): '' ));
                 break;
 
             case 'lgx_ls_logo':
@@ -521,13 +533,13 @@ class Logo_Slider_WP_Admin {
                     $post_thumbnail_img = wp_get_attachment_image_src($post_thumbnail_id, 'thumbnail');
                     if(!empty($post_thumbnail_img)) {
                         $post_thumbnail_img= $post_thumbnail_img[0];
-                        echo '<img src="' . $post_thumbnail_img . '" />';
+                        echo '<img src="' . esc_url($post_thumbnail_img). '" />';
                     } else {
-                        echo '-';
+                        echo esc_html( '-' );
                     }
                 }
                 else{
-                    echo 'No logo added.';
+                    echo esc_html( 'No logo added.' );
                 }
 
                 break;
@@ -535,7 +547,55 @@ class Logo_Slider_WP_Admin {
             default:
                 break;
         }
+    }*/
+
+
+    public function define_admin_column_value_for_logosliderwp($column, $post_id) {
+    switch ($column) {
+        case 'lgx_ls_category': 
+
+            $lgx_logo_categories = get_the_terms( $post_id, 'logosliderwpcat' );
+
+            if ( ! empty( $lgx_logo_categories ) && ! is_wp_error( $lgx_logo_categories ) ) {
+
+                $lgx_categories_name = wp_list_pluck( $lgx_logo_categories, 'name' );
+        
+                foreach ( $lgx_categories_name as $lgx_cat_name ) {
+                    echo '<span class="button button-secondary" style="margin: 0 2px 2px 0; border-color:#a5adc3; color:#2c3338">' 
+                        . esc_html( $lgx_cat_name ) . 
+                    '</span>';
+                }
+            }
+            break;
+
+        case 'lgx_ls_brand':
+            $metavalues = get_post_meta( $post_id, '_logosliderwpmeta', true );
+            echo ! empty( $metavalues['company_name'] ) 
+                ? esc_html( $metavalues['company_name'] ) 
+                : '';
+            break;
+
+        case 'lgx_ls_logo':
+
+            if ( has_post_thumbnail( $post_id ) ) {
+                $post_thumbnail_id  = get_post_thumbnail_id( $post_id );
+                $post_thumbnail_img = wp_get_attachment_image_src( $post_thumbnail_id, 'thumbnail' );
+
+                if ( ! empty( $post_thumbnail_img ) ) {
+                    echo '<img src="' . esc_url( $post_thumbnail_img[0] ) . '" />';
+                } else {
+                    echo esc_html( '-' );
+                }
+            } else {
+                echo esc_html( 'No logo added.' );
+            }
+
+            break;
+
+        default:
+            break;
     }
+}
    
 
 
@@ -578,9 +638,16 @@ class Logo_Slider_WP_Admin {
             $result['message'] = $exception->getMessage();
         }
 
-        $result_json = json_encode( $result );
+        /*$result_json = json_encode( $result );
         echo $result_json;
+        wp_die();*/
+        wp_send_json( $result );
+
+       /* or
+       
+       echo wp_json_encode( $result );
         wp_die();
+       */     
     }
 
     /**
@@ -720,9 +787,14 @@ class Logo_Slider_WP_Admin {
 
             unset( $_GET['activate'] );
             $class = 'notice notice-warning is-dismissible';
+           
             $message = __( 'Logo Slider Pro version already activated. For more please contact our support at <a href="https://logichunt.com/support/" target="_blank">LogicHunt.com.</a>', 'logo-slider-wp' );
 
-            printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
+            printf(
+                '<div class="%1$s"><p>%2$s</p></div>',
+                esc_attr( $class ),
+                wp_kses_post( $message )
+            );
         }
 
 
@@ -1076,15 +1148,15 @@ class Logo_Slider_WP_Admin {
     public function add_new_column_head_for_lgx_logo_showcase($default_columns) {
         unset( $default_columns['date'] );
 
-        $default_columns['title']            = __( 'Title', 'lgx-logo-showcase-wp' );
-        $default_columns['shortcode']        = __( 'Shortcode', 'lgx-logo-showcase-wp' );
-        //   $default_columns['php_shortcode']    = __( 'Theme or Plugin Code', 'lgx-logo-showcase-wp' );
-        $default_columns['date']             = __( 'Date', 'lgx-logo-showcase-wp' );
+        $default_columns['title']            = __( 'Title', 'logo-slider-wp' );
+        $default_columns['shortcode']        = __( 'Shortcode', 'logo-slider-wp' );
+        //   $default_columns['php_shortcode']    = __( 'Theme or Plugin Code', 'logo-slider-wp' );
+        $default_columns['date']             = __( 'Date', 'logo-slider-wp' );
 
         return $default_columns;
     }
 
-    public function define_admin_column_value_for_lgx_logo_showcase($column, $post_id) {
+    /*public function define_admin_column_value_for_lgx_logo_showcase($column, $post_id) {
         if(!empty($post_id)) {
             switch ($column) {
                 case 'shortcode':
@@ -1098,6 +1170,25 @@ class Logo_Slider_WP_Admin {
                     break;
 
                 default:
+                    break;
+            }
+        }
+    }*/
+
+        public function define_admin_column_value_for_lgx_logo_showcase($column, $post_id) {
+
+        if ( ! empty( $post_id ) ) {
+
+            $post_id = absint( $post_id );
+
+            switch ( $column ) {
+
+                case 'shortcode':
+                    echo '<input type="text" class="lgx_logo_slider_list_copy_input" readonly="readonly" value="[lgxlogoslider id=&quot;' . esc_attr( $post_id ) . '&quot;]">';
+                    break;
+
+                case 'php_shortcode':
+                    echo '<input type="text" class="lgx_logo_slider_list_copy_input" style="width: 360px; text-align: center;" readonly="readonly" value="<?php echo do_shortcode( \'[lgxlogoslider id=&quot;' . esc_attr( $post_id ) . '&quot;]\' ); ?>">';
                     break;
             }
         }
