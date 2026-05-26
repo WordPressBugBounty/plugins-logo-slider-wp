@@ -1,10 +1,10 @@
 === Logo Slider - Logo Carousel, Logo Showcase & Client Logo Slider Plugin ===
-Contributors: LogicHunt, themearth, vaskarjewel
+Contributors: LogicHunt, themearth, vaskarjewel, sudarshan955
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=vaspal%2ekt%40gmail%2ecom&lc=US&item_name=LogicHunt&item_number=wp&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted
 Tags: logo slider, logo carousel, logo showcase, logo grid, wordpress logo slider, client logo slider, brand logo carousel slider, sponsors logo slider, logo carousel slider, responsive slider, wordpress logo slider, logo ticker, wordpress logo carousel, logo slideshow, partners slider, affiliates, supporters logo slider, team slider, team showcase, wordpress logo showcase, wp logo slider
 Requires at least: 4.3
-Tested up to: 6.9
-Stable tag: 5.1.1
+Tested up to: 7.0
+Stable tag: 5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -15,9 +15,9 @@ Responsive Logo Slider & Grid for WordPress. Display unlimited logos in customiz
 Lightning-Fast Logo Sliders & Grids for WordPress.  Showcase clients, partners, or sponsors in minutes with the Logo Slider plugin.  Create stunning, responsive logo displays with smooth animations and customizable layouts – no coding required! Enhance your website's credibility and design effortlessly.
 
 
-### Logo Slider by [LogicHunt.com](https://logichunt.com)
+### [Logo Slider WP](https://logichunt.com/product/wordpress-logo-slider) by [LogicHunt Inc.](https://logichunt.com)
 
->[__Live Demo__](https://demo.logichunt.com/logo-slider-wp/) | [__Docs__](https://docs.logichunt.com/logo-slider-wp) | [__Support__](https://logichunt.com/support)  | [__Get Pro Version__](https://logichunt.com/product/wordpress-logo-slider)
+>[__Live Demo__](https://demo.logichunt.com/logo-slider-wp/) | [__Docs__](https://docs.logichunt.com/logo-slider-wp) | [__Support__](https://logichunt.com/support)  | [__Get Premium Version__](https://logichunt.com/product/wordpress-logo-slider)
 
 
 Logo Slider is a responsive and easy to use Logo Showcase carousel slider plugin for wordpress. With this Logo Slider plugin you can display a list of clients, supporters, partners, team or sponsors logos in your website. You can Create a grid of images with suitable links. This logo showcase plugin works great on mobiles and tablets.
