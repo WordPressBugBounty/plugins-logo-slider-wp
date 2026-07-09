@@ -4,15 +4,6 @@ if (!defined('WPINC')) {
 }
 
 
-
-$this->meta_form->buy_pro(
-    array(
-        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
-        'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
-    )
-);
-
-
 $this->meta_form->switch(
     array(
         'label' => __( 'Enable Preloader', 'logo-slider-wp'),
@@ -30,7 +21,7 @@ $this->meta_form->upload(
         'label'   => __( 'Preloader Icon', 'logo-slider-wp'),
         'desc'    => __( 'Upload Background Icon for Preloader.', 'logo-slider-wp'),
         'name'    => 'meta_lgx_lsp_shortcodes[lgx_preloader_icon]',
-        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
+       // 'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
         'id'      => 'lgx_preloader_icon',
     )
 );
@@ -41,8 +32,14 @@ $this->meta_form->color(
         'desc'      => __( 'Please select background color for Preloader.', 'logo-slider-wp'),
         'name'      => 'meta_lgx_lsp_shortcodes[lgx_preloader_bg_color]',
         'id'        => 'lgx_preloader_bg_color',
-        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
+       // 'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
         'default'   => '#ffffff',
     )
 );
 
+$this->meta_form->buy_pro(
+    array(
+        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
+        'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
+    )
+);

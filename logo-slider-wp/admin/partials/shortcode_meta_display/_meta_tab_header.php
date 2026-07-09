@@ -3,12 +3,7 @@ if (!defined('WPINC')) {
     die;
 }
 
-$this->meta_form->buy_pro(
-    array(
-        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
-        'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
-    )
-);
+
 
 $this->meta_form->switch(
     array(
@@ -159,3 +154,11 @@ $this->meta_form->text(
     )
 );
 
+$this->meta_form->buy_pro(
+    array(
+        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
+        'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
+        'text'   => '✨ Pro unlocks: Header Alignment, Title & Subtitle Font Size, Color, Weight and all other settings.',
+        'link_label' => 'See Pro →',
+    )
+);

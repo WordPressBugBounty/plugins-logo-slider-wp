@@ -62,8 +62,9 @@ if($lgx_tooltip_en == 'yes') {
     $tooltipDataAttr_Arr['tt_timer']        = $lgx_shortcodes_meta['lgx_tooltip_timer'];
 
     // Apply Data Attribute
+    // Update date : 08.07.2026, By : @VibeLogic
     foreach ($tooltipDataAttr_Arr as $key => $value) {
-        $tooltipDataAttr_str .= ' data-' . $key . '="' . $value . '" ';
+        $tooltipDataAttr_str .= ' data-' . esc_attr($key) . '="' . esc_attr($value) . '" ';
     }
 
 }
@@ -157,8 +158,9 @@ if ( 'grid' == $lgx_showcase_type ) {
     $carouselDataAttr_Arr['lazy']        = ($lgx_carousel_lazy_load_en == 'no') ? 'false' : 'true';
 
     // Apply Data Attribute
+    // Update date : 08.07.2026, By : @VibeLogic
     foreach ($carouselDataAttr_Arr as $key => $value) {
-        $carouselDataAttr_str .= ' data-' . $key . '="' . $value . '" ';
+        $carouselDataAttr_str .= ' data-' . esc_attr($key) . '="' . esc_attr($value) . '" ';
     }
 
 

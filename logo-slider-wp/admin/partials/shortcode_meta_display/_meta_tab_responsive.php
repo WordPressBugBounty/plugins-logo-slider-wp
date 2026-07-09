@@ -51,3 +51,10 @@ $this->meta_form->number(
         'default'   => 2
     )
 );
+
+$this->meta_form->buy_pro(
+    array(
+        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
+        'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
+    )
+);

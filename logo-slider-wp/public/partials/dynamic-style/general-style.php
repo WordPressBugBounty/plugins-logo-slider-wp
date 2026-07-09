@@ -85,6 +85,10 @@ $lgx_carousel_nav_border_color_hover        = $lgx_shortcodes_meta['lgx_carousel
 $lgx_carousel_nav_border_width              = $lgx_shortcodes_meta['lgx_carousel_nav_border_width'];
 $lgx_carousel_nav_border_radius             = $lgx_shortcodes_meta['lgx_carousel_nav_border_radius'];
 
+$lgx_carousel_nav_btn_margin         = (isset($lgx_shortcodes_meta['lgx_carousel_nav_btn_margin']) ? $lgx_shortcodes_meta['lgx_carousel_nav_btn_margin'] : '5px 0px');
+$lgx_carousel_nav_ver_pos_bottom     = (isset($lgx_shortcodes_meta['lgx_carousel_nav_ver_pos_bottom']) ? $lgx_shortcodes_meta['lgx_carousel_nav_ver_pos_bottom'] : '50%');
+$lgx_carousel_nav_ver_pos_left_right = (isset($lgx_shortcodes_meta['lgx_carousel_nav_ver_pos_left_right']) ? $lgx_shortcodes_meta['lgx_carousel_nav_ver_pos_left_right'] : '-55px');
+
 
 //Basic
 $lgx_logo_height = $lgx_shortcodes_meta['lgx_logo_height'];
@@ -171,23 +175,53 @@ $lgx_lsw_dynamic_style_general .= ' #lgx_logo_slider_app_'. $lgx_app_id.' .lgx_l
 $lgx_lsw_dynamic_style_general .= '#lgx_logo_slider_app_'. $lgx_app_id.' .lgx_logo_carousel .lgx_lsw_pagination .swiper-pagination-bullet-active-main{
         background: '. $lgx_carousel_pagination_color_active.';
     }';
-$lgx_lsw_dynamic_style_general .= '#lgx_logo_slider_app_'. $lgx_app_id.' .lgx_logo_carousel .lgx_lsw_nav_button{
-        color: '. $lgx_shortcodes_meta['lgx_carousel_nav_color'].';
-        background-color: '. $lgx_shortcodes_meta['lgx_carousel_nav_bg_color'].';
+$lgx_lsw_dynamic_style_general .= '#lgx_logo_slider_app_'. $lgx_app_id.' .lgx_app_layout_carousel .lgx_lsw_nav_button{
+        color: '. $lgx_carousel_nav_color.';
+        background-color: '. $lgx_carousel_nav_bg_color.';
         font-size: '. $lgx_shortcodes_meta['lgx_carousel_nav_btn_font_size'].';
         width: '. $lgx_shortcodes_meta['lgx_carousel_nav_btn_width'].';
         height: '. $lgx_shortcodes_meta['lgx_carousel_nav_btn_height'].';
         padding: '. $lgx_shortcodes_meta['lgx_carousel_nav_btn_padding'].';
-    '.(($lgx_shortcodes_meta['lgx_carousel_nav_border_en']) ? 'border: '.$lgx_shortcodes_meta['lgx_carousel_nav_border_width'].' '.$lgx_shortcodes_meta['lgx_carousel_nav_border_style'].' '.$lgx_shortcodes_meta['lgx_carousel_nav_border_color'].';' : '').'
-        border-radius: '. $lgx_shortcodes_meta['lgx_carousel_nav_border_radius'].';
+    '.(('yes' == $lgx_carousel_nav_border_en) ? 'border: '.$lgx_carousel_nav_border_width.' '.$lgx_shortcodes_meta['lgx_carousel_nav_border_style'].' '.$lgx_carousel_nav_border_color.';' : '').'
+        border-radius: '. $lgx_carousel_nav_border_radius.';
     }
     ';
 
-$lgx_lsw_dynamic_style_general .= '#lgx_logo_slider_app_'. $lgx_app_id.' .lgx_logo_carousel .lgx_lsw_nav_button:hover{
-        border-color: '. $lgx_carousel_nav_border_color_hover.';
-     
+$lgx_lsw_dynamic_style_general .= '#lgx_logo_slider_app_'. $lgx_app_id.' .lgx_app_layout_carousel .lgx_lsw_nav_button:hover{
+        color: '. $lgx_carousel_nav_color_hover.';
+        background-color: '. $lgx_carousel_nav_bg_color_hover.';
+    '.(('yes' == $lgx_carousel_nav_border_en) ? 'border-color: '.$lgx_carousel_nav_border_color_hover.';' : '').'
     }
     ';
+
+$lgx_lsw_dynamic_style_general .= '#lgx_logo_slider_app_'. $lgx_app_id.' .lgx_app_layout_carousel .lgx_lsw_nav_wrap{
+        margin:'. $lgx_carousel_nav_btn_margin.';
+    }
+    ';
+
+$lgx_lsw_dynamic_style_general .= '#lgx_logo_slider_app_'. $lgx_app_id.' .lgx_lsw_nav_vertical_center .lgx_lsw_nav_button{
+        bottom:'. $lgx_carousel_nav_ver_pos_bottom.';
+    }
+    ';
+
+$lgx_lsw_dynamic_style_general .= '#lgx_logo_slider_app_'. $lgx_app_id.' .lgx_lsw_nav_vertical_center .lgx_lsw_nav_button_prev{
+        left:'.$lgx_carousel_nav_ver_pos_left_right.';
+    }';
+
+$lgx_lsw_dynamic_style_general .= '#lgx_logo_slider_app_'. $lgx_app_id.' .lgx_lsw_nav_vertical_center .lgx_lsw_nav_button_next{
+        right:'.$lgx_carousel_nav_ver_pos_left_right.';
+    }';
+
+$lgx_lsw_dynamic_style_general .= '#lgx_logo_slider_app_'. $lgx_app_id.' .lgx_lsw_nav_vertical_center .lgx_lsw_nav_button_next_rtl {
+        left:'.$lgx_carousel_nav_ver_pos_left_right.';
+        right: auto;
+    }';
+
+$lgx_lsw_dynamic_style_general .= '#lgx_logo_slider_app_'. $lgx_app_id.' .lgx_lsw_nav_vertical_center .lgx_lsw_nav_button_prev_rtl {
+        right:'.$lgx_carousel_nav_ver_pos_left_right.';
+        left: auto;
+    }';
+
 
        // print_r($lgx_logo_height);
 // Basic
@@ -200,6 +234,7 @@ $lgx_lsw_dynamic_style_general .= '#lgx_logo_slider_app_'. $lgx_app_id.' .lgx_ap
 
 /**
  *  Inline Style
+ *  Update date : 09.07.2026, By : @VibeLogic
  */
 
-wp_add_inline_style( 'lgx-logo-slider-style', $lgx_lsw_dynamic_style_general );
+echo '<style>' . wp_strip_all_tags( $lgx_lsw_dynamic_style_general ) . '</style>';

@@ -3,12 +3,6 @@ if (!defined('WPINC')) {
     die;
 }
 
-$this->meta_form->buy_pro(
-    array(
-        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
-        'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
-    )
-);
 
 $this->meta_form->select(
     array(
@@ -105,6 +99,7 @@ $this->meta_form->select(
 
 
 
+
 /********************************************************************************/
 $this->meta_form->header_spacer(
     array(
@@ -112,13 +107,6 @@ $this->meta_form->header_spacer(
     )
 );
 /********************************************************************************/
-
-$this->meta_form->buy_pro(
-    array(
-        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
-        'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
-    )
-);
 
 
 $this->meta_form->color(
@@ -164,6 +152,15 @@ $this->meta_form->text(
 );
 
 
+$this->meta_form->buy_pro(
+    array(
+        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
+        'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
+        'text'   => '✨ Pro unlocks: Hover Effect, Hover Animation, Font Weight and  Bottom Margin.',
+        'link_label' => 'See Pro →',
+    )
+);
+
 /********************************************************************************/
 $this->meta_form->header_spacer(
     array(
@@ -171,13 +168,6 @@ $this->meta_form->header_spacer(
     )
 );
 /********************************************************************************/
-$this->meta_form->buy_pro(
-    array(
-        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
-        'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
-    )
-);
-
 
 
 $this->meta_form->color(
@@ -223,6 +213,15 @@ $this->meta_form->text(
     )
 );
 
+$this->meta_form->buy_pro(
+    array(
+        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
+        'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
+        'text'   => '✨ Pro unlocks: Item Description and all other settings.',
+        'link_label' => 'Get the Pro Version →',
+    )
+
+);
 
 /********************************************************************************/
 $this->meta_form->header_spacer(
@@ -292,6 +291,8 @@ $this->meta_form->text(
 
 
 
+
+
 /********************************************************************************/
 $this->meta_form->header_spacer(
     array(
@@ -299,12 +300,6 @@ $this->meta_form->header_spacer(
     )
 );
 /********************************************************************************/
-$this->meta_form->buy_pro(
-    array(
-        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
-        'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
-    )
-);
 
 
 $this->meta_form->switch(
@@ -368,6 +363,16 @@ $this->meta_form->text(
 );
 
 
+$this->meta_form->buy_pro(
+    array(
+        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
+        'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
+        'text'   => '✨ Pro unlocks: Item Border and all other settings.',
+        'link_label' => 'See Pro →',
+    )
+);
+
+
 
 /********************************************************************************/
 $this->meta_form->header_spacer(
@@ -419,9 +424,12 @@ $this->meta_form->buy_pro(
     array(
         'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
         'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
+        'text'   => '✨ Pro unlocks: Item Background Color and all other settings.',
+        'link_label' => 'See Pro →',
     )
-);
+);  
 
+    
 /********************************************************************************/
 $this->meta_form->header_spacer(
     array(
@@ -451,5 +459,13 @@ $this->meta_form->text(
         'id'        => 'lgx_item_margin',
         //'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
         'default'   => '0px'
+    )
+);
+
+
+$this->meta_form->buy_pro(
+    array(
+        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
+        'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
     )
 );

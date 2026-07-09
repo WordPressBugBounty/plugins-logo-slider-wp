@@ -42,6 +42,7 @@ $lgx_lsw_dynamic_style_grid .= '@media screen and (min-width: 1200px) {
     
 /**
  *  Inline Style
+ *  Update date : 09.07.2026, By : @VibeLogic
  */
 
-wp_add_inline_style( 'lgx-logo-slider-style', $lgx_lsw_dynamic_style_grid );
+echo '<style>' . wp_strip_all_tags( $lgx_lsw_dynamic_style_grid ) . '</style>';

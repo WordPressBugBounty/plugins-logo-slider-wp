@@ -991,23 +991,34 @@ class Logo_Slider_WP_Admin {
 
 
                 // Tooltip Settings : Ok
+                // Update date : 08.07.2026, By : @VibeLogic
                 $savable_Data['lgx_tooltip_en']                  = ((isset($postData['lgx_tooltip_en'])) ? 'yes' : 'no');
-                $savable_Data['lgx_tooltip_content_type']        = (( isset($postData['lgx_tooltip_content_type'])) ? sanitize_text_field( $postData['lgx_tooltip_content_type'] ) : 'brand_name');
-                $savable_Data['lgx_tooltip_position']            = (( isset($postData['lgx_tooltip_position'])) ? sanitize_text_field( $postData['lgx_tooltip_position'] ) : 'top');
-                $savable_Data['lgx_tooltip_anim']                = (( isset($postData['lgx_tooltip_anim'])) ? sanitize_text_field( $postData['lgx_tooltip_anim'] ) : 'fade');
+                
+                $tooltip_content_type = (( isset($postData['lgx_tooltip_content_type'])) ? sanitize_text_field( $postData['lgx_tooltip_content_type'] ) : 'brand_name');
+                $savable_Data['lgx_tooltip_content_type']        = in_array($tooltip_content_type, array('brand_name', 'tooltip_text'), true) ? $tooltip_content_type : 'brand_name';
+                
+                $tooltip_position = (( isset($postData['lgx_tooltip_position'])) ? sanitize_text_field( $postData['lgx_tooltip_position'] ) : 'top');
+                $savable_Data['lgx_tooltip_position']            = in_array($tooltip_position, array('top', 'bottom', 'right', 'left'), true) ? $tooltip_position : 'top';
+                
+                $tooltip_anim = (( isset($postData['lgx_tooltip_anim'])) ? sanitize_text_field( $postData['lgx_tooltip_anim'] ) : 'fade');
+                $savable_Data['lgx_tooltip_anim']                = in_array($tooltip_anim, array('fade', 'grow', 'swing', 'slide', 'fall'), true) ? $tooltip_anim : 'fade';
+                
                 $savable_Data['lgx_tooltip_arrow_en']            = ((isset($postData['lgx_tooltip_arrow_en'])) ? 'yes' : 'no');
-                $savable_Data['lgx_tooltip_anim_duration']       = (( isset($postData['lgx_tooltip_anim_duration'])) ? sanitize_text_field( $postData['lgx_tooltip_anim_duration'] ) : 350);
-                $savable_Data['lgx_tooltip_anim_delay']          = (( isset($postData['lgx_tooltip_anim_delay'])) ? sanitize_text_field( $postData['lgx_tooltip_anim_delay'] ) : 300);
-                $savable_Data['lgx_tooltip_trigger_type']        = (( isset($postData['lgx_tooltip_trigger_type'])) ? sanitize_text_field( $postData['lgx_tooltip_trigger_type'] ) : 'hover');
-                $savable_Data['lgx_tooltip_distance']            =(( isset($postData['lgx_tooltip_distance'])) ? sanitize_text_field( $postData['lgx_tooltip_distance'] ) : 6);;
-                $savable_Data['lgx_tooltip_min_intersection']    = (( isset($postData['lgx_tooltip_min_intersection'])) ? sanitize_text_field( $postData['lgx_tooltip_min_intersection'] ) : 16);
-                $savable_Data['lgx_tooltip_timer']               = (( isset($postData['lgx_tooltip_timer'])) ? sanitize_text_field( $postData['lgx_tooltip_timer'] ) : 0);
-                $savable_Data['lgx_tooltip_padding']              = (( isset($postData['lgx_tooltip_padding'])) ? sanitize_text_field( $postData['lgx_tooltip_padding'] ) : '8px');
+                $savable_Data['lgx_tooltip_anim_duration']       = (( isset($postData['lgx_tooltip_anim_duration'])) ? intval( $postData['lgx_tooltip_anim_duration'] ) : 350);
+                $savable_Data['lgx_tooltip_anim_delay']          = (( isset($postData['lgx_tooltip_anim_delay'])) ? intval( $postData['lgx_tooltip_anim_delay'] ) : 300);
+                
+                $tooltip_trigger = (( isset($postData['lgx_tooltip_trigger_type'])) ? sanitize_text_field( $postData['lgx_tooltip_trigger_type'] ) : 'hover');
+                $savable_Data['lgx_tooltip_trigger_type']        = in_array($tooltip_trigger, array('hover', 'click'), true) ? $tooltip_trigger : 'hover';
+                
+                $savable_Data['lgx_tooltip_distance']            = (( isset($postData['lgx_tooltip_distance'])) ? sanitize_text_field( $postData['lgx_tooltip_distance'] ) : 6);
+                $savable_Data['lgx_tooltip_min_intersection']    = (( isset($postData['lgx_tooltip_min_intersection'])) ? intval( $postData['lgx_tooltip_min_intersection'] ) : 16);
+                $savable_Data['lgx_tooltip_timer']               = (( isset($postData['lgx_tooltip_timer'])) ? intval( $postData['lgx_tooltip_timer'] ) : 0);
+                $savable_Data['lgx_tooltip_padding']             = (( isset($postData['lgx_tooltip_padding'])) ? sanitize_text_field( $postData['lgx_tooltip_padding'] ) : '8px');
                 $savable_Data['lgx_tooltip_text_color']          = (( isset($postData['lgx_tooltip_text_color'])) ? sanitize_text_field( $postData['lgx_tooltip_text_color'] ) : '#ffffff');
                 $savable_Data['lgx_tooltip_bg_color']            = (( isset($postData['lgx_tooltip_bg_color'])) ? sanitize_text_field( $postData['lgx_tooltip_bg_color'] ) : '#d3d3d3');
                 $savable_Data['lgx_tooltip_border_color']        = (( isset($postData['lgx_tooltip_border_color'])) ? sanitize_text_field( $postData['lgx_tooltip_border_color'] ) : '#333333');
                 $savable_Data['lgx_tooltip_border_radius']       = (( isset($postData['lgx_tooltip_border_radius'])) ? sanitize_text_field( $postData['lgx_tooltip_border_radius'] ) : '4px');
-                $savable_Data['lgx_tooltip_border_width']       = (( isset($postData['lgx_tooltip_border_width'])) ? sanitize_text_field( $postData['lgx_tooltip_border_width'] ) : '2px');
+                $savable_Data['lgx_tooltip_border_width']        = (( isset($postData['lgx_tooltip_border_width'])) ? sanitize_text_field( $postData['lgx_tooltip_border_width'] ) : '2px');
                 $savable_Data['lgx_tooltip_arrow_bg_color']      = (( isset($postData['lgx_tooltip_arrow_bg_color'])) ? sanitize_text_field( $postData['lgx_tooltip_arrow_bg_color'] ) : '#555555');
                 $savable_Data['lgx_tooltip_arrow_border_color']  = (( isset($postData['lgx_tooltip_arrow_border_color'])) ? sanitize_text_field( $postData['lgx_tooltip_arrow_border_color'] ) : '#333333');
 

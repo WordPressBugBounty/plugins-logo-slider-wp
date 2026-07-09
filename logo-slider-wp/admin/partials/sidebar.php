@@ -5,45 +5,56 @@ if (!defined('WPINC')) {
 ?>
 <div id="postbox-container-1" class="postbox-container">
     <div class="meta-box-sortables">
-        <div class="postbox">
-            <h3>Plugin Info</h3>
-            <div class="inside">
-                <p>Plugin Name : <?php echo esc_html($plugin_data['Title']); ?> <?php echo esc_html($plugin_data['Version']); ?></p>
-                <p>Author : <?php echo esc_html($plugin_data['Author']) ?></p>
-                <p>Website : <a href="<?php echo esc_url('http://logichunt.com');?>" target="_blank">logichunt.com</a></p>
-                <p>Email : <a href="mailto:logichunt.info@gmail.com" target="_blank">info@logichunt.com</a></p>
-                <p>Twitter : @<a href="<?php echo esc_url('http://twitter.com/logichunt');?>" target="_blank">logichunt</a></p>
-                <p>Facebook : <a href="<?php echo esc_url('http://facebook.com/logichunt');?>" target="_blank">LogicHunt</a></p>
-            </div>
-        </div>
-        <div class="postbox">
-            <h3>Help & Supports</h3>
-            <div class="inside">
-                <p>Support : <a class="button" href="<?php echo esc_url('http://logichunt.com/support/');?>" target="_blank">Get Support</a></p>
-                <p>Website : <a class="button" href="<?php echo esc_url('http://logichunt.com/');?>" target="_blank">Website</a></p>
-                <p>Donate Link: <a class="button button-primary" href="<?php echo esc_url('https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=vaspal%2ekt%40gmail%2ecom&lc=US&item_name=LogicHunt&item_number=wp&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted');?>" target="_blank">Donate Now</a></p>
-                <p>Your contribution always helps us to be more serious and supportive.</p>
-            </div>
-        </div>
-    
 
-        
         <div class="postbox">
+            <h3><?php esc_html_e('Plugin Info', 'logo-slider-wp'); ?></h3>
             <div class="inside">
-                <h3><?php esc_html_e('LogicHunt Networks', 'logo-slider-wp') ?></h3>
-                <p><a target="_blank" href="<?php echo esc_url('https://logichunt.com/');?>">LogicHunt</a>: Joomla and Worpress Plugin, Extensions, Theme.</p>
-	            <p><a target="_blank" href="<?php echo esc_url('http://themearth.com');?>">ThemEarth</a>: Themes & Templates.</p>
-	            <p><a target="_blank" href="<?php echo esc_url('https://logichunt.com/joomlademo/');?> ">JoomlaHunt</a>: Joomla Extensions Demo.</p>
+                <p><?php esc_html_e('Plugin Name', 'logo-slider-wp'); ?> : <a
+                        href="https://logichunt.com/product/wordpress-logo-slider/" target="_blank"
+                        rel="noopener noreferrer">Logo Slider WP</a> <?php echo esc_html($plugin_data['Version']); ?>
+                </p>
+                <p><?php esc_html_e('Author', 'logo-slider-wp'); ?> : <a href="https://logichunt.com/" target="_blank"
+                        rel="noopener noreferrer">LogicHunt Inc.</a></p>
+                <p><?php esc_html_e('Website', 'logo-slider-wp'); ?> : <a href="https://logichunt.com/" target="_blank"
+                        rel="noopener noreferrer">logichunt.com</a></p>
+                <p><?php esc_html_e('Email', 'logo-slider-wp'); ?> : <a
+                        href="mailto:info@logichunt.com">info@logichunt.com</a></p>
+                <p><?php esc_html_e('Twitter', 'logo-slider-wp'); ?> : <a href="https://twitter.com/logichunt"
+                        target="_blank" rel="noopener noreferrer">@logichunt</a></p>
+                <p><?php esc_html_e('Facebook', 'logo-slider-wp'); ?> : <a href="https://www.facebook.com/logichunt"
+                        target="_blank" rel="noopener noreferrer">LogicHunt</a></p>
             </div>
         </div>
 
-        <!-- <div class="postbox">
-            <h3>LogicHunt on Facebook</h3>
+        <div class="postbox">
+            <h3><?php esc_html_e('Help & Support', 'logo-slider-wp'); ?></h3>
             <div class="inside">
-                <iframe src="//www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2Flogichunt&amp;width=260&amp;height=258&amp;show_faces=true&amp;colorscheme=light&amp;stream=false&amp;border_color&amp;header=false&amp;appId=983646805075474" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:260px; height:258px;" allowTransparency="true"></iframe>
+                <p><?php esc_html_e('Support', 'logo-slider-wp'); ?> : <a class="button"
+                        href="https://logichunt.com/support/" target="_blank"
+                        rel="noopener noreferrer"><?php esc_html_e('Get Support', 'logo-slider-wp'); ?></a></p>
+                <p><?php esc_html_e('Website', 'logo-slider-wp'); ?> : <a class="button" href="https://logichunt.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"><?php esc_html_e('Visit Website', 'logo-slider-wp'); ?></a></p>
+                <p><?php esc_html_e('Donate', 'logo-slider-wp'); ?> : <a class="button button-primary"
+                        href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=vaspal%2ekt%40gmail%2ecom&lc=US&item_name=LogicHunt&item_number=wp&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted"
+                        target="_blank"
+                        rel="noopener noreferrer"><?php esc_html_e('Donate Now', 'logo-slider-wp'); ?></a></p>
+                <p><?php esc_html_e('Your contribution always helps us to be more serious and supportive.', 'logo-slider-wp'); ?>
+                </p>
             </div>
-        </div> //removed it form v3.2 -->
+        </div>
 
-    </div> <!-- .meta-box-sortables -->
+        <div class="postbox">
+            <h3><?php esc_html_e('LogicHunt Networks', 'logo-slider-wp'); ?></h3>
+            <div class="inside">
+                <p><a href="https://logichunt.com/" target="_blank" rel="noopener noreferrer">LogicHunt Inc.</a> :
+                    <?php esc_html_e('Premium WordPress Plugins & Extensions.', 'logo-slider-wp'); ?></p>
+                <p><a href="https://themearth.com/" target="_blank" rel="noopener noreferrer">ThemEarth</a> :
+                    <?php esc_html_e('Professional WordPress Themes & Templates.', 'logo-slider-wp'); ?></p>
+                <p><a href="https://logichunt.com/joomlademo/" target="_blank" rel="noopener noreferrer">JoomlaHunt</a>
+                    : <?php esc_html_e('Joomla Extensions & Live Demos.', 'logo-slider-wp'); ?></p>
+            </div>
+        </div>
 
-</div> <!-- #postbox-container-1 .postbox-container -->
+    </div><!-- .meta-box-sortables -->
+</div><!-- #postbox-container-1 .postbox-container -->

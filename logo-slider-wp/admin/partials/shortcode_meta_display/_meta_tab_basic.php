@@ -29,12 +29,6 @@ if ($lgx_logo_slider_terms && !is_wp_error($lgx_logo_slider_terms)) {
 
 }
 
-$this->meta_form->buy_pro(
-    array(
-        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
-        'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
-    )
-);
 
 
 
@@ -205,12 +199,6 @@ $this->meta_form->header_spacer(
 /********************************************************************************/
 
 
-$this->meta_form->buy_pro(
-    array(
-        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
-        'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
-    )
-);
 
 
 $this->meta_form->select(
@@ -219,7 +207,7 @@ $this->meta_form->select(
         'desc'      => __( 'Filter Logo item by category.', 'logo-slider-wp'),
         'name'      => 'meta_lgx_lsp_shortcodes[lgx_from_category]',
         'id'        => 'lgx_from_category',
-        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
+      //  'status'     => LGX_LS_PLUGIN_META_FIELD_PRO,
         'default'   => 'all',
         'options'   => $lgx_logo_slider_term_array
     )
@@ -228,7 +216,7 @@ $this->meta_form->select(
 $this->meta_form->number(
     array(
         'label'     => __( 'Item Limit', 'logo-slider-wp'),
-        'desc'      => __( 'Number of total logo item to show. Default: 0 ( all ). The free version allows displaying maximum of 20 images.', 'logo-slider-wp'),
+        'desc'      => __( 'Number of total logo item to show. Default: 0 ( all ). Now The free version allows displaying Unlimited items.', 'logo-slider-wp'),
         'name'      => 'meta_lgx_lsp_shortcodes[lgx_item_limit]',
         'id'        => 'lgx_item_limit',
         'default'   => 0
@@ -266,3 +254,10 @@ $this->meta_form->select(
         )
     )
 ); // Added from v3.2.0
+
+$this->meta_form->buy_pro(
+    array(
+        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
+        'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
+    )
+);

@@ -1,75 +1,77 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
     exit;
 }
 ?>
 
-<div id="lgx_logo_slider_app_<?php echo esc_attr( $lgx_app_id ); ?>" class="lgx_logo_slider_app">
+<div id="lgx_logo_slider_app_<?php echo esc_attr($lgx_app_id); ?>" class="lgx_logo_slider_app">
 
     <?php
-    if ( 'yes' === $lgx_shortcodes_meta['lgx_preloader_en'] ) {
-        $preloader_icon = ! empty( $lgx_shortcodes_meta['lgx_preloader_icon'] )
+    if ('yes' === $lgx_shortcodes_meta['lgx_preloader_en']) {
+        $preloader_icon = ! empty($lgx_shortcodes_meta['lgx_preloader_icon'])
             ? $lgx_shortcodes_meta['lgx_preloader_icon']
             : $lgx_lsw_loading_icon;
-        ?>
-        <div id="lgx_lsw_preloader_<?php echo esc_attr( $lgx_app_id ); ?>" class="lgx_lsw_preloader">
-            <img src="<?php echo esc_url( $preloader_icon ); ?>" alt="" />
+    ?>
+        <div id="lgx_lsw_preloader_<?php echo esc_attr($lgx_app_id); ?>" class="lgx_lsw_preloader">
+            <img src="<?php echo esc_url($preloader_icon); ?>" alt="" />
         </div>
     <?php } ?>
 
     <div class="lgx_logo_slider lgx_logo_slider_free">
-        <div class="lgx_app_inner lgx_app_layout_<?php echo esc_attr( $lgx_showcase_type ); ?>">
-            <div class="lgx_app_<?php echo esc_attr( $lgx_shortcodes_meta['lgx_section_container'] ); ?>">
+        <div class="lgx_app_inner lgx_app_layout_<?php echo esc_attr($lgx_showcase_type); ?>">
+            <div class="lgx_app_<?php echo esc_attr($lgx_shortcodes_meta['lgx_section_container']); ?>">
 
-                <?php if ( 'yes' === $lgx_shortcodes_meta['lgx_header_en'] ) {
+                <?php if ('yes' === $lgx_shortcodes_meta['lgx_header_en']) {
                     include '_header.php';
                 } ?>
 
-                <div 
-                    id="lgx_app_content_wrap_<?php echo esc_attr( $lgx_app_id . wp_rand(100,999) ); ?>"
-                    class="lgx_app_content_wrapper <?php echo ( 'carousel' === $lgx_showcase_type ) ? 'swiper lgx_logo_carousel' : ''; ?>"
-                    <?php echo ( 'carousel' === $lgx_showcase_type ) ? wp_kses_post( $carouselDataAttr_str ) : ''; ?>
-                    <?php echo ( 'yes' === $carousel_rtl_en ) ? 'dir="rtl"' : ''; ?>
-                >
+                <div id="lgx_app_content_wrap_<?php echo esc_attr($lgx_app_id . wp_rand(100, 999)); ?>"
+                    class="lgx_app_content_wrapper <?php echo ('carousel' === $lgx_showcase_type) ? 'swiper lgx_logo_carousel' : ''; ?>"
+                    <?php echo ('carousel' === $lgx_showcase_type) ? wp_kses_post($carouselDataAttr_str) : ''; ?>
+                    <?php echo ('yes' === $carousel_rtl_en) ? 'dir="rtl"' : ''; ?>>
 
                     <?php
-                    if ( in_array( $lgx_shortcodes_meta['lgx_carousel_nav_position'], array('top_center','top_left','top_right'), true ) ) {
-                        echo wp_kses_post( $carousel_navigation );
+                    if (in_array($lgx_shortcodes_meta['lgx_carousel_nav_position'], array('top_center', 'top_left', 'top_right'), true)) {
+                        echo wp_kses_post($carousel_navigation);
                     }
                     ?>
 
-                    <div 
-                        class="lgx_app_item_row 
-                        <?php echo ( 'yes' === $lgx_carousel_ticker_en ) ? 'lgx_swiper_wrapper_ticker' : ''; ?> 
-                        <?php echo ( 'carousel' === $lgx_showcase_type ) ? 'swiper-wrapper' : ''; ?> 
-                        <?php echo ( 'mid' === $lgx_shortcodes_meta['lgx_carousel_item_vertical_align'] && 'carousel' === $lgx_showcase_type ) ? 'lgx_s_w_vertical_mid' : ''; ?>"
-                        <?php echo ( 'yes' === $lgx_tooltip_en ) ? wp_kses_post( $tooltipDataAttr_str ) : ''; ?>
-                    >
+                    <div class="lgx_app_item_row 
+                        <?php echo ('yes' === $lgx_carousel_ticker_en) ? 'lgx_swiper_wrapper_ticker' : ''; ?> 
+                        <?php echo ('carousel' === $lgx_showcase_type) ? 'swiper-wrapper' : ''; ?> 
+                        <?php echo ('mid' === $lgx_shortcodes_meta['lgx_carousel_item_vertical_align'] && 'carousel' === $lgx_showcase_type) ? 'lgx_s_w_vertical_mid' : ''; ?>"
+                        <?php echo ('yes' === $lgx_tooltip_en) ? wp_kses_post($tooltipDataAttr_str) : ''; ?>>
                         <?php
 
-                        $lgx_logo_limit = ( ( $lgx_shortcodes_meta['lgx_item_limit'] <= 0 ) ? -1 : $lgx_shortcodes_meta['lgx_item_limit'] );
+                        // Before (v5.3) — free version was capped at 20 logos:
+                        //
+                        // $lgx_logo_limit = ( ( $lgx_shortcodes_meta['lgx_item_limit'] <= 0 ) ? -1 : $lgx_shortcodes_meta['lgx_item_limit'] );
+                        //
+                        // if ( LGX_LS_WP_PLUGIN !== 'logo-slider-wp-pro' ) {
+                        //     if ( $lgx_logo_limit === -1 || $lgx_logo_limit >= 20 ) {
+                        //         $lgx_logo_limit = 20;
+                        //     }
+                        // }
 
-                        if ( LGX_LS_WP_PLUGIN !== 'logo-slider-wp-pro' ) {
-                            if ( $lgx_logo_limit === -1 || $lgx_logo_limit >= 20 ) {
-                                $lgx_logo_limit = 20;
-                            }
-                        }
+                        // After (v5.5) — no front-end limit in free version:
+                        $lgx_logo_limit = (($lgx_shortcodes_meta['lgx_item_limit'] <= 0) ? -1 : $lgx_shortcodes_meta['lgx_item_limit']);
+
 
                         $lgx_from_category = $lgx_shortcodes_meta['lgx_from_category'];
 
                         $lgx_logo_slider_args = array(
-                            'post_type'      => array( 'logosliderwp' ),
-                            'post_status'    => array( 'publish' ),
+                            'post_type'      => array('logosliderwp'),
+                            'post_status'    => array('publish'),
                             'order'          => $lgx_item_sort_order,
                             'orderby'        => $lgx_item_sort_order_by,
                             'posts_per_page' => $lgx_logo_limit,
                         );
 
-                        if ( ! empty( $lgx_from_category ) && $lgx_from_category !== 'all' ) {
+                        if (! empty($lgx_from_category) && $lgx_from_category !== 'all') {
 
-                            $lgx_from_category_arr = array_map( 'intval', explode( ',', trim( $lgx_from_category ) ) );
+                            $lgx_from_category_arr = array_map('intval', explode(',', trim($lgx_from_category)));
 
-                            if ( ! empty( $lgx_from_category_arr ) ) {
+                            if (! empty($lgx_from_category_arr)) {
                                 $lgx_logo_slider_args['tax_query'] = array(
                                     array(
                                         'taxonomy' => 'logosliderwpcat',
@@ -80,30 +82,29 @@ if ( ! defined( 'ABSPATH' ) ) {
                             }
                         }
 
-                        $lgx_logo_slider_loop = new WP_Query( $lgx_logo_slider_args );
+                        $lgx_logo_slider_loop = new WP_Query($lgx_logo_slider_args);
 
-                        if ( $lgx_logo_slider_loop->have_posts() ) {
+                        if ($lgx_logo_slider_loop->have_posts()) {
 
-                            while ( $lgx_logo_slider_loop->have_posts() ) : $lgx_logo_slider_loop->the_post();
+                            while ($lgx_logo_slider_loop->have_posts()) : $lgx_logo_slider_loop->the_post();
 
                                 include '_item.php';
 
                             endwhile;
 
                             wp_reset_postdata();
-
                         } else {
 
-                            echo '<p>' . esc_html__( 'There are no logo item. Please add some logo Item', 'logo-slider-wp' ) . '</p>';
+                            echo '<p>' . esc_html__('There are no logo item. Please add some logo Item', 'logo-slider-wp') . '</p>';
                         }
                         ?>
                     </div>
 
-                    <?php echo wp_kses_post( $carousel_pagination ); ?>
+                    <?php echo wp_kses_post($carousel_pagination); ?>
 
                     <?php
-                    if ( in_array( $lgx_shortcodes_meta['lgx_carousel_nav_position'], array('vertical_center','bottom_center','bottom_left','bottom_right'), true ) ) {
-                        echo wp_kses_post( $carousel_navigation );
+                    if (in_array($lgx_shortcodes_meta['lgx_carousel_nav_position'], array('vertical_center', 'bottom_center', 'bottom_left', 'bottom_right'), true)) {
+                        echo wp_kses_post($carousel_navigation);
                     }
                     ?>
 

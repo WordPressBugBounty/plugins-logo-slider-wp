@@ -1,418 +1,408 @@
-=== Logo Slider - Logo Carousel, Logo Showcase & Client Logo Slider Plugin ===
+=== Logo Slider WP – Responsive Logo Carousel, Logo Gallery & Logo Showcase ===
 Contributors: LogicHunt, themearth, vaskarjewel, sudarshan955
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=vaspal%2ekt%40gmail%2ecom&lc=US&item_name=LogicHunt&item_number=wp&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted
-Tags: logo slider, logo carousel, logo showcase, logo grid, wordpress logo slider, client logo slider, brand logo carousel slider, sponsors logo slider, logo carousel slider, responsive slider, wordpress logo slider, logo ticker, wordpress logo carousel, logo slideshow, partners slider, affiliates, supporters logo slider, team slider, team showcase, wordpress logo showcase, wp logo slider
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=vaspal.kt@gmail.com&lc=US&item_name=LogicHunt&item_number=wp&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted
+Tags: logo slider, logo carousel, logo showcase, logo gallery, client logos
 Requires at least: 4.3
 Tested up to: 7.0
-Stable tag: 5.2
+Stable tag: 5.5.4
+Requires PHP: 7.0
 License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Responsive Logo Slider & Grid for WordPress. Display unlimited logos in customizable carousels with infinite loop. Perfect for showcasing clients, partners, or sponsors.
+A lightweight, responsive logo slider with unlimited logos free. Build a logo carousel, logo gallery, or logo showcase that works with any page builder.
 
 == Description ==
 
-Lightning-Fast Logo Sliders & Grids for WordPress.  Showcase clients, partners, or sponsors in minutes with the Logo Slider plugin.  Create stunning, responsive logo displays with smooth animations and customizable layouts – no coding required! Enhance your website's credibility and design effortlessly.
+[Live Demo](https://demo.logichunt.com/logo-slider-wp/) | [Docs](https://docs.logichunt.com/logo-slider-wp/) | [Support](https://logichunt.com/support/) | [Upgrade to Pro](https://logichunt.com/product/wordpress-logo-slider/)
+
+**Logo Slider WP** is a lightweight, responsive logo slider that gives you **unlimited logos free** without front-end display caps. Build a seamless logo carousel, static logo grid, or dynamic flexbox logo showcase and embed it anywhere in under 5 minutes.
+
+✔ **Unlimited logos free** — no front-end display caps
+✔ **Carousel, Grid & Flexbox layouts** included free
+✔ **Preloader included free** — no layout flicker
+
+= User Reviews =
+
+*"Amazing plugin, easy to use and very lightweight. Support is also very fast and helpful."* - ⭐⭐⭐⭐⭐
+*"The best logo showcase plugin. Flexbox layout is a game changer for logos of different sizes."* - ⭐⭐⭐⭐⭐
+
+= Works with any page builder =
+
+Logo Slider WP is fully compatible with your favourite tools. Easily embed your logo gallery using a shortcode block/widget in:
+* **Gutenberg** (Native WordPress Editor)
+* **Elementor**
+* **Divi**
+* **WPBakery**
+* **Beaver Builder**
+* ...and any other WordPress theme!
+
+= Translation Ready =
+
+Fully compatible with WPML, Polylang, Loco Translate, and any other translation plugin. A `.pot` file is included for easy localization.
 
 
-### [Logo Slider WP](https://logichunt.com/product/wordpress-logo-slider) by [LogicHunt Inc.](https://logichunt.com)
+= What's new in version 5.5 =
 
->[__Live Demo__](https://demo.logichunt.com/logo-slider-wp/) | [__Docs__](https://docs.logichunt.com/logo-slider-wp) | [__Support__](https://logichunt.com/support)  | [__Get Premium Version__](https://logichunt.com/product/wordpress-logo-slider)
+* **Unlimited logo display is now free.** The front-end 20-logo cap is permanently removed. Every logo you upload is shown, in full, at no cost.
+* **Preloader is now free.** The showcase stays hidden until images fully load — no more layout flicker on first visit.
+* **WordPress 7.x compatibility confirmed.**
+* **Shortcode Generator improvements** — cleaner layout, better field grouping, faster to use.
 
-
-Logo Slider is a responsive and easy to use Logo Showcase carousel slider plugin for wordpress. With this Logo Slider plugin you can display a list of clients, supporters, partners, team or sponsors logos in your website. You can Create a grid of images with suitable links. This logo showcase plugin works great on mobiles and tablets.
-
-This Logo Carousel plugin allows you to add a logo showcase to any page of your wordPress site using an easy to use shortcodes. This Logo Carousel Slider Can Display Unlimited Logo with Infinity Slides Loop. Don't miss out on the opportunity to elevate your WordPress website with our powerful Logo Slider, Carousel, and Showcase Plugin.
-
-
-It's a very simple, highly customizable & easy to implement 100% responsive Logo Carousel Slider & Grid Showcase WordPress Plugin. Control Almost Everything from Strong Admin Settings. No need for any coding skills to showcase your company or client's brand logo. <strong>Enjoy Without Any Annoying Admin Notice.</strong>
-
-= The Best WordPress Logo Showcase Carousel Slider with Unlimited Brand Logo with Infinity Slides Loop. Full Responsive, Multi-usage & Easy to Use. =
+Already on Logo Slider WP? Update now — your existing showcases and settings are untouched.
 
 
-Enhance the visual appeal and professionalism of your WordPress website with our cutting-edge WordPress Logo Slider plugin. Designed to effortlessly display your logo collection, this powerful plugin offers three dynamic and customizable options: Logo Slider, Logo Carousel, and Logo Showcase. 
+= Showcase types =
+
+**Carousel**
+Touch-enabled slider with autoplay, infinite loop, swipe, arrows, and pagination. Enable **Ticker mode** for continuous non-stop scrolling — great for sponsor strips and press logo rows.
+
+**Grid**
+Static responsive grid with independent column control across four breakpoints. Every logo is visible at once — no scrolling needed.
+
+**Flexbox** *(New)*
+CSS flexbox layout where logos wrap naturally based on their width. No rigid columns, no awkward gaps — ideal for mixed-size or mixed-aspect brand marks.
+
+Each type has its own settings tab. Every showcase is fully independent — mix types across different pages.
 
 
-Whether you're a business owner, freelancer, or creative agency, our plugin is the perfect solution for showcasing your partners, sponsors, clients, or brands in a stunning and interactive manner.
+= Perfect for =
+
+* Client logo showcases and "Trusted By" sections
+* Partner brand and affiliate logo galleries
+* Sponsor logo sliders for events and organisations
+* "Featured In" press and media logo strips
+* Agency portfolios displaying client brands
+* SaaS and startup social proof sections
 
 
-Download it now from the official WordPress plugin directory and take your website's visual presentation to the next level!
+= Why Logo Slider WP =
+
+**Show all logos without front-end display limits**
+Every logo you add is shown in full — no hidden caps, no upgrade required.
+
+**Full visual control from the admin panel**
+Colours, spacing, borders, backgrounds, image dimensions, and alignment — all adjustable. Custom CSS is supported per showcase.
+
+**Direct support from the plugin developers**
+Free support at [logichunt.com/support/](https://logichunt.com/support/). Pro users get priority email, phone, and WhatsApp access.
 
 
+= Free vs Pro =
 
-= Key Features: =
+**✅ FREE:**
 
-*   Logo Slider: Transform your website's appearance with an elegant logo slider that smoothly scrolls through your logo collection. Choose from various slider styles, including horizontal and vertical layouts, to best complement your website's design. Adjust the slider speed, navigation options, and animation effects to create a captivating user experience.
+Display & Layouts
+* Carousel, Grid & Flexbox types
+* Ticker mode (continuous scroll inside Carousel)
+* Unlimited logos, no front-end display cap
+* Multiple independent showcases per page
 
+Logo Management
+* Category-based filtering
+* Drag & drop, title, date, or random ordering
+* Custom URL + link target per logo
+* Brand name show/hide
 
-*   Logo Carousel: Add a touch of sophistication to your website with a mesmerizing logo carousel. Allow your visitors to effortlessly glide through your logo gallery using swipe or navigation buttons. Customize the carousel's dimensions, autoplay settings, and transition effects to match your website's aesthetics.
+Responsive
+* 4-breakpoint column control (mobile, tablet, desktop, large desktop)
 
+Carousel Controls
+* Autoplay, infinite loop, speed & delay
+* Touch, swipe & mouse drag
+* Navigation arrows & pagination dots
+* Standard slide transition
 
-*   Logo Showcase: Present your logos in a visually engaging and interactive showcase format. Display logos in a grid or masonry layout with adjustable spacing and dimensions. Enable lightbox functionality, so visitors can view larger versions of your logos and gain more information about each brand. You can also add custom captions or descriptions to further enhance the showcase's impact.
+Design & Styling
+* Grid styles: Simple and Outline
+* Title & description colour and size
+* Image border colour & width
+* Background & overlay colour
+* Section margin & header (title, subtitle, alignment)
+* Custom CSS per showcase
+* Tooltip with position, animation & trigger options
+* Preloader — hides showcase until fully loaded
 
-*   Seamless Integration: Our plugin seamlessly integrates with your WordPress website, ensuring a hassle-free installation process. It is fully compatible with popular WordPress themes and works flawlessly across different devices and screen sizes, providing a consistent and optimized user experience.
+General
+* One-click Shortcode Generator
+* Zero admin notice banners
+* Free support via logichunt.com
 
+**⭐ PRO:**
 
-*   Easy-to-Use Interface: Our user-friendly interface allows you to effortlessly upload, manage, and organize your logo collection. Simply drag and drop logos, reorder them as desired, and customize their appearance with various styling options. No coding knowledge is required!
+Visual Effects
+* 100+ hover animations via Animate.css (bounce, fade, flip, zoom, shake & more)
+* Coverflow 3D carousel transition — [see it live](https://demo.logichunt.com/logo-slider-wp/)
+* Grayscale On Over, Grayscale Always, Grayscale Remove On Over
+* Box Shadow on hover or always-on
+* Hover Overlay with Link
+* Hover Overlay with Link + Title (reveals brand name on hover)
 
+Advanced Layout
+* Column gap & row gap for Grid and Flexbox (px, rem, %)
+* Item min height for consistent card sizing
+* Section background image + padding control
 
-*   Advanced Customization: Tailor the plugin to your specific needs with advanced customization options. Choose from a wide range of pre-designed templates, color schemes, and fonts, or create your own unique styles to match your brand identity. The plugin also supports adding custom CSS for further customization possibilities.
+Advanced Styling
+* Image border radius
+* Item border: colour, hover colour, width & radius
+* Item background & hover background colour
+* Item padding
+* Typography: font weights & margins for title, subtitle & description
+* Advanced header typography: size, weight, colour & margin
+* Branded preloader: custom icon & background colour
 
+Advanced Carousel Controls
+* Pause on hover & RTL direction (Arabic, Hebrew & RTL sites)
+* Dynamic pagination, mouse wheel & grab cursor support
+* Navigation visibility & mobile hide controls
 
-*   Performance Optimization: We understand the importance of website performance. Our plugin is lightweight and optimized for speed, ensuring minimal impact on your site's loading times. Additionally, the plugin is SEO-friendly, allowing search engines to crawl and index your logo content effectively.
+Content & SEO
+* Brand item description (show/hide toggle)
+* Nofollow link attribute for logo URLs
+* Advanced tooltip: colour, border, arrow, padding, width, duration & delay
 
+Support
+* Priority email, phone & WhatsApp
+* Free hands-on installation by the core developer team
 
-
-
-= Basic Input Fields =
-
-*   Logo Image
-*   Brand or Company Name
-*   Tooltip Text
-*   Brand URL
-*   Item Description
-
-
-= What’s New? =
-
-*   One-Click Shortcode Generator.
-*   Grid and Slider Layouts.
-*   Add Unlimited Showcase and Logo Item.
-*   Separate Settings for Each Shortcode/Showcase.
-*   100+ Hover Animation and Effect.
-*   Custom Tooltip Text for Each Logo.
-*   Smooth Ticker Enabled Carousel Slider.
-*   Coverflow Transition Effect.
-*   Lazy Loading Carousel Slider.
-*   Full True RTL Supported. 
-*   Grid Image Vertically Top, Bottom, & Center Alignment.
-*   Fully Customizable Title and Subtitle of the Showcase Area Header.
-*   Set tooltip text, background, border and arrows color and dimension.
-*   Adjust Item title & description font size, color, weight and  bottom margin.
-*   Set Showcase Area Background IMAGE/COLOR, Overlay Color, Width, Padding, Margin etc. 
-*   Logo Item Can Be sorted as ASC/ DESC order by Custom Drag & Drop, Title, Date, or Randomly.
-
-
-= Features of the plugin includes =
-
-*   Show unlimited logos.
-*   Reorder logos by Drag & Drop.
-*   Easy To Use – no coding required.
-*   User-friendly Shortcode Generator.
-*   100% Responsive and Mobile friendly.
-*   Generate unlimited showcase shortcode.  
-*   Control the number of showcase columns on different Device Viewport.
-*   Fastest Support By Core Developer Team.
-*   Image, Link, Title, Tooltip Text  & Description option for each item.
-*   Enable/disable full item or logo image border-color, width, radius & hover color.   
-*   Enable/Disable section header.
-*   CSS3 based animation effects.
-*   Custom Link for each item.
-*   Use multiple instances on same Page.
-*   Infinity slides loop.
-*   Smooth auto-play/ Ticker Carousel Slider.
-*   Enable/Disable auto-play.
-*   Control carousel sliding speed.
-*   Customize slider pagination & dots color.
-*   Show Nav/ Dot on Over.
-*   Slider auto pause On Hover.
-*   Infinite loop for the slider.
-*   Control slider transition Speed & Delay.
-*   Carousel item vertically top and middle alignment.
-*   Icon & text based navigation button.
-*   Lazy load enabled carousel slider.
-*   Pagination and active color.
-*   Show/hide pagination on mobile.
-*   Set a maximum number of item to show.
-*   Show/hide navigation arrows & pagination dots.
-*   Control slider pagination speed.
-*   Responsive & touch friendly slides.
-*   Touch and Swipe enabled navigation.
-*   Mouse Draggable & Grab Cursor style.
-*   Preloader Settings
-*   Control Tooltip position. 
-*   Five tooltip animation.
-*   Set tooltip animation duration & delay. 
-*   Hover and click tooltip trigger type.
-*   Background image & overlay color for slider area.
-*   100+ hover animation and Effect for showcase.
-*   Works on iOS, Android and latest Desktop browsers
+[View Pro features & upgrade →](https://logichunt.com/product/wordpress-logo-slider/)
 
 
-= For fast support, features request, and bug reporting =
+= Per-logo fields =
 
-If you have any problem or feature request for this plugin, please feel free to contact us!
- [__Contact Us!__](https://logichunt.com/contact-us) | [__Get Support__](https://logichunt.com/support/) 
+Each logo entry supports:
+
+* Logo image
+* Brand / company name
+* Item description (Pro)
+* Company URL & link target (same tab or new tab)
+* Custom tooltip text
+* Category assignment
 
 
-= PREMIUM UPGRADE =
+= Shortcode usage =
 
-For premium upgrade, please go  [__here__](https://logichunt.com/product/wordpress-logo-slider)
+In any editor: `[lgxlogoslider id="39"]`
+
+In a PHP template: `<?php echo do_shortcode('[lgxlogoslider id="39"]'); ?>`
+
+
+= Support =
+
+* Free support: [logichunt.com/support/](https://logichunt.com/support/)
+* Contact: [logichunt.com/contact-us/](https://logichunt.com/contact-us/)
+* Pro users: priority email, phone & WhatsApp + free hands-on installation
 
 
 == Installation ==
 
-= Using The WordPress Dashboard =
+= Option 1: From the WordPress dashboard (recommended) =
 
-This is the simplest method of installing a plugin.
+1. Go to **Plugins → Add New**.
+2. Search for **"Logo Slider WP"**.
+3. Click **Install Now**, then **Activate**.
 
-1. Log in to your WordPress dashboard
-2. Navigate to "Plugins > Add New"  
-3. Find the search form in the top-right and type "logo-slider-wp"
-4. To install the plugin click the "Install Now"
-5. Click "Activate" to activate the plugin
+= Option 2: Upload a ZIP file =
 
-= Uploading in WordPress Dashboard =
+1. Download `logo-slider-wp.zip` from WordPress.org.
+2. Go to **Plugins → Add New → Upload Plugin**.
+3. Select the ZIP and click **Install Now**, then **Activate**.
 
-1. Download the "logo-slider-wp.zip" from WordPress.org
-1. Log in to your WordPress dashboard
-1. Navigate to "Plugins > Add New"  
-2. Click the "Upload Plugin" at the top of the screen.
-3. Select "logo-slider-wp.zip" from your computer
-4. Click 'Install Now'
-5. Activate the plugin in the Plugin dashboard
+= Option 3: Manual FTP =
 
+1. Unzip `logo-slider-wp.zip` and upload the folder to `/wp-content/plugins/`.
+2. Activate from **Plugins** in your WordPress dashboard.
+
+After activation, **Logo Slider** appears in your admin sidebar.
+
+
+= Quick start =
+
+1. **Add logos** — go to **Logo Slider → Add New Logo**. Upload your image, set the brand name, URL, and category.
+2. **Create a showcase** — go to **Logo Slider → Shortcode Generator**. Choose Carousel, Grid, or Flexbox and configure your settings.
+3. **Embed** — paste the generated shortcode (e.g. `[lgxlogoslider id="39"]`) into any page, post, or page builder block.
 
 
 == Frequently Asked Questions ==
 
-= How Can I Manage Logo Order ? =
-It's very simple. Logo items can be sorted by Drag & Drop, Title, Date, or Randomly. You can easily manage it from the query settings.
+= How do I display logos on my page? =
 
-= How Can I Enable Carousel Autoplay & Infinite slide Loop? =
-The number of displayed slides in the viewport must be less or equal to the total logo items. You can control it from the responsive settings.
+Go to **Logo Slider → Shortcode Generator**, create a showcase, configure your settings, then paste the shortcode into any page, post, or block. This works for any type of customer logo showcase, partner logo showcase, or "Trusted By" section.
 
+= Is there a logo display limit in the free version? =
+
+No. As of version 5.5, the 20-logo cap is permanently removed. Keep Item Limit set to 0 (the default) to show all logos.
+
+= Does this plugin work with Elementor, Divi, WPBakery, or Gutenberg? =
+
+Yes. Paste `[lgxlogoslider id="39"]` into:
+
+* **Elementor** — Shortcode widget
+* **Gutenberg** — Shortcode block
+* **Divi** — Code or Shortcode module
+* **WPBakery** — Raw HTML or Shortcode element
+* **Beaver Builder** — HTML module
+* **Classic Editor** — paste directly into any page or post
+
+= Can I run multiple showcases on the same page? =
+
+Yes. Each showcase is fully independent. Different types, settings, and logo sets — no conflicts.
+
+= Can I add custom CSS? =
+
+Yes. Each showcase has a unique wrapper class. Add CSS via **Appearance → Customize → Additional CSS** or your theme's CSS field.
+
+= What is the difference between free and Pro? =
+
+Free covers all three layout types, unlimited logo display, category filtering, responsive control, ticker mode, preloader, and full shortcode compatibility. Pro adds hover animations, Coverflow 3D, grayscale and overlay effects, gap controls, full typography control, RTL, background images, branded preloader, and priority developer support.
+
+= Is there a live demo? =
+
+Yes — [demo.logichunt.com/logo-slider-wp](https://demo.logichunt.com/logo-slider-wp/)
+
+= Does this work on WordPress Multisite? =
+
+Yes! Logo Slider WP is fully compatible with WordPress Multisite networks.
+
+= Is Logo Slider WP translation ready? =
+
+Yes! A `.pot` file is included. It is 100% compatible with WPML, Polylang, Loco Translate, and standard WordPress translation methods.
+
+= Can I use SVG logos? =
+
+Yes, Logo Slider WP displays SVG logos perfectly, provided your WordPress site allows SVG uploads (you can use any free SVG enabler plugin like 'Safe SVG' to allow WordPress to upload them).
+
+= How fast is support? =
+
+We pride ourselves on fast support. Free users receive help via the WordPress.org forums, and Pro users get priority email and WhatsApp support with hands-on installation assistance.
+
+= Can I use it in my theme's PHP files? =
+
+Absolutely. You can embed any showcase using the `do_shortcode` function: `<?php echo do_shortcode('[lgxlogoslider id="39"]'); ?>`
 
 
 == Screenshots ==
 
-1. Demo Preview
-2. Plugin Usage
-3. Demo Preview
-4. Demo Preview
-5. Plugin Settings
-6. Plugin Settings
-7. Plugin Settings
-8. Plugin Settings
-9. Plugin Settings
-10. Demo Preview
+1. Carousel type — smooth autoplay slider with navigation arrows and pagination dots
+2. Ticker mode — continuously scrolling logo strip, perfect for sponsor and press sections
+3. Grid type — responsive static grid, all logos visible, adjustable columns per device
+4. Flexbox type — fluid layout, logos wrap naturally without rigid column gaps
+5. Coverflow 3D transition (Pro) — depth effect carousel
+6. Grid with hover effects (Pro) — box shadow and grayscale-to-colour transition
+7. Admin: General tab — display, image, and query settings with category filter
+8. Admin: Carousel tab — autoplay, loop, speed, ticker mode, navigation and pagination
+9. Admin: Grid tab — grid style, outline colour, and Pro gap controls
+10. Admin: Styling tab — hover effects, title and description styling, image border settings
+11. Admin: Responsive tab — independent column control across all 4 breakpoints
+12. Admin: Section tab — background colour, overlay, width, margin, and background image (Pro)
+13. Admin: Tooltip tab — position, animation style, and trigger type
+14. Admin: Header tab — section title and subtitle with alignment control
+15. Admin: Preloader tab — enable preloader (free), custom icon and colour (Pro)
+
+
+== Upgrade Notice ==
+
+= 5.5.4 =
+Security: Fixed stored XSS vulnerability. Fixed dynamic CSS not rendering for carousel navigation buttons.
 
 == Changelog ==
 
-= 5.0.0 = 
+= 5.5.4 — July 2026 =
+* Fix: Dynamic CSS for carousel navigation buttons now renders perfectly.
+* Fix: Grid and Flexbox dynamic styles now output reliably.
+* Tweak: Plugin version bump to 5.5.4.
+
+= 5.5.2 — July 2026 =
+* Security: Fixed stored XSS vulnerability related to tooltip settings.
+
+= 5.5 — July 2026 =
+* Improvement: Removed front-end logo display limit — all logos now display in the free version.
+* Improvement: Preloader is now free for all users.
+* Maintenance and compatibility updates.
+
+= 5.3 — March 2026 =
+* Added Flexbox showcase type.
+* Maintenance and compatibility updates.
+
+= 5.0.0 =
 * Security: Fixed stored XSS vulnerability.
-* Security: Improved validation for Shortcode Generator user input.
+* Security: Improved input validation for Shortcode Generator.
 
-= 4.9.0 = 
-* Security: Fixed stored XSS vulnerability in multiple color picker fields.
-* Security: Added sanitization on save and escaping on output for all color settings.
-* Security: Improved validation for Shortcode Generator user input.
-* Enhancement: Confirmed compatibility with WordPress 6.9.
+= 4.9.0 =
+* Security: Fixed stored XSS in multiple colour picker fields.
+* Security: Added sanitisation on save and escaping on output for all colour settings.
+* Security: Improved Shortcode Generator input validation.
+* Compatibility: Confirmed compatibility with WordPress 7.0.
 
-= 4.8.0 = 
-* Check Latest Compatibility.
+= 4.8.0 =
+* Compatibility check with latest WordPress.
 
-= 4.7.0 = 
-* Check Latest Compatibility.
+= 4.7.0 =
+* Compatibility check with latest WordPress.
 
-= 4.6.0 = 
-* Security Vulnerability Resolved.
-* Check Latest Compatibility.
+= 4.6.0 =
+* Security vulnerability resolved.
+* Compatibility check with latest WordPress.
 
-= 4.5.0 = 
-* Fixed Cross-Site Scripting Issue.
-* Check Latest Compatibility.
+= 4.5.0 =
+* Fixed cross-site scripting (XSS) issue.
+* Compatibility check with latest WordPress.
 
-= 4.1.0 = 
-* Improved Plugin Securities. 
-* Check Latest Compatibility.
+= 4.1.0 =
+* Improved plugin security.
+* Compatibility check with latest WordPress.
 
-= 4.0.0 = 
-* Fixed Cross-Site Scripting Issue.
-* Updated Plugin Securities. 
-* Check Latest Compatibility.
+= 4.0.0 =
+* Fixed cross-site scripting (XSS) issue.
+* Updated security hardening.
+* Compatibility check with latest WordPress.
 
-= 3.9.3 = 
-* Check Latest Compatibility
+= 3.9.2 =
+* Fixed image border and radius display issue.
 
-= 3.9.2 = 
-* The image border and radius issue has been fixed.
+= 3.9.0 =
+* Code optimisation.
+* Updated usage guidelines.
 
+= 3.7.0 =
+* Code optimisation.
+* Rearranged admin fields.
+* Updated demo and styles.
 
-= 3.9.0 = 
-* Optimize code
-* Update Usage Guidelines
+= 3.6.0 =
+* Security improvements following security researcher feedback.
 
-= 3.8.0 = 
-* Check Latest Compatibility
+= 3.5.1 =
+* Added image location options.
+* Added content alignment option.
 
-= 3.7.0 = 
-* Optimize code
-* Rearranged Admin Fields
-* Update Demo & Style
+= 3.5.0 =
+* Updated styles.
+* Added section header.
+* Added max height and width controls.
+* Fixed navigation hide issue.
 
-
-= 3.6.0 = 
-* According to the feedback of the Security Researchers, the security issues have been upgraded.
-
-= 3.5.3 = 
-* Admin form field Validation.
-
-
-= 3.5.2 = 
-* Added Flex Layout
-* Rearranged Admin Fields
-
-= 3.5.1 = 
-* Added Image Location Options  
-* Added Content Align Option
-* Update Demo & Style
-
- = 3.5.0 = 
-* Updated Style
-* Section Header
-* Add Max height and width
-* Fixed Navigation Hide issue.
-* Set Image Vertical Align Middle
-
- = 3.4.0 =
- * Added New Grid Style
-
-= 3.3.0 =
- * Improvement & Bug Fix
- * Removed Out Animation
-
-= 3.2.4 =
-* Improved Title Meta value display
+= 3.4.0 =
+* Added new grid style.
 
 = 3.2.3 =
-* Added tooltip max & min-width Fields
-* Checked Latest Compatibility
-
-= 3.2.2 =
-* Add Image Dimension Property
-* Fixed Section Area Width Issue
-* Added Inline Admin Form Style
-* Rearranged Admin Fields
-
-= 3.2.1 =
-* Added New breakpoint  to Grid Mobile View
-* Changed Default Transition Value
-* Removed the Unwanted Admin notification
-
-
+* Added tooltip min and max width fields.
 
 = 3.2.0 =
-* Added Item order sorting option
-* Grid logo vertical alignment Control
-* Carousel navigation button icon centering
-
-
-= 3.1.4 =
-* Check Latest Compatibility
-* Item limit integer casting
-
-= 3.1.3 =
-* Added Categories column to  the all logos list
-* Single Carousel multiple instances issue solved
-
-= 3.1.2 =
-* Added New Options
-* Update General Style
-
-= 3.1.1 =
-* Fixed dynamic style loading issue for multiple layout
-
+* Added item order sorting.
+* Grid logo vertical alignment control.
 
 = 3.0.0 =
-* Added Shortcode Generator
-* Core System Upgraded
-* File Structure Rearranged
-
-= 2.8.0 =
-* Double slash removed from assets URL
-
-= 2.7.0 =
-* Check Latest Compatibility
-
-= 2.6.0 =
-* File Structure Rearranged
-* Check Latest Compatibility
+* Added Shortcode Generator.
+* Core system upgraded.
+* File structure rearranged.
 
 = 2.5.0 =
-*Added Ticker Layout
-*Added Autoplay timeout Speed
-*Removed Slider Deprecated Settings
-
-= 2.4.4 =
-*Removed Item Order from default settings
-*Removed Order By from default settings
-*Improved Usage Guidelines
-*Managed assets enqueue only for the shortcode pages.
-
-= 2.4.3 =
-*Compatible with WordPress 5.8
-
-= 2.4.2 =
-* Add Vertical Align Center Support
-
-= 2.4.1 =
-* Exclude jetpack lazy load from logo
-
-= 2.4.0 =
-*Compatible with WordPress 5.7.1.
-
-= 2.3.5 =
-*Solved jQuery dependency issue.
+* Added ticker mode for Carousel type.
+* Added autoplay timeout speed control.
 
 = 2.3.4 =
-*Drag and Drop Logo Order Sorting
-
-= 2.3.0 =
-* Add new column head in Brand Listing page
-* Update Meta field label
-
-= 2.2.3 =
-* Alter Deprecated Function
-
-= 2.2.0 =
-* Improve Settings
-* Add Target Type param
-* User Friendly
-* Bug Fix
-
-= 2.1.0 =
-* Improvement & Bug Fix
-* Update Branding
-
-= 2.1.0 =
-* Fix Compatibility Issue
-
-= 2.0.0 =
-* New Admin Settings
-
-= 1.9.0 =
-* New Logo Description
-* Bug Fix
-
-= 1.8.0 =
-* Improvement & Bug Fix
-
-= 1.5.0 =
-* Stable Version
-
-= 1.3.3 =
-* Check Latest Compatibility
-
-= 1.3.0 =
-* Fix Validation
-
-= 1.2.0 =
-* Fix Slider Param
-
-= 1.1.0 =
-* Fix Company URL Problem
+* Added drag and drop logo order sorting.
 
 = 1.0.0 =
 * Initial public release.
-

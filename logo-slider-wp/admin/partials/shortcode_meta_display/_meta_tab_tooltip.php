@@ -3,12 +3,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-$this->meta_form->buy_pro(
-    array(
-        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
-        'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
-    )
-);
 
 $this->meta_form->switch(
     array(
@@ -278,5 +272,15 @@ $this->meta_form->color(
         'id'        => 'lgx_tooltip_arrow_border_color',
         'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
         'default'   => '#333333'
+    )
+);
+
+
+$this->meta_form->buy_pro(
+    array(
+        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
+        'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
+        'text'   => '✨ Pro unlocks: All tooltip settings including content type, position, animation, colors and more.',
+        'link_label' => 'See Pro →',
     )
 );

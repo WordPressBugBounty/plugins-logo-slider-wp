@@ -3,12 +3,6 @@ if (!defined('WPINC')) {
     die;
 }
 
-$this->meta_form->buy_pro(
-    array(
-        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
-        'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
-    )
-);
 
 $this->meta_form->text(
     array(
@@ -158,5 +152,14 @@ $this->meta_form->text(
         'id'      => 'lgx_section_bottom_padding',
         'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
         'default' => '0px'
+    )
+);
+
+$this->meta_form->buy_pro(
+    array(
+        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
+        'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
+        'text'   => '✨ Pro unlocks: Section Padding, Item Description and all other settings.',
+        'link_label' => 'See Pro →',
     )
 );

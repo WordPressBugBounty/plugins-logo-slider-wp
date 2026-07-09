@@ -559,9 +559,39 @@ class LogoSLiderWpMetaForm
 
 
 
-
-
     public function buy_pro(array $args)
+{
+    // Only show when disabled
+    if (($args['status'] ?? '') !== 'disabled') {
+        return;
+    }
+
+    $text       = $args['text']       ?? '✨ To unlock all premium options and enjoy all exclusive features, please';
+    $link       = $args['link']       ?? 'https://logichunt.com/';
+    $link_label = $args['link_label'] ?? __('Upgrade To Pro', 'logo-slider-wp');
+
+    // Trailing dot only for default flow, not when custom link_label is provided
+    $trailing   = isset($args['link_label']) ? '' : ' .';
+
+    $output_safe  = '<tr>';
+    $output_safe .= '<td class="lgx_app_meta_buy_pro_td" colspan="2"><div class="lgx_app_meta_buy_pro_wrap">';
+
+    if (! empty($args['title'])) {
+        $output_safe .= '<h3 class="lgx_app_meta_buy_pro_title">' . esc_html($args['title']) . '</h3>';
+    }
+
+    $output_safe .= '<p class="lgx_input_desc lgx_app_meta_buy_pro_desc">'
+        . esc_html($text) . ' <a href="' . esc_url($link) . '" target="_blank" rel="noopener noreferrer">'
+        . esc_html($link_label) . '</a>' . $trailing . '</p>';
+
+    $output_safe .= '</div></td>';
+    $output_safe .= '</tr>';
+
+    echo $output_safe;
+}
+
+
+    public function buy_pro_legacy(array $args)
     {
 
         // Only show when disabled
@@ -589,9 +619,47 @@ class LogoSLiderWpMetaForm
         echo $output_safe;
     }
 
+public function header_spacer(array $args)
+{
+    if (empty($args['label'])) {
+        return;
+    }
 
+    $label   = $args['label']       ?? '';
+    $message = $args['message']     ?? '';
+    $type    = $args['type']        ?? 'info'; // info | warning | success
 
-    public function header_spacer(array $args)
+    $allowed_html = array(
+        'a'      => array('href' => array(), 'target' => array(), 'rel' => array(), 'style' => array(), 'class' => array()),
+        'strong' => array('style' => array(), 'class' => array()),
+        'em'     => array('style' => array(), 'class' => array()),
+        'b'      => array('style' => array(), 'class' => array()),
+        'span'   => array('style' => array(), 'class' => array()),
+        'br'     => array(),
+        'i'      => array('style' => array(), 'class' => array()),
+    );
+
+    $output_safe  = '<tr>';
+    $output_safe .= '<td colspan="2">';
+    $output_safe .= '<div class="lgx_app_meta_header_spacer">';
+
+    // Label — supports HTML if passed as raw, falls back to esc_html for plain string
+    $output_safe .= '<h3>' . wp_kses($label, $allowed_html) . '</h3>';
+
+    if (! empty($message)) {
+        $output_safe .= '<p class="lgx_app_meta_spacer_notice lgx_app_meta_spacer_notice--' . esc_attr($type) . '" style="margin-top: -10px; margin-bottom: 10px;">'
+            . wp_kses($message, $allowed_html)
+            . '</p>';
+    }
+
+    $output_safe .= '</div>';
+    $output_safe .= '</td>';
+    $output_safe .= '</tr>';
+
+    echo $output_safe;
+}
+
+    public function header_spacer_legacy(array $args)
     {
 
         if (empty($args['label'])) {
