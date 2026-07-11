@@ -4,19 +4,18 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=vaspa
 Tags: logo slider, logo carousel, logo showcase, logo gallery, client logos
 Requires at least: 4.3
 Tested up to: 7.0
-Stable tag: 5.5.4
+Stable tag: 5.5.5
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-
-A lightweight, responsive logo slider with unlimited logos free. Build a logo carousel, logo gallery, or logo showcase that works with any page builder.
-
+A lightweight, responsive logo slider with unlimited logos. Build a carousel or grid and embed it instantly using our Native Gutenberg Block!
 == Description ==
 
 [Live Demo](https://demo.logichunt.com/logo-slider-wp/) | [Docs](https://docs.logichunt.com/logo-slider-wp/) | [Support](https://logichunt.com/support/) | [Upgrade to Pro](https://logichunt.com/product/wordpress-logo-slider/)
 
-**Logo Slider WP** is a lightweight, responsive logo slider that gives you **unlimited logos free** without front-end display caps. Build a seamless logo carousel, static logo grid, or dynamic flexbox logo showcase and embed it anywhere in under 5 minutes.
+**Logo Slider WP** is a lightweight, responsive logo slider that gives you **unlimited logos free** without front-end display caps. Build a seamless logo carousel, static logo grid, or dynamic flexbox logo showcase and embed it anywhere using our Native Gutenberg Block or shortcode in under 5 minutes.
 
+✔ **Native Gutenberg Block** — visual, seamless editing inside WordPress
 ✔ **Unlimited logos free** — no front-end display caps
 ✔ **Carousel, Grid & Flexbox layouts** included free
 ✔ **Preloader included free** — no layout flicker
@@ -26,10 +25,10 @@ A lightweight, responsive logo slider with unlimited logos free. Build a logo ca
 *"Amazing plugin, easy to use and very lightweight. Support is also very fast and helpful."* - ⭐⭐⭐⭐⭐
 *"The best logo showcase plugin. Flexbox layout is a game changer for logos of different sizes."* - ⭐⭐⭐⭐⭐
 
-= Works with any page builder =
+= Native Gutenberg Block & Page Builder Support =
 
-Logo Slider WP is fully compatible with your favourite tools. Easily embed your logo gallery using a shortcode block/widget in:
-* **Gutenberg** (Native WordPress Editor)
+Logo Slider WP is fully compatible with your favourite tools. Easily embed your logo gallery using our **brand new Native Gutenberg Block**, or use shortcodes for:
+* **Gutenberg** (Native WordPress Editor - Block or Shortcode)
 * **Elementor**
 * **Divi**
 * **WPBakery**
@@ -40,16 +39,14 @@ Logo Slider WP is fully compatible with your favourite tools. Easily embed your 
 
 Fully compatible with WPML, Polylang, Loco Translate, and any other translation plugin. A `.pot` file is included for easy localization.
 
+= New: Native Gutenberg Block =
 
-= What's new in version 5.5 =
-
+* **Native Gutenberg Block:** You can now insert, preview, and switch your logo showcases directly within the Block Editor! No more remembering shortcode IDs.
 * **Unlimited logo display is now free.** The front-end 20-logo cap is permanently removed. Every logo you upload is shown, in full, at no cost.
 * **Preloader is now free.** The showcase stays hidden until images fully load — no more layout flicker on first visit.
 * **WordPress 7.x compatibility confirmed.**
-* **Shortcode Generator improvements** — cleaner layout, better field grouping, faster to use.
 
-Already on Logo Slider WP? Update now — your existing showcases and settings are untouched.
-
+Already on Logo Slider WP? Update now — your existing showcases and shortcodes are untouched and fully supported alongside the new Gutenberg Block.
 
 = Showcase types =
 
@@ -59,11 +56,10 @@ Touch-enabled slider with autoplay, infinite loop, swipe, arrows, and pagination
 **Grid**
 Static responsive grid with independent column control across four breakpoints. Every logo is visible at once — no scrolling needed.
 
-**Flexbox** *(New)*
+**Flexbox**
 CSS flexbox layout where logos wrap naturally based on their width. No rigid columns, no awkward gaps — ideal for mixed-size or mixed-aspect brand marks.
 
 Each type has its own settings tab. Every showcase is fully independent — mix types across different pages.
-
 
 = Perfect for =
 
@@ -74,8 +70,10 @@ Each type has its own settings tab. Every showcase is fully independent — mix 
 * Agency portfolios displaying client brands
 * SaaS and startup social proof sections
 
-
 = Why Logo Slider WP =
+
+**Live Preview in the Editor**
+With our native Gutenberg block, see exactly how your slider looks without leaving the WordPress editor.
 
 **Show all logos without front-end display limits**
 Every logo you add is shown in full — no hidden caps, no upgrade required.
@@ -86,33 +84,33 @@ Colours, spacing, borders, backgrounds, image dimensions, and alignment — all 
 **Direct support from the plugin developers**
 Free support at [logichunt.com/support/](https://logichunt.com/support/). Pro users get priority email, phone, and WhatsApp access.
 
-
 = Free vs Pro =
 
 **✅ FREE:**
 
-Display & Layouts
+**Display & Layouts**
+* Native Gutenberg Block
 * Carousel, Grid & Flexbox types
 * Ticker mode (continuous scroll inside Carousel)
 * Unlimited logos, no front-end display cap
 * Multiple independent showcases per page
 
-Logo Management
+**Logo Management**
 * Category-based filtering
 * Drag & drop, title, date, or random ordering
 * Custom URL + link target per logo
 * Brand name show/hide
 
-Responsive
+**Responsive**
 * 4-breakpoint column control (mobile, tablet, desktop, large desktop)
 
-Carousel Controls
+**Carousel Controls**
 * Autoplay, infinite loop, speed & delay
 * Touch, swipe & mouse drag
 * Navigation arrows & pagination dots
 * Standard slide transition
 
-Design & Styling
+**Design & Styling**
 * Grid styles: Simple and Outline
 * Title & description colour and size
 * Image border colour & width
@@ -122,14 +120,14 @@ Design & Styling
 * Tooltip with position, animation & trigger options
 * Preloader — hides showcase until fully loaded
 
-General
-* One-click Shortcode Generator
+**General**
+* Native Gutenberg Block & One-click Showcase Builder
 * Zero admin notice banners
 * Free support via logichunt.com
 
 **⭐ PRO:**
 
-Visual Effects
+**Visual Effects**
 * 100+ hover animations via Animate.css (bounce, fade, flip, zoom, shake & more)
 * Coverflow 3D carousel transition — [see it live](https://demo.logichunt.com/logo-slider-wp/)
 * Grayscale On Over, Grayscale Always, Grayscale Remove On Over
@@ -137,12 +135,12 @@ Visual Effects
 * Hover Overlay with Link
 * Hover Overlay with Link + Title (reveals brand name on hover)
 
-Advanced Layout
+**Advanced Layout**
 * Column gap & row gap for Grid and Flexbox (px, rem, %)
 * Item min height for consistent card sizing
 * Section background image + padding control
 
-Advanced Styling
+**Advanced Styling**
 * Image border radius
 * Item border: colour, hover colour, width & radius
 * Item background & hover background colour
@@ -151,22 +149,21 @@ Advanced Styling
 * Advanced header typography: size, weight, colour & margin
 * Branded preloader: custom icon & background colour
 
-Advanced Carousel Controls
+**Advanced Carousel Controls**
 * Pause on hover & RTL direction (Arabic, Hebrew & RTL sites)
 * Dynamic pagination, mouse wheel & grab cursor support
 * Navigation visibility & mobile hide controls
 
-Content & SEO
+**Content & SEO**
 * Brand item description (show/hide toggle)
 * Nofollow link attribute for logo URLs
 * Advanced tooltip: colour, border, arrow, padding, width, duration & delay
 
-Support
+**Support**
 * Priority email, phone & WhatsApp
 * Free hands-on installation by the core developer team
 
 [View Pro features & upgrade →](https://logichunt.com/product/wordpress-logo-slider/)
-
 
 = Per-logo fields =
 
@@ -182,8 +179,8 @@ Each logo entry supports:
 
 = Shortcode usage =
 
+While the Gutenberg Block is recommended, shortcodes are still fully supported!
 In any editor: `[lgxlogoslider id="39"]`
-
 In a PHP template: `<?php echo do_shortcode('[lgxlogoslider id="39"]'); ?>`
 
 
@@ -192,6 +189,8 @@ In a PHP template: `<?php echo do_shortcode('[lgxlogoslider id="39"]'); ?>`
 * Free support: [logichunt.com/support/](https://logichunt.com/support/)
 * Contact: [logichunt.com/contact-us/](https://logichunt.com/contact-us/)
 * Pro users: priority email, phone & WhatsApp + free hands-on installation
+
+**[Ready to get started? Download Logo Slider WP for free today!]**
 
 
 == Installation ==
@@ -219,34 +218,51 @@ After activation, **Logo Slider** appears in your admin sidebar.
 = Quick start =
 
 1. **Add logos** — go to **Logo Slider → Add New Logo**. Upload your image, set the brand name, URL, and category.
-2. **Create a showcase** — go to **Logo Slider → Shortcode Generator**. Choose Carousel, Grid, or Flexbox and configure your settings.
-3. **Embed** — paste the generated shortcode (e.g. `[lgxlogoslider id="39"]`) into any page, post, or page builder block.
+2. **Create a showcase** — go to **Logo Slider → Showcase Builder**. Choose Carousel, Grid, or Flexbox and configure your settings.
+3. **Embed via Gutenberg** — add the **Logo Slider WP** block to your page and select your showcase from the dropdown. See a live preview instantly!
+4. **Embed via Shortcode (Alternative)** — paste the generated shortcode (e.g. `[lgxlogoslider id="39"]`) into Elementor, Divi, or any page builder.
 
 
 == Frequently Asked Questions ==
 
 = How do I display logos on my page? =
 
-Go to **Logo Slider → Shortcode Generator**, create a showcase, configure your settings, then paste the shortcode into any page, post, or block. This works for any type of customer logo showcase, partner logo showcase, or "Trusted By" section.
+**Step 1:** Go to **Logo Slider → Showcase Builder** and create your showcase.
+**Step 2:** Embed it on your page using one of these methods:
+* **Method A (Recommended):** Add the native **Logo Slider WP Block** in the Gutenberg editor. Select your newly created showcase from the dropdown and enjoy a live preview!
+* **Method B:** Copy the generated shortcode (e.g., `[lgxlogoslider id="39"]`) and paste it into Elementor, Divi, WPBakery, or any other page builder.
+
+= Can I switch between shortcode and block? =
+
+Absolutely! The shortcodes and the new Gutenberg block share the exact same showcases. You can use a shortcode on one page, and the block on another. Both will render identical, beautiful logo sliders.
+
+= Does the block affect existing shortcodes? =
+
+No. If you have been using Logo Slider WP for a while, all of your existing shortcodes remain completely intact and will function perfectly as they always have. Neither method is deprecated.
+
+= Does the block work in Full Site Editing? =
+
+Yes, our native Gutenberg Block integrates beautifully with WordPress Full Site Editing (FSE). You can embed your logo showcases natively in site headers, footers, and page templates.
+
+= Is the block available in Free? =
+
+Yes! The full native Gutenberg block experience is available right now in both the Free and Pro versions.
 
 = Is there a logo display limit in the free version? =
 
-No. As of version 5.5, the 20-logo cap is permanently removed. Keep Item Limit set to 0 (the default) to show all logos.
+No. The 20-logo cap is permanently removed. Keep Item Limit set to 0 (the default) to show all logos.
 
-= Does this plugin work with Elementor, Divi, WPBakery, or Gutenberg? =
+= Does this plugin work with Elementor, Divi, WPBakery? =
 
 Yes. Paste `[lgxlogoslider id="39"]` into:
-
 * **Elementor** — Shortcode widget
-* **Gutenberg** — Shortcode block
 * **Divi** — Code or Shortcode module
 * **WPBakery** — Raw HTML or Shortcode element
 * **Beaver Builder** — HTML module
-* **Classic Editor** — paste directly into any page or post
 
 = Can I run multiple showcases on the same page? =
 
-Yes. Each showcase is fully independent. Different types, settings, and logo sets — no conflicts.
+Yes. Each showcase is fully independent. Different types, settings, and logo sets — no conflicts. Feel free to stack multiple blocks on a single page!
 
 = Can I add custom CSS? =
 
@@ -254,7 +270,7 @@ Yes. Each showcase has a unique wrapper class. Add CSS via **Appearance → Cust
 
 = What is the difference between free and Pro? =
 
-Free covers all three layout types, unlimited logo display, category filtering, responsive control, ticker mode, preloader, and full shortcode compatibility. Pro adds hover animations, Coverflow 3D, grayscale and overlay effects, gap controls, full typography control, RTL, background images, branded preloader, and priority developer support.
+Free covers all three layout types, unlimited logo display, the native Gutenberg Block, category filtering, responsive control, ticker mode, preloader, and full shortcode compatibility. Pro adds hover animations, Coverflow 3D, grayscale and overlay effects, gap controls, full typography control, RTL, background images, branded preloader, and priority developer support.
 
 = Is there a live demo? =
 
@@ -270,15 +286,11 @@ Yes! A `.pot` file is included. It is 100% compatible with WPML, Polylang, Loco 
 
 = Can I use SVG logos? =
 
-Yes, Logo Slider WP displays SVG logos perfectly, provided your WordPress site allows SVG uploads (you can use any free SVG enabler plugin like 'Safe SVG' to allow WordPress to upload them).
+Yes, Logo Slider WP displays SVG logos perfectly, provided your WordPress site allows SVG uploads.
 
 = How fast is support? =
 
 We pride ourselves on fast support. Free users receive help via the WordPress.org forums, and Pro users get priority email and WhatsApp support with hands-on installation assistance.
-
-= Can I use it in my theme's PHP files? =
-
-Absolutely. You can embed any showcase using the `do_shortcode` function: `<?php echo do_shortcode('[lgxlogoslider id="39"]'); ?>`
 
 
 == Screenshots ==
@@ -289,28 +301,33 @@ Absolutely. You can embed any showcase using the `do_shortcode` function: `<?php
 4. Flexbox type — fluid layout, logos wrap naturally without rigid column gaps
 5. Coverflow 3D transition (Pro) — depth effect carousel
 6. Grid with hover effects (Pro) — box shadow and grayscale-to-colour transition
-7. Admin: General tab — display, image, and query settings with category filter
-8. Admin: Carousel tab — autoplay, loop, speed, ticker mode, navigation and pagination
-9. Admin: Grid tab — grid style, outline colour, and Pro gap controls
-10. Admin: Styling tab — hover effects, title and description styling, image border settings
-11. Admin: Responsive tab — independent column control across all 4 breakpoints
-12. Admin: Section tab — background colour, overlay, width, margin, and background image (Pro)
-13. Admin: Tooltip tab — position, animation style, and trigger type
-14. Admin: Header tab — section title and subtitle with alignment control
-15. Admin: Preloader tab — enable preloader (free), custom icon and colour (Pro)
+7. **New:** Native Gutenberg Block Inserter — Easily add a showcase to any page natively
+8. **New:** Block Live Preview — See your sliders rendering live directly in the editor!
+9. Admin: General tab — display, image, and query settings with category filter
+10. Admin: Carousel tab — autoplay, loop, speed, ticker mode, navigation and pagination
+11. Admin: Grid tab — grid style, outline colour, and Pro gap controls
+12. Admin: Styling tab — hover effects, title and description styling, image border settings
+13. Admin: Responsive tab — independent column control across all 4 breakpoints
 
 
 == Upgrade Notice ==
 
+= 5.5.5 =
+The Native Gutenberg Block is here! Insert, preview, and switch your logo showcases seamlessly inside the Block Editor without memorizing shortcodes.
+
 = 5.5.4 =
 Security: Fixed stored XSS vulnerability. Fixed dynamic CSS not rendering for carousel navigation buttons.
 
+
 == Changelog ==
+
+= 5.5.5 — July 2026 =
+* Feature: Native Gutenberg Block introduced for seamless insertion and live preview within the WordPress editor!
+* Tweak: Plugin version bump to 5.5.5.
 
 = 5.5.4 — July 2026 =
 * Fix: Dynamic CSS for carousel navigation buttons now renders perfectly.
 * Fix: Grid and Flexbox dynamic styles now output reliably.
-* Tweak: Plugin version bump to 5.5.4.
 
 = 5.5.2 — July 2026 =
 * Security: Fixed stored XSS vulnerability related to tooltip settings.
@@ -326,12 +343,12 @@ Security: Fixed stored XSS vulnerability. Fixed dynamic CSS not rendering for ca
 
 = 5.0.0 =
 * Security: Fixed stored XSS vulnerability.
-* Security: Improved input validation for Shortcode Generator.
+* Security: Improved input validation for Showcase Builder.
 
 = 4.9.0 =
 * Security: Fixed stored XSS in multiple colour picker fields.
 * Security: Added sanitisation on save and escaping on output for all colour settings.
-* Security: Improved Shortcode Generator input validation.
+* Security: Improved Showcase Builder input validation.
 * Compatibility: Confirmed compatibility with WordPress 7.0.
 
 = 4.8.0 =
@@ -393,7 +410,7 @@ Security: Fixed stored XSS vulnerability. Fixed dynamic CSS not rendering for ca
 * Grid logo vertical alignment control.
 
 = 3.0.0 =
-* Added Shortcode Generator.
+* Added Showcase Builder.
 * Core system upgraded.
 * File structure rearranged.
 

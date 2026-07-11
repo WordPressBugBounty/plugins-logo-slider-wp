@@ -820,12 +820,12 @@ class Logo_Slider_WP_Admin {
     public function register_post_type_for_lgx_logo_slider_shortcodes() {
 
         $labels = array(
-            'name'               => _x( 'All Logo Slider', 'Logo Showcase', 'logo-slider-wp' ),
-            'singular_name'      => _x( 'Logo Slider', 'Showcase Items', 'logo-slider-wp' ),
-            'menu_name'          => __( 'Shortcode Generator', 'logo-slider-wp' ),
+            'name'               => _x( 'All Showcases', 'Logo Showcase', 'logo-slider-wp' ),
+            'singular_name'      => _x( 'Showcase', 'Showcase Items', 'logo-slider-wp' ),
+            'menu_name'          => __( 'Showcase Builder', 'logo-slider-wp' ),
             'view_item'          => __( 'View Items', 'logo-slider-wp' ),
-            'add_new_item'       => __( 'Add New Slider', 'logo-slider-wp' ),
-            'add_new'            => __( 'Add New Slider', 'logo-slider-wp' ),
+            'add_new_item'       => __( 'Add New Showcase', 'logo-slider-wp' ),
+            'add_new'            => __( 'Add New Showcase', 'logo-slider-wp' ),
             'edit_item'          => __( 'Edit Item', 'logo-slider-wp' ),
             'update_item'        => __( 'Update Item', 'logo-slider-wp' ),
             'search_items'       => __( 'Search In Item', 'logo-slider-wp' ),

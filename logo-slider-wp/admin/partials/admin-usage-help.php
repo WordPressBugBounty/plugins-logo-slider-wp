@@ -68,7 +68,7 @@ if (!defined('WPINC')) {
                                 </li>
                                 <li>
                                     <strong><?php esc_html_e('Create a showcase', 'logo-slider-wp'); ?></strong>
-                                    <?php esc_html_e('— Go to Logo Slider → Shortcode Generator and click Add New.', 'logo-slider-wp'); ?>
+                                    <?php esc_html_e('— Go to Logo Slider → Showcase Builder and click Add New.', 'logo-slider-wp'); ?>
                                 </li>
                                 <li>
                                     <strong><?php esc_html_e('Choose your showcase type', 'logo-slider-wp'); ?></strong>

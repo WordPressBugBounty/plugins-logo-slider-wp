@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "logo-slider-wp/logo-slider-showcase",
+  "title": "Logo Slider WP",
+  "category": "media",
+  "description": "Insert a logo slider or showcase you've already created with Logo Slider WP.",
+  "keywords": [
+    "logo",
+    "slider",
+    "carousel",
+    "showcase",
+    "brand"
+  ],
+  "textdomain": "logo-slider-wp",
+  "attributes": {
+    "shortcodeId": {
+      "type": "integer",
+      "default": 0
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": [
+      "wide",
+      "full"
+    ]
+  },
+  "editorStyle": "file:./index.css"
+}

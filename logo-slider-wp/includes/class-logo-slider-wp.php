@@ -72,12 +72,15 @@ class Logo_Slider_WP {
 	public function __construct() {
 
 		$this->plugin_name = 'logo-slider-wp';
-		$this->version = '1.0.0';
+		$this->version = defined( 'LGX_LS_PLUGIN_VERSION' ) ? LGX_LS_PLUGIN_VERSION : '1.0.0';
 
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
+		if ( function_exists( 'register_block_type' ) ) {
+			$this->define_gutenberg_block_hooks();
+		}
 
 	}
 
@@ -128,6 +131,13 @@ class Logo_Slider_WP {
 		 * side of the site.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-logo-slider-wp-public.php';
+
+		/**
+		 * The class responsible for defining Gutenberg block integration.
+		 *
+		 * @since 5.5.5
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/integrations/gutenberg/class-logo-slider-wp-gutenberg.php';
 
 
 		$this->loader = new Logo_Slider_WP_Loader();
@@ -266,6 +276,23 @@ class Logo_Slider_WP {
 
 
 
+
+	}
+
+	/**
+	 * Register all of the hooks related to the Gutenberg block integration
+	 * of the plugin.
+	 *
+	 * @since    5.5.5
+	 * @access   private
+	 */
+	private function define_gutenberg_block_hooks() {
+
+		$plugin_gutenberg = new Logo_Slider_WP_Gutenberg( $this->get_plugin_name(), $this->get_version() );
+
+		$this->loader->add_action( 'init', $plugin_gutenberg, 'register_block' );
+		$this->loader->add_action( 'enqueue_block_editor_assets', $plugin_gutenberg, 'enqueue_block_editor_assets' );
+		$this->loader->add_action( 'enqueue_block_assets', $plugin_gutenberg, 'enqueue_block_assets' );
 
 	}
 
