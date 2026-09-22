@@ -10,7 +10,7 @@
  * Create date : 02.07.2026, By : @VibeLogic
  *
  * @link       http://logichunt.com
- * @since      5.5.5
+ * @since      4.1.0
  * @package    Logo_Slider_WP
  * @subpackage Logo_Slider_WP/includes/integrations/gutenberg
  */
@@ -19,12 +19,13 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+if ( ! class_exists( 'Logo_Slider_WP_Gutenberg' ) ) {
 class Logo_Slider_WP_Gutenberg {
 
     /**
      * The ID of this plugin.
      *
-     * @since    5.5.5
+     * @since    4.1.0
      * @access   private
      * @var      string    $plugin_name
      */
@@ -33,7 +34,7 @@ class Logo_Slider_WP_Gutenberg {
     /**
      * The version of this plugin.
      *
-     * @since    5.5.5
+     * @since    4.1.0
      * @access   private
      * @var      string    $version
      */
@@ -45,28 +46,35 @@ class Logo_Slider_WP_Gutenberg {
      * wp_localize_script() in enqueue_block_editor_assets() always targets a
      * handle this class controls by name.
      */
-    const SCRIPT_HANDLE = 'logo-slider-wp-gutenberg-block';
+    const SCRIPT_HANDLE = 'logo-slider-wp-pro-gutenberg-block';
 
     /**
-     * @since 5.5.5
+     * @var Logo_Slider_WP_Public|null
+     */
+    private $plugin_public;
+
+    /**
+     * @since 4.1.0
      * Create date : 02.07.2026, By : @VibeLogic
      * @param string $plugin_name
      * @param string $version
+     * @param Logo_Slider_WP_Public|null $plugin_public
      */
-    public function __construct( $plugin_name, $version ) {
-        $this->plugin_name = $plugin_name;
-        $this->version     = $version;
+    public function __construct( $plugin_name, $version, $plugin_public = null ) {
+        $this->plugin_name   = $plugin_name;
+        $this->version       = $version;
+        $this->plugin_public = $plugin_public;
     }
 
     /**
      * Register the dynamic block on the server. Hooked to `init`.
      *
      * Create date : 02.07.2026, By : @VibeLogic
-     * @since 5.5.5
+     * @since 4.1.0
      */
     public function register_block() {
 
-        $block_dir  = LGX_LS_PLUGIN_ROOT_PATH . 'includes/integrations/gutenberg/logo-slider-showcase';
+        $block_dir  = plugin_dir_path( __FILE__ ) . 'logo-slider-showcase';
         $asset_file = $block_dir . '/index.asset.php';
 
         if ( ! file_exists( $block_dir . '/block.json' ) || ! file_exists( $asset_file ) ) {
@@ -80,7 +88,7 @@ class Logo_Slider_WP_Gutenberg {
 
         wp_register_script(
             self::SCRIPT_HANDLE,
-            LGX_LS_PLUGIN_ROOT_URL . 'includes/integrations/gutenberg/logo-slider-showcase/index.js',
+            plugin_dir_url( __FILE__ ) . 'logo-slider-showcase/index.js',
             $asset['dependencies'],
             $asset['version'],
             true
@@ -111,7 +119,7 @@ class Logo_Slider_WP_Gutenberg {
      *      is visually styled. Both are required — see §7 for why.
      *
      * Create date : 02.07.2026, By : @VibeLogic
-     * @since 5.5.5
+     * @since 4.1.0
      */
     public function enqueue_block_editor_assets() {
 
@@ -137,7 +145,9 @@ class Logo_Slider_WP_Gutenberg {
         // footer — see GUTENBERG_BLOCK_PROMPT.md §7. The preview will be
         // completely unstyled (no layout, no fonts, no carousel) unless
         // these handles are explicitly enqueued here too.
-        if ( class_exists( 'Logo_Slider_WP_Public' ) ) {
+        if ( $this->plugin_public ) {
+            $this->plugin_public->enqueue_scripts();
+        } else if ( class_exists( 'Logo_Slider_WP_Public' ) ) {
             $plugin_public = new Logo_Slider_WP_Public( $this->plugin_name, $this->version );
             $plugin_public->enqueue_scripts();
         }
@@ -157,7 +167,9 @@ class Logo_Slider_WP_Gutenberg {
      */
     public function enqueue_block_assets() {
         if ( is_admin() ) {
-            if ( class_exists( 'Logo_Slider_WP_Public' ) ) {
+            if ( $this->plugin_public ) {
+                $this->plugin_public->enqueue_styles();
+            } else if ( class_exists( 'Logo_Slider_WP_Public' ) ) {
                 $plugin_public = new Logo_Slider_WP_Public( $this->plugin_name, $this->version );
                 $plugin_public->enqueue_styles();
             }
@@ -175,7 +187,7 @@ class Logo_Slider_WP_Gutenberg {
      * the browser.
      *
      * Create date : 02.07.2026, By : @VibeLogic
-     * @since 5.5.5
+     * @since 4.1.0
      * @return array<int, array{id:int, title:string}>
      */
     private function get_slider_list() {
@@ -212,7 +224,7 @@ class Logo_Slider_WP_Gutenberg {
      * pipeline identically — no rendering logic is duplicated here.
      *
      * Create date : 02.07.2026, By : @VibeLogic
-     * @since 5.5.5
+     * @since 4.1.0
      * @param array $attributes Block attributes.
      * @return string
      */
@@ -238,4 +250,5 @@ class Logo_Slider_WP_Gutenberg {
 
     }
 
+}
 }

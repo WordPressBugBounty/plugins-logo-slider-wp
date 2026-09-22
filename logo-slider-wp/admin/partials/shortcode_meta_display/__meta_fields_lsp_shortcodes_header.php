@@ -1,27 +1,16 @@
-<?php
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
-?>
-
-<div class="lgx_logo_slider_card_header">
+<div class="lgx-card__header" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px;">
 
     <div class="lgx_logo_slider_logo_container">
-        <img 
-    src="<?php echo esc_url( plugin_dir_url( __DIR__ ) . '../img/lgx-logo-metabox.png' ); ?>" 
-    alt="<?php esc_attr_e( 'Logo Showcase', 'logo-slider-wp' ); ?>" 
-    style="width: 185px;"
->
+        <img src="<?php echo esc_url( plugin_dir_url( dirname( dirname( __DIR__ ) ) ) . 'img/lgx-logo-metabox.png' ); ?>" alt="Logo Showcase" style="width: 185px;">
     </div>
 
     <div class="lgx_logo_slider_support_container">
-        <a href="<?php echo esc_url('https://logichunt.com/support'); ?>" target="_blank">
-            <i class="far fa-envelope-open"></i>
+        <a href="<?php echo esc_url('https://logichunt.com/support'); ?>" target="_blank" class="lgx-btn lgx-btn-secondary">
             <i class="lgxicon lgx-icon-envelope-open-o"></i>
             <span>
-                <?php esc_html_e('Support','logo-slider-wp'); ?>
+                <?php _e('Support','logo-slider-wp'); ?>
             </span>
         </a>
     </div>
 
-</div><!-- ./lgx_logo_slider_card_header -->
+</div><!-- ./lgx-card__header -->

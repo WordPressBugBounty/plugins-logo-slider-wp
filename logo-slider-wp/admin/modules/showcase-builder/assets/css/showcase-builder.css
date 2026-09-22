@@ -1,0 +1,2887 @@
+/**
+ * Showcase Builder Layout CSS
+ * 
+ * Provides the structural CSS Grid/Flexbox layout for the 
+ * Showcase Builder shell.
+ *
+ * @since 6.0.0
+ */
+
+/* ==========================================================================
+   Stage 007R — Final Visual Polish Pass: Design Tokens
+   Single source of truth for control height, padding, radius, border color,
+   accent color, and spacing — anchored to native WordPress admin defaults.
+   Define once here, reuse everywhere; do not style controls ad hoc per tab.
+
+   Task (Pro modal branding, header pill WCAG fix): moved from .lgx-builder
+   to :root. This stylesheet only loads on the lgx_lsp_shortcodes edit
+   screen, so :root is still effectively page-scoped -- but .lgx-builder
+   left every var(--lgx-accent, ...) consumer outside .lgx-builder's own DOM
+   subtree (the Pro/Usage/Layout Gallery modals, all relocated to
+   document.body by JS; #titlediv, a sibling branch WordPress renders
+   outside .lgx-builder entirely) permanently falling back to each var()'s
+   literal fallback instead of the real token -- confirmed live, not just in
+   source (the Pro modal's --lgx-accent read back "" -- unset -- via
+   getComputedStyle before this change). :root is a genuine ancestor of
+   every element on the page regardless of where JS moves it, so this is a
+   root-cause fix, not another per-consumer scoped override. See this file's
+   "013 §3" WCAG-override section below and DECISION-lgx-accent-brand-green.md
+   for why several consumers still need a further-corrected value on top of
+   this -- the raw #469D42 itself still fails WCAG AA for white text on a
+   solid fill (3.41:1) or for text on a tinted background.
+   ========================================================================== */
+:root {
+    --lgx-control-height: 32px;
+    --lgx-control-padding-x: 10px;
+    --lgx-control-radius: 4px;   /* standardized 2026 visual-consistency pass: 4px is the dominant existing value across bordered controls/cards (16 occurrences); this token was the 3px minority (2 var() consumers: .lgx-input, .lgx-builder__nav-select) */
+    --lgx-border-color: #8c8f94;   /* WP admin default input border */
+    --lgx-border-color-light: #dcdcde; /* hairline / divider color */
+    --lgx-accent: #469D42;         /* 013: LogicHunt brand green, overriding WP blue. See DECISION-lgx-accent-brand-green.md for rollback. */
+    --lgx-text: #1d2327;
+    --lgx-text-muted: #646970;
+    --lgx-focus-shadow: 0 0 0 1px var(--lgx-accent);
+    --lgx-transition: 150ms ease;
+    --lgx-space-xs: 4px;
+    --lgx-space-sm: 8px;
+    --lgx-space-md: 12px;
+    --lgx-space-lg: 16px;
+    --lgx-space-xl: 20px;
+    --lgx-label-width: 140px;
+    --lgx-border-color-control: #c3c4c7;   /* formalized 2026 visual-consistency pass: the dominant existing bordered-control border grey (was a raw literal in ~25+ places) */
+    --lgx-icon-button-radius: 3px;   /* small borderless icon-button hover radius - distinct from --lgx-control-radius, preserved as-is */
+    /* 004 §3.1/008: real measured .lgx-builder__header outerHeight (Puppeteer,
+       1600px viewport) — re-measured for 008's taller header (utility strip
+       + Template pill + Save Draft + Move to Trash all added). Consumed by
+       the sticky nav/preview offsets so they sit just below the now-also-
+       sticky header instead of overlapping it. Single flat value only: the
+       header's real height varies further at narrower widths as its content
+       wraps (measured 119–278px across 1600px–375px on a draft post, the
+       widest content case) — this single value was already only accurate at
+       desktop widths before 008 too (despite an earlier version of this
+       comment claiming a 782px override existed; none actually did), so
+       008 is not introducing a new gap, only keeping the desktop value
+       accurate. A per-breakpoint value is a separate, not-yet-scoped
+       improvement. */
+    --lgx-header-height: 119px;
+}
+
+/* Task 013 (2a): lgx-admin-ui.css's .lgx-ui-tab:focus rule explicitly sets
+   `outline: none` with no replacement ring — keyboard focus is visually
+   identical to :hover. Added here as a more-specific, builder-scoped
+   override rather than editing the shared kit file directly, so other
+   (currently nonexistent, per the repo-wide .lgx-ui-tablist grep) consumers
+   of the kit keep their existing :focus-based ring untouched. Inset ring
+   (not an outer box-shadow) so it can't be clipped by/overlap adjacent
+   tabs in the flex strip. */
+.lgx-builder .lgx-ui-tablist .lgx-ui-tab:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--lgx-accent, #2271b1);
+    outline: none;
+}
+
+/* Master Wrapper */
+.lgx-builder {
+    display: flex;
+    flex-direction: column;
+    min-height: 600px; /* Base height for the builder area */
+    background: #fff;
+    border: 1px solid var(--lgx-border-color-control, #c3c4c7);
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    margin-top: 15px;
+    box-sizing: border-box;
+}
+
+.lgx-builder * {
+    box-sizing: border-box;
+}
+
+/* ---- Form density (§1): label-left / control-right rows for simple fields.
+   Applied via .lgx-field--row on text/number/url/select/upload/color/switch
+   in Lgx_Meta_Form. Textareas and grouped multi-controls (group2SelectText,
+   card_select) intentionally keep the default stacked .lgx-field layout. ---- */
+.lgx-field--row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--lgx-space-lg);
+    /* 007R-b Priority 3: consistent row height even when a label wraps to two
+       lines (e.g. "Background Attachment Type") — keeps vertical rhythm even
+       across single- and two-line-label rows without changing label meaning. */
+    min-height: 40px;
+}
+
+/* 007R-b Priority 1: media/icon control rows (Select + Remove button pairs).
+   flex-wrap lets "Remove Icon" wrap to its own line instead of being clipped
+   when the settings column is narrow; flex-shrink:0 keeps each button at its
+   natural width rather than being squeezed below its text. Scoped to this
+   control only — does not affect any other button width in the builder. */
+.lgx-field__control--media {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.lgx-field__control--media .button {
+    flex-shrink: 0;
+}
+
+.lgx-field--row .lgx-field__label {
+    flex: 0 0 var(--lgx-label-width);
+    max-width: var(--lgx-label-width);
+    padding-top: 6px; /* optical alignment with the control's text baseline */
+    margin-bottom: 0;
+}
+
+.lgx-field--row .lgx-field__control {
+    flex: 1 1 auto;
+    min-width: 0; /* let controls shrink instead of overflowing the column */
+}
+
+.lgx-field--row.lgx-field--inline {
+    align-items: center;
+}
+
+.lgx-field--row.lgx-field--inline .lgx-field__label {
+    padding-top: 0;
+}
+
+/* 2026-09-07: "Add Nofollow to URL" (with its info icon) overflows the
+   shared 140px label column by real margin — measured live (real Puppeteer
+   render, not estimated): natural label width 125.25px against 118px
+   available (140 column - 14 icon - 6 gap), a ~7px overflow that wraps the
+   label to two lines. Renaming from "...to Link" doesn't fix it — "Link"
+   and "URL" render at virtually identical widths in this font (125.81px
+   vs 125.25px), so the wrap persists either way.
+
+   Scoped to this one field only via :has() — NOT a change to the shared
+   --lgx-label-width or the general .lgx-field--row .lgx-field__label rule
+   above, which every text/number/url/select/upload/color/switch field in
+   the Builder shares. +16px was chosen after live-testing +8/+12/+14/+16/+20:
+   +14px only clears the overflow by ~6.75px, judged too close to call safe;
+   +16px gives ~8.75px of real margin (confirmed non-wrapping against both
+   the old and new label text, live). No other field in this group is close
+   to its own threshold at the unmodified 118px (next-closest: Brand
+   Description at ~12px natural headroom). */
+.lgx-field--row:has(#lgx_nofollow_en) .lgx-field__label {
+    max-width: calc(var(--lgx-label-width) + 16px);
+    flex-basis: calc(var(--lgx-label-width) + 16px);
+}
+
+@media (max-width: 480px) {
+    /* Narrow settings column (mobile / laptop slide-over): fall back to stacked */
+    .lgx-field--row {
+        flex-direction: column;
+    }
+    .lgx-field--row .lgx-field__label {
+        flex-basis: auto;
+        max-width: none;
+        padding-top: 0;
+    }
+}
+
+/* ---- Standardized form controls (§4): every text/number/select/textarea
+   shares the same height, padding, radius, border, and focus treatment. ---- */
+.lgx-input {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: var(--lgx-control-height);
+    padding: 0 var(--lgx-control-padding-x);
+    border: 1px solid var(--lgx-border-color);
+    border-radius: var(--lgx-control-radius);
+    background: #fff;
+    color: var(--lgx-text);
+    font-size: 13px;
+    line-height: 2;
+    transition: border-color var(--lgx-transition), box-shadow var(--lgx-transition);
+}
+
+textarea.lgx-input {
+    min-height: 80px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    line-height: 1.5;
+}
+
+/* 007R-b Priority 2a: cap numeric inputs to a compact, GS-style width instead
+   of stretching to fill the control column — 1-3 digit values don't need a
+   250px+ wide box. Left-aligned by default (block element, no centering). */
+input[type="number"].lgx-input {
+    width: auto;
+    min-width: 70px;
+    max-width: 90px;
+}
+
+/* B37: scoped under .lgx-builder (not !important) to out-specificity WP
+   core's input[type="…"]:focus (wp-admin/css/forms.css + the active color
+   scheme's colors.css), which otherwise wins this cascade — see
+   docs/ui/showcase/task013/reports/003-2b-diagnostic-3c-severity.md §A. */
+.lgx-builder .lgx-input:focus,
+.lgx-builder .lgx-input:focus-visible {
+    border-color: var(--lgx-accent);
+    box-shadow: var(--lgx-focus-shadow);
+    outline: none;
+}
+
+.lgx-field__label label {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--lgx-text);
+}
+
+/* Visual Consistency Pass: fieldset-based field titles (checkbox_list,
+   card_select, group2SelectText render <legend class="lgx-field__label">
+   with no wrapping <label> inside) never matched the rule above, so their
+   titles fell back to the browser's unstyled default <legend> text instead
+   of matching every other field's title - the "Filter by Category" title
+   looking different from "Item Limit"/"Order By" etc. is this. The
+   margin-bottom (absent from the row-layout rule above, which relies on
+   flex gap instead) also fixes the near-zero gap between the title and a
+   checkbox_list's items, which reads as visually cramped/overlapping once
+   enough categories exist to wrap across multiple rows. */
+legend.lgx-field__label {
+    margin: 0 0 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--lgx-text);
+}
+
+/* ---- Toggle switch color discipline (§5): single WP-blue accent.
+   Overrides the shared, cross-plugin .lgx_switch component's red/green/blue
+   mix — scoped to .lgx-builder only, so other admin screens using the same
+   component elsewhere are unaffected. Size, knob, and transition are already
+   shared via the one .lgx_switch component and are left untouched here. ---- */
+.lgx-builder .lgx_switch .lgx_switch_slider {
+    background-color: var(--lgx-border-color-control, #c3c4c7);
+}
+
+.lgx-builder .lgx_switch input:checked + .lgx_switch_slider {
+    background-color: var(--lgx-accent);
+}
+
+.lgx-builder .lgx_switch input:focus + .lgx_switch_slider,
+.lgx-builder .lgx_switch input:focus-visible + .lgx_switch_slider {
+    box-shadow: var(--lgx-focus-shadow);
+}
+
+/* Task 004/008: Header Placeholder.
+   008 §3: two stacked rows — a thin utility strip (.lgx-builder__header-links)
+   above a main content row (.lgx-builder__header-main), not one flex row
+   sharing everything. The old single-row flex properties (space-between,
+   align-items:center) moved down onto .lgx-builder__header-main below. */
+.lgx-builder__header {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--lgx-border-color-control, #c3c4c7);
+    background: #f6f7f7;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    /* 004 §3.1: sticky header — stays visible at a fixed position regardless
+       of scroll position or active tab. Not touched by .is-focus-mode (that
+       only collapses .lgx-builder__navigation/.lgx-builder__settings), so
+       the Save button and status chip stay reachable in Focus Mode too,
+       verified live (see 004-implementation-report.md §8.3). */
+    position: sticky;
+    top: 32px; /* WP admin bar */
+    z-index: 20; /* above the nav (sticky, top:32px) and preview (sticky, z-index:10) once scrolled under this header */
+}
+
+/* 008 §3: thin utility strip, right-aligned, above the main row. Same class
+   name the old header-actions-nested links used — only its position and
+   base styling changed, so the existing 782px hide rule keeps applying. */
+/* 011 §2: Top row contains Identity (Logo + Title) and Utility links */
+.lgx-builder__header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.lgx-builder__header-identity {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.lgx-builder__brand-icon {
+    width: 22px;
+    height: 22px;
+    display: block;
+}
+
+.lgx-builder__header-identity h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+/* 011 §6: Action links */
+.lgx-builder__header-links {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 13px;
+}
+
+.lgx-builder__header-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--lgx-text-muted, #646970);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.lgx-builder__header-links a:hover,
+.lgx-builder__header-links a:focus-visible {
+    color: var(--lgx-accent, #2271b1);
+    text-decoration: none;
+}
+
+.lgx-builder__header-links a .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 1;
+}
+
+.lgx-builder__header-link-sep {
+    color: var(--lgx-border-color-control, #c3c4c7);
+    user-select: none;
+}
+
+/* Task 014/Commit 2: Get Pro! distinct "promotional, not a fifth utility
+   link" treatment (Owner Ruling 1). Selectors are deliberately as specific
+   as the existing .lgx-builder__header-links a / a:hover rules (including
+   the Task 013 WCAG-contrast override further down this file) so this
+   reads correctly regardless of load order, without editing those rules. */
+.lgx-builder__header-links a.lgx-builder__header-link--upgrade {
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--lgx-accent, #2271b1);
+    color: #fff;
+}
+.lgx-builder .lgx-builder__header-links a.lgx-builder__header-link--upgrade:hover,
+.lgx-builder .lgx-builder__header-links a.lgx-builder__header-link--upgrade:focus-visible {
+    background: #135e96;
+    color: #fff;
+}
+.lgx-builder__header-links a.lgx-builder__header-link--upgrade .dashicons {
+    color: #fff;
+}
+
+/* 011 §5: Main content row */
+.lgx-builder__header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* ---- Persistent Header Context Pills ---- */
+.lgx-builder-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 0;
+    /* 004 §2: the Copy Shortcode pill added a third item to this row, which
+       no longer reliably fits beside the other two on narrow phone widths —
+       wrap rather than let it silently clip (this admin screen's own body
+       has overflow-x:hidden, so an unwrapped overflow here would be an
+       invisible, undiscoverable clip, not a scrollbar). No effect at any
+       width where the row already fits. */
+    flex-wrap: wrap;
+    row-gap: 8px;
+}
+
+.lgx-builder-status__title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--lgx-text-muted, #646970);
+    line-height: 1;
+}
+
+.lgx-builder-status__sep {
+    color: var(--lgx-border-color-control, #c3c4c7);
+    margin: 0 2px;
+}
+
+.lgx-builder-status__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 10px 0 9px;
+    background: #fff;
+    border: 1px solid var(--lgx-border-color-control, #c3c4c7);
+    border-radius: 20px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    font-size: 12.5px;
+    line-height: 1;
+    white-space: nowrap;
+    color: #50575e;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+    vertical-align: middle;
+    box-sizing: border-box;
+}
+
+.lgx-builder-status__btn span,
+.lgx-builder-status__btn strong {
+    font-size: 12.5px;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.lgx-builder-status__btn strong {
+    color: var(--lgx-accent, #2271b1);
+    font-weight: 600;
+}
+
+.lgx-builder-status__btn .dashicons {
+    font-size: 15px;
+    width: 15px;
+    height: 15px;
+    line-height: 15px;
+    color: var(--lgx-text-muted, #646970);
+    transition: color 0.15s ease;
+}
+
+.lgx-builder-status__btn .lgx-status-chevron {
+    font-size: 13px;
+    width: 13px;
+    height: 13px;
+    line-height: 13px;
+    margin-left: 2px;
+    color: var(--lgx-border-color, #8c8f94);
+    transition: transform 0.2s ease, color 0.15s ease;
+}
+
+.lgx-builder-status__btn:hover,
+.lgx-builder-status__btn:focus {
+    background: #f0f6fc;
+    border-color: var(--lgx-accent, #2271b1);
+    color: #135e96;
+    box-shadow: 0 1px 3px rgba(34, 113, 177, 0.15);
+    outline: none;
+}
+
+.lgx-builder-status__btn:hover strong,
+.lgx-builder-status__btn:focus strong {
+    color: #135e96;
+}
+
+.lgx-builder-status__btn:hover .dashicons,
+.lgx-builder-status__btn:focus .dashicons {
+    color: var(--lgx-accent, #2271b1);
+}
+
+.lgx-builder-status__btn:focus-visible {
+    border-color: var(--lgx-accent, #2271b1);
+    box-shadow: 0 0 0 2px var(--lgx-accent, #2271b1);
+    outline: none;
+}
+
+.lgx-builder-status__btn[aria-expanded="true"] {
+    background: #f0f6fc;
+    border-color: var(--lgx-accent, #2271b1);
+}
+
+.lgx-builder-status__btn[aria-expanded="true"] .lgx-status-chevron {
+    transform: rotate(180deg);
+    color: var(--lgx-accent, #2271b1);
+}
+
+/* Task 020: elevated "configuration state" treatment for Source/Layout/
+   Template only -- distinct from --action (Copy Shortcode) and --upgrade
+   (Get Pro!) below, which are both "click this now" CTAs. This reads as
+   "this is set to X", not an action to take. A new modifier rather than
+   changing the base .lgx-builder-status__btn rule, so Copy Shortcode and
+   its is-copied state are untouched. Hover/focus/[aria-expanded="true"]
+   above already win on specificity, so they apply on top of this with no
+   changes needed here. */
+.lgx-builder-status__btn--config {
+    height: 30px;
+    padding: 0 12px 0 10px;
+    background: #f6f7f7;
+    border: 1px solid #8c8f94;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    font-size: 13px;
+}
+
+.lgx-builder-status__btn--config span,
+.lgx-builder-status__btn--config strong {
+    font-size: 13px;
+}
+
+.lgx-builder-status__btn--config .lgx-builder-status__btn-label {
+    font-weight: 500;
+}
+
+.lgx-builder__header p.description {
+    margin: 0 0 0 15px;
+    font-size: 13px;
+    color: var(--lgx-text-muted, #646970);
+}
+
+/* 008 §3.1 / 011 §1: Copy Shortcode is an action, not a state/jump control like
+   Layout/Source/Template — visually separated from that pill group with a
+   filled (not outline-on-hover-only) resting style. */
+.lgx-builder-status__btn--action {
+    background: #f0f6fc;
+    border-color: #cee2f2;
+    color: var(--lgx-accent, #2271b1);
+}
+
+.lgx-builder-status__btn--action .dashicons {
+    color: var(--lgx-accent, #2271b1);
+}
+
+.lgx-builder-status__btn--action:hover,
+.lgx-builder-status__btn--action:focus {
+    background: #d9ebf9;
+    border-color: var(--lgx-accent, #2271b1);
+}
+
+/* 004 §2 / Task 021: shared transient "just copied" success state — one
+   rule, two consumers (the header Copy Shortcode pill and the Usage
+   modal's 3 copy buttons), so the color values live in exactly one place.
+   Deliberately NOT a --lgx-* custom property here: WP core's own "success"
+   green (#00a32a) is an intentional, separate color choice for this
+   transient state, unrelated to the brand accent token. (Historical note:
+   this comment used to also justify the hardcode by --lgx-accent being
+   scoped to .lgx-builder and not cascading to document.body-relocated
+   modals -- that scoping gap was fixed by moving the token block to :root,
+   see this file's Design Tokens section -- but the color choice here was
+   always deliberately WP-core-green regardless, so nothing here changes.) */
+.lgx-builder-status__btn.is-copied,
+.lgx-usage-modal-copy-btn.is-copied {
+    background: #edfaef;
+    border-color: #00a32a;
+    color: #00a32a;
+}
+
+.lgx-builder-status__btn.is-copied .dashicons,
+.lgx-usage-modal-copy-btn.is-copied .dashicons {
+    color: #00a32a;
+}
+
+/* 008 / 011 §4: header-actions (status chip, Copy Shortcode, Save Draft, Publish, Move to Trash) */
+.lgx-builder__header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    line-height: normal;
+    margin-left: auto; /* 013 §2: Keep anchored to right when wrapped */
+}
+
+
+
+/* 004 §3/008 §6: sticky header Save Draft/Update/Publish button group + status chip. */
+.lgx-builder__header-save {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+
+
+
+.lgx-builder__header-save-btn {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    /* 013 §1.1: Modestly larger size */
+    padding: 0 16px !important;
+    font-size: 14px !important;
+    height: 34px !important;
+    /* 013 §1.2: Brand green override (WP core button-primary normally uses blue) */
+    background: #3b8437 !important; /* Scoped darker shade for 4.5:1 text contrast */
+    border-color: #3b8437 !important;
+    color: #fff !important;
+    transition: var(--lgx-transition);
+}
+
+.lgx-builder__header-save-btn:hover,
+.lgx-builder__header-save-btn:focus {
+    background: #2e672b !important; /* Darker shade of #3b8437 */
+    border-color: #2e672b !important;
+    color: #fff !important;
+}
+
+/* WP core's own forms.css sets #post-body-content { margin-bottom: 20px }
+   unscoped, on every post type's edit screen — the 20px gap it leaves below
+   #titlediv (before .lgx-builder starts) is core's, not this file's.
+   Zeroed here, scoped to this CPT's body class only, so no other post type
+   or admin screen is affected. */
+body.post-type-lgx_lsp_shortcodes #post-body-content {
+    margin-bottom: 0;
+}
+
+/* Refactor: card chrome removed — the title now sits directly on the page
+   background (Trello/Notion-style inline header) instead of inside a boxed
+   surface. #titlediv lives in WP core's own #post-body-content, a
+   structural sibling of the postbox-container that holds .lgx-builder
+   several levels deep (confirmed by reading the live DOM: #titlediv's
+   parent is #post-body-content, .lgx-builder's parent is .postbox .inside
+   — not the same subtree), so it cannot be reflowed into the custom flex
+   header itself without a JS DOM move, which nothing here requires. Flex
+   row so the pencil/info icon pair (inserted by initTitleFieldIcons(),
+   showcase-builder.js) sits inline beside the input rather than stacked
+   above it. */
+body.post-type-lgx_lsp_shortcodes #titlediv {
+    margin: 0 0 8px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Flex-basis only (no grow) at rest, so #titlewrap shrinks to the width
+   showcase-builder.js sets inline on #title (content-fit) instead of
+   stretching full-row — that's what keeps the icon row right after the
+   visible text instead of pinned to the far edge. .lgx-title-editing
+   (toggled on focus/blur by initShowcaseNameSync()) switches it back to
+   growing, so the field expands to fill the row while editing — the same
+   full-width behavior this field always had. */
+body.post-type-lgx_lsp_shortcodes #titlediv #titlewrap {
+    padding: 0;
+    flex: 0 1 auto;
+    min-width: 0;
+}
+
+body.post-type-lgx_lsp_shortcodes #titlediv #titlewrap.lgx-title-editing {
+    flex: 1 1 auto;
+}
+
+/* Borderless and transparent at rest so the field reads as inline page
+   text; a light background and border appear only on hover, and the
+   accent ring only on focus, as the interactivity affordance. Width is
+   set inline by showcase-builder.js (content-fit at rest, cleared to fall
+   back to this 100% on focus) — see initShowcaseNameSync(). */
+body.post-type-lgx_lsp_shortcodes #titlediv #title {
+    width: 100%;
+    padding: 6px 8px;
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.4;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    box-shadow: none;
+    transition: border-color 150ms ease, background-color 150ms ease;
+}
+
+body.post-type-lgx_lsp_shortcodes #titlediv #title:hover {
+    background: #f6f7f7;
+    border-color: #dcdcde;
+}
+
+/* #469D42 hardcoded, not var(--lgx-accent): left as a literal rather than
+   converted, out of scope for the task that fixed the underlying issue.
+   (Historical note: this was originally hardcoded because --lgx-accent was
+   declared on .lgx-builder itself and #titlediv sits outside .lgx-builder's
+   DOM subtree -- confirmed above, a different branch of #post-body-content
+   entirely -- so it couldn't inherit a property scoped there. The token
+   block has since moved to :root, see this file's Design Tokens section,
+   which would let this rule use var(--lgx-accent) correctly if converted --
+   not done here to keep that fix's blast radius to the Pro modal/header
+   pill it was scoped for.) Literal value matches
+   DECISION-lgx-accent-brand-green.md; if that decision is ever rolled back,
+   this rule needs updating too since it can't follow the token
+   automatically. */
+body.post-type-lgx_lsp_shortcodes #titlediv #title:focus {
+    background: #fff;
+    border-color: #469D42;
+    box-shadow: 0 0 0 1px #469D42;
+    outline: none;
+}
+
+/* Pencil + info icon pair, inserted by initTitleFieldIcons()
+   (showcase-builder.js) as a sibling immediately after #titlewrap, so both
+   sit inline beside the title input instead of in a separate label row
+   above it. Pencil is decorative only (aria-hidden) — the field is always
+   editable, this just signals it visually; info keeps the existing
+   .lgx-builder-help-icon/data-help tooltip pattern used everywhere else in
+   this builder. */
+body.post-type-lgx_lsp_shortcodes .lgx-title-label-row {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex: 0 0 auto;
+}
+
+/* Clickable — initTitleFieldIcons() focuses #title on click, a mouse-only
+   convenience beside clicking the text itself; aria-hidden stays on the
+   element since the real input is already independently focusable/tabbable
+   for assistive tech. */
+body.post-type-lgx_lsp_shortcodes .lgx-title-label-row__pencil {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    color: var(--lgx-text-muted, #646970);
+    cursor: pointer;
+    transition: color 180ms ease;
+}
+
+/* Same #469D42-hardcoded reasoning as #title:focus above — this icon lives
+   inside #titlediv too, outside .lgx-builder's original token scope (now
+   :root, see that comment for why this literal wasn't converted anyway). */
+body.post-type-lgx_lsp_shortcodes .lgx-title-label-row__pencil:hover,
+body.post-type-lgx_lsp_shortcodes .lgx-title-label-row .lgx-builder-help-icon:hover,
+body.post-type-lgx_lsp_shortcodes .lgx-title-label-row .lgx-builder-help-icon:focus-visible,
+body.post-type-lgx_lsp_shortcodes .lgx-title-label-row .lgx-builder-help-icon[aria-expanded="true"] {
+    color: #469D42;
+}
+
+/* #titlediv's own .inside is WP core's permalink-row slot — stays empty on
+   this non-public CPT (confirmed: 'public' => false, no rewrite to show a
+   slug for), but keep it collapsed rather than trusting it never renders
+   anything, so an empty margin/padding box can't appear if that ever
+   changes. */
+body.post-type-lgx_lsp_shortcodes #titlediv .inside:empty {
+    display: none;
+}
+
+/* 006 §6.4: Hide the native Publish box.
+   The native controls remain in the DOM and perform the actual submission,
+   preserving core's save integrity while removing the UI clutter. */
+body.post-type-lgx_lsp_shortcodes #submitdiv {
+    display: none;
+}
+
+/* 006 §6.6: Defensive styling for any third-party metaboxes added to the side context.
+   Ensures they match the Showcase Builder's card chrome rather than looking broken. */
+body.post-type-lgx_lsp_shortcodes #side-sortables .postbox {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    margin-bottom: 16px;
+}
+body.post-type-lgx_lsp_shortcodes #side-sortables .postbox .postbox-header {
+    border-bottom: 1px solid #c3c4c7;
+    background: #fff;
+}
+body.post-type-lgx_lsp_shortcodes #side-sortables .postbox .postbox-header h2 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+/* Workspace Wrapper - Grid Layout */
+.lgx-builder__workspace {
+    display: grid;
+    /* Default Desktop: Nav (250px) | Main (1fr) */
+    grid-template-columns: 250px 1fr;
+    flex-grow: 1;
+    min-height: 500px;
+}
+
+/* Task 005: Navigation Placeholder */
+.lgx-builder__navigation {
+    border-right: 1px solid var(--lgx-border-color-control, #c3c4c7);
+    background: #f6f7f7;
+    /* 007R-e §1A/1B: top padding raised so the first tab's text baseline
+       lines up with the first settings card's title baseline (15px settings
+       padding + 16px card-title padding = 31px; 24px nav padding + 7px tab
+       padding = 31px). Bottom/sides keep the 007R-c density. */
+    padding: 24px 15px 8px;
+    /* 007R Final Polish (§9/§11): keep nav visible while the settings column
+       scrolls independently — same sticky pattern as the preview column.
+       007R-e §1A: align-self intentionally left at the grid default
+       (stretch) — not "start" — so the nav fills the full row height and
+       reads as one continuous sidebar instead of a floating list; the
+       max-height/overflow-y below remain as a safety net if nav content
+       ever exceeds the viewport. */
+    /* 004 §3.1: offset by --lgx-header-height now that the builder header
+       itself is also sticky at top:32px — otherwise this nav would compete
+       for the same y:32 position and render underneath/behind the header. */
+    position: sticky;
+    top: calc(32px + var(--lgx-header-height, 119px));
+    max-height: calc(100vh - 32px - var(--lgx-header-height, 119px));
+    overflow-y: auto;
+}
+
+/* Group Navigation (.lgx-builder-nav) */
+.lgx-builder-nav__item {
+    position: relative;
+    margin-bottom: 2px;
+}
+
+.lgx-builder-nav__item .lgx-ui-tab {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-sizing: border-box;
+}
+
+.lgx-builder-nav__chevron-icon {
+    margin-left: auto;
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    display: inline-block;
+    color: var(--lgx-text-muted, #646970);
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.15s ease;
+    transform: rotate(-90deg); /* Collapsed: points right */
+}
+
+.lgx-ui-tab:hover .lgx-builder-nav__chevron-icon,
+.lgx-ui-tab:focus .lgx-builder-nav__chevron-icon,
+.lgx-ui-tab[aria-selected="true"] .lgx-builder-nav__chevron-icon {
+    color: var(--lgx-accent, #2271b1);
+}
+
+.lgx-ui-tab[aria-expanded="true"] .lgx-builder-nav__chevron-icon,
+.lgx-builder-nav__item.is-expanded .lgx-builder-nav__chevron-icon {
+    transform: rotate(0deg); /* Expanded: points down */
+}
+
+/* Configured Tab Indicator Dot */
+.lgx-ui-tab-indicator {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background-color: var(--lgx-accent, #2271b1);
+    border-radius: 50%;
+    margin-left: 6px;
+    vertical-align: middle;
+    font-size: 0;
+    line-height: 0;
+}
+
+.lgx-ui-tab-indicator[hidden] {
+    display: none !important;
+}
+
+/* Option 2: In Showcase Builder settings, all panelbody contents are permanently visible */
+.lgx-builder__settings .lgx-ui-panelbody-content {
+    display: block !important;
+}
+
+.lgx-builder__settings .lgx-ui-panelbody-header {
+    border-bottom: 1px solid var(--lgx-border-color-control, #c3c4c7);
+    cursor: default;
+    background: #fff;
+}
+
+.lgx-builder__settings .lgx-ui-panelbody-header:hover {
+    background: #fff;
+}
+
+/* Subgroups Navigation List */
+.lgx-builder-nav__subgroups {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 24px;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    visibility: hidden;
+    transition: max-height 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+                padding 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0.28s linear;
+}
+
+.lgx-builder-nav__item.is-expanded .lgx-builder-nav__subgroups,
+.lgx-ui-tab[aria-expanded="true"] + .lgx-builder-nav__subgroups,
+.lgx-builder-nav__subgroups[aria-hidden="false"] {
+    max-height: 400px;
+    opacity: 1;
+    visibility: visible;
+    padding: 4px 0 6px 24px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lgx-builder-nav__subgroups,
+    .lgx-builder-nav__chevron-icon {
+        transition: none !important;
+    }
+}
+
+.lgx-builder-nav__subgroup-item {
+    margin: 2px 0;
+    padding: 0;
+}
+
+.lgx-builder-nav__subgroup-item.is-type-hidden {
+    display: none !important;
+}
+
+.lgx-builder-nav__subgroup-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    padding: 5px 10px 5px 8px;
+    font-size: 13px;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+    color: #50575e;
+    cursor: pointer;
+    border-left: 2px solid var(--lgx-border-color-light, #dcdcde);
+    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    border-radius: 0 3px 3px 0;
+    word-break: break-word;
+}
+
+.lgx-builder-nav__subgroup-btn:hover,
+.lgx-builder-nav__subgroup-btn:focus {
+    color: var(--lgx-accent, #2271b1);
+    background: #f0f6fc;
+    border-left-color: #72aee6;
+    outline: none;
+}
+
+.lgx-builder-nav__subgroup-btn:focus-visible {
+    outline: 2px solid var(--lgx-accent, #2271b1);
+    outline-offset: 1px;
+}
+
+/* Active Subgroup Highlight */
+.lgx-builder-nav__subgroup-btn.is-active,
+.lgx-builder-nav__subgroup-btn[aria-current="true"] {
+    color: var(--lgx-text, #1d2327);
+    font-weight: 600;
+    border-left-color: var(--lgx-accent, #2271b1);
+    background: #e7f1fb;
+}
+
+/* Main Content Area */
+.lgx-builder__content {
+    display: grid;
+    /* Split Main Area: Settings (400px max or 1fr) | Preview (1fr) */
+    grid-template-columns: minmax(300px, 400px) 1fr;
+    background: #f0f0f1;
+}
+
+/* Task 007: Settings Panel */
+.lgx-builder__settings {
+    background: #fff;
+    border-right: 1px solid var(--lgx-border-color-control, #c3c4c7);
+    padding: 15px;
+    overflow-y: auto;
+    /* 007R Final Polish (§9): bounded height so long tabs (e.g. Layout) scroll
+       within their own column instead of pushing the page — nav and the
+       sticky live preview both stay in view. 180px approximates admin bar +
+       page header + builder header; verify in-browser and adjust if the
+       exact chrome height differs. */
+    max-height: calc(100vh - 180px);
+}
+
+/* Task 010: Preview Panel.
+   Task 010 Phase 3 CSS rewrite #2 (per explicit Project Owner correction,
+   2026-07-27): the earlier "centered container" attempts (both the
+   calc(100vh-X) version and the fixed-450px version) were solving the wrong
+   problem. The iframe renders a full, separate HTML document — the
+   showcase sits wherever it naturally falls in THAT document's own flow
+   (the top, since preview-template.php has no centering wrapper of its
+   own), regardless of how the <iframe> element itself is centered in the
+   admin page around it. Centering the outer element cannot move content
+   that lives inside a different document. The actual fix: make the iframe
+   exactly as tall as its own content (via JS, after load — see
+   initLivePreview() in showcase-builder.js, resizePreviewIframe()), so
+   there is no leftover iframe space for anything to look "top-aligned"
+   within in the first place. This container now only ever centers
+   HORIZONTALLY (align-items, cross-axis in this column layout) — never
+   vertically. No position:absolute is used for this centering (only the
+   loading overlay below uses position:absolute, to sit ON TOP of the
+   iframe — a different, unrelated use — so it won't conflict with Phase
+   4's device-toggle container widths). */
+.lgx-builder__preview {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    /* Task 010 Phase 4 (ADR-009 Decision 4 consequence: "should be defined
+       as CSS custom properties or JS constants, not magic numbers"). Single
+       source of truth for the two non-desktop breakpoint widths — read by
+       .lgx-preview-frame-wrap's device-state rules below. Desktop has no
+       entry here since it's just "no max-width override" (100% of the
+       column), not a value to store. */
+    --lgx-preview-width-tablet: 768px;
+    --lgx-preview-width-mobile: 375px;
+}
+
+/* Device toggle (left) + Refresh button (right), pinned to the top. */
+.lgx-preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    margin-bottom: 12px;
+}
+
+/* Groups the Focus Mode toggle with the Refresh Preview button so they read
+   as a pair at the right-hand side of the toolbar, next to the device-size
+   icons on the left — .lgx-preview-header's own space-between still applies
+   between this wrapper and the device toggle (desktop close-btn stays
+   display:none, so it doesn't affect this grouping). */
+.lgx-preview-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Horizontal centering only (align-items = cross-axis = horizontal, since
+   flex-direction is column) — no justify-content, no vertical centering.
+   Once the iframe is sized to its own content height, there is nothing
+   left over vertically to center anyway. */
+.lgx-preview-frame-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* Task 010 Phase 4: device-width states. Desktop is the default (no class,
+   no override — frame-wrap stays at its natural 100% width). Tablet/Mobile
+   constrain and center the frame-wrap itself; the iframe's own width:100%
+   (below) then resolves against this now-narrower box, not the full
+   column — no viewport meta or media-query manipulation involved anywhere,
+   matching ADR-009 Decision 4 exactly. */
+.lgx-preview-frame-wrap.is-device-tablet {
+    max-width: var(--lgx-preview-width-tablet);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.lgx-preview-frame-wrap.is-device-mobile {
+    max-width: var(--lgx-preview-width-mobile);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* No fixed/max height — resizePreviewIframe() in showcase-builder.js sets
+   iframe.style.height directly after every load (initial open AND every
+   manual refresh) to match the iframe document's own scrollHeight exactly.
+   min-height is NOT merely a placeholder for the moment before that first
+   resize runs — it is a permanent clamp on the used height, so whenever the
+   showcase renders shorter than 300px the frame stays at 300px and the
+   surplus is real. That surplus is now split evenly above and below the
+   showcase by preview-template.php's own centring rules; the frame keeps
+   this floor so a short showcase never collapses to the ~150px browser
+   default.
+   overflow:hidden is required here, not decorative: confirmed via headless-
+   Chrome screenshot that during that same brief placeholder window (content
+   taller than the 300px min-height, before the JS resize has run) the
+   iframe shows its own internal scrollbar — this is the "still scroll bar
+   present" the Project Owner caught. Since the iframe's height is designed
+   to always end up matching its content exactly, it should never need to
+   scroll internally at all; overflow:hidden means that brief window clips
+   instead of scrolls (no visible scrollbar, ever), and once the JS resize
+   lands a moment later the clipped content becomes fully visible anyway.
+   Device-width toggle (Phase 4) will override width per breakpoint later —
+   not implemented yet. */
+.lgx-live-preview-iframe {
+    display: block;
+    width: 100%;
+    min-height: 300px;
+    overflow: hidden;
+    border: 1px solid var(--lgx-border-color-control, #c3c4c7);
+    border-radius: var(--lgx-control-radius, 4px);
+    background: #fff;
+}
+
+/* Task 010 Phase 4: Device toggle button group. Active state reuses the
+   same WP-blue accent language already established elsewhere in this file
+   (e.g. the left nav's active tab: #f0f6fc tint + var(--lgx-accent, #2271b1) text/icon),
+   per ADR-009 Decision 4 ("visually clear... matching the 007R-established
+   blue accent"). Color/background transitions only — no scaling, no
+   movement, consistent with every other control in this builder. */
+.lgx-preview-device-toggle {
+    display: inline-flex;
+    gap: 2px;
+    padding: 2px;
+    background: #fff;
+    border: 1px solid var(--lgx-border-color-control, #c3c4c7);
+    border-radius: var(--lgx-control-radius, 4px);
+}
+
+.lgx-preview-device-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: var(--lgx-icon-button-radius, 3px);
+    color: var(--lgx-text-muted, #646970);
+    cursor: pointer;
+    transition: background-color 180ms ease, color 180ms ease;
+}
+
+.lgx-preview-device-btn:hover,
+.lgx-preview-device-btn:focus-visible {
+    background: #f0f0f1;
+    color: var(--lgx-text, #1d2327);
+}
+
+.lgx-preview-device-btn.is-active {
+    background: #f0f6fc;
+    color: var(--lgx-accent, #2271b1);
+    /* Task 013 (6): color tint alone read too subtly among 3 adjacent
+       28x28px icon buttons. Inset so it doesn't shift the button's box
+       size or overlap adjacent buttons in the tight toggle group. */
+    box-shadow: inset 0 0 0 1px var(--lgx-accent, #2271b1);
+}
+
+.lgx-preview-device-btn .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+/* Task 010 Phase 3: Refresh Preview button. Same neutral card-button
+   language already established for card/row triggers elsewhere in this
+   file — border/shadow feedback only, no scaling or movement. */
+.lgx-preview-refresh-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #fff;
+    border: 1px solid var(--lgx-border-color-control, #c3c4c7);
+    border-radius: var(--lgx-control-radius, 4px);
+    color: var(--lgx-text, #1d2327);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.lgx-preview-refresh-btn:hover,
+.lgx-preview-refresh-btn:focus-visible {
+    border-color: var(--lgx-border-color, #8c8f94);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.lgx-preview-refresh-btn:disabled {
+    cursor: default;
+    opacity: 0.7;
+}
+
+.lgx-preview-refresh-btn__icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+@keyframes lgx-preview-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Overlay shown over the iframe itself while it reloads — toggled via the
+   `hidden` attribute in JS, not a class, so the native [hidden] → display:
+   none UA rule does the hiding; :not([hidden]) below only supplies
+   display:flex for the visible state, so it never fights the native rule. */
+.lgx-preview-loading-overlay {
+    position: absolute;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: var(--lgx-control-radius, 4px);
+}
+
+.lgx-preview-loading-overlay:not([hidden]) {
+    display: flex;
+}
+
+.lgx-preview-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--lgx-border-color-control, #c3c4c7);
+    border-top-color: var(--lgx-accent, #2271b1);
+    border-radius: 50%;
+    animation: lgx-preview-spin 700ms linear infinite;
+}
+
+/* Placeholder Utility */
+/* 007R-b (Priority 4): lightweight "pending" state, not a large dashed empty
+   box with a dev-facing task label — reads as intentional, not broken. */
+.lgx-builder__placeholder {
+    padding: 20px;
+    text-align: center;
+    color: var(--lgx-text-muted, #646970);
+    border-radius: var(--lgx-control-radius, 4px);
+    height: 100%;
+    /* Task 010 Phase 3: .lgx-builder__preview is now a column flex (see
+       above) — this is its only child when no post is available yet, so it
+       needs flex:1 to actually claim the available vertical space; height:
+       100% alone is not reliable for a flex item without an explicit
+       flex-grow, kept as a fallback for non-flex contexts. */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.lgx-builder__placeholder-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: var(--lgx-border-color-control, #c3c4c7);
+    margin-bottom: 4px;
+}
+
+.lgx-builder__placeholder-title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--lgx-text, #1d2327);
+}
+
+.lgx-builder__placeholder-desc {
+    margin: 0;
+    font-size: 13px;
+    color: var(--lgx-text-muted, #646970);
+}
+
+/* Task 014/Commit 020-Task-1 (orphaned-CSS audit): "007R-003: Builder
+   Header Status — Current Setup" (.lgx-builder__status,
+   __status-label, __status-summary) removed — pre-dates this task, superseded
+   by the pill-based header status (.lgx-builder-status, .lgx-builder-status__btn
+   etc., a different naming lineage — single-hyphen "lgx-builder-status" block,
+   not the double-underscore "lgx-builder__status" BEM name this used).
+   Confirmed via grep: zero matches anywhere under admin/ for any of these
+   exact class names before removing. */
+
+.lgx-builder-status__sep {
+    color: var(--lgx-border-color-control, #c3c4c7);
+    font-size: 12px;
+    margin: 0 1px;
+    line-height: 1;
+}
+
+/* ==========================================================================
+   Task 012B: Responsive Admin Shell (Mobile Nav Fallback)
+   009: the slide-over preview drawer this section used to also style has
+   been removed — the preview is normal-flow at every width now (see the
+   "Laptop Breakpoint" section below).
+   ========================================================================== */
+
+/* Base resting states (Desktop >= 1440px) */
+#lgx-builder-focus-toggle {
+    display: inline-flex;
+}
+
+.lgx-builder__nav-select-wrap {
+    display: none;
+}
+
+/* Header focus toggle button (Desktop >= 1440px) */
+.lgx-builder__focus-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #fff;
+    border: 1px solid var(--lgx-border-color-control, #c3c4c7);
+    border-radius: var(--lgx-control-radius, 4px);
+    color: var(--lgx-text, #1d2327);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 180ms ease, background 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+
+.lgx-builder__focus-toggle:hover,
+.lgx-builder__focus-toggle:focus-visible {
+    border-color: var(--lgx-border-color, #8c8f94);
+    color: var(--lgx-text, #1d2327);
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.lgx-builder__focus-toggle .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 1;
+    color: inherit;
+    /* dashicons-fullscreen-alt's glyph does not sit centered in its own box
+       the way dashicons-visibility's does (confirmed live, 3x-zoom
+       screenshot comparison: identical flex/box-model rules on both
+       buttons, but this icon rendered visibly high against its label) —
+       this is a glyph-specific metrics quirk of this one icon, not a
+       missing shared rule, so the nudge is scoped to this icon only. */
+    position: relative;
+    top: 3px;
+}
+
+.lgx-builder__focus-toggle[aria-pressed="true"] {
+    background: #f0f6fc;
+    border-color: var(--lgx-accent, #2271b1);
+    color: var(--lgx-accent, #2271b1);
+    box-shadow: inset 0 0 0 1px var(--lgx-accent, #2271b1);
+}
+
+.lgx-builder__focus-toggle[aria-pressed="true"]:hover,
+.lgx-builder__focus-toggle[aria-pressed="true"]:focus-visible {
+    background: #ebf3fa;
+    border-color: #135e96;
+    color: #135e96;
+    box-shadow: inset 0 0 0 1px #135e96;
+}
+
+/* Task 009: Focus Mode Reload Discoverability Cue (Notice shown only when restored from sessionStorage on page load) */
+.lgx-builder__focus-cue {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    background: #f0f6fc;
+    border: 1px solid #72aee6;
+    border-left-width: 4px;
+    border-left-color: var(--lgx-accent, #2271b1);
+    border-radius: var(--lgx-control-radius, 4px);
+    color: var(--lgx-text, #1d2327);
+    font-size: 13px;
+    line-height: 1.4;
+    animation: lgxFocusCueSlideDown 200ms ease-out;
+}
+
+@keyframes lgxFocusCueSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.lgx-builder__focus-cue-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.lgx-builder__focus-cue-icon {
+    color: var(--lgx-accent, #2271b1);
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    line-height: 1;
+}
+
+.lgx-builder__focus-cue-text {
+    font-weight: 500;
+}
+
+.lgx-builder__focus-cue-action {
+    display: inline-flex;
+    align-items: center;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: var(--lgx-accent, #2271b1);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 140ms ease;
+}
+
+.lgx-builder__focus-cue-action:hover,
+.lgx-builder__focus-cue-action:focus-visible {
+    color: #135e96;
+    text-decoration: none;
+}
+
+.lgx-builder__focus-cue-dismiss {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    padding: 4px;
+    color: var(--lgx-text-muted, #646970);
+    cursor: pointer;
+    border-radius: var(--lgx-icon-button-radius, 3px);
+    transition: color 140ms ease, background 140ms ease;
+}
+
+.lgx-builder__focus-cue-dismiss:hover,
+.lgx-builder__focus-cue-dismiss:focus-visible {
+    color: #d63638;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.lgx-builder__focus-cue-dismiss .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 1;
+}
+
+/* Focus Mode layout: full collapse of nav and settings column on desktop (>= 1440px).
+   The nav/settings tracks are auto-sized (they always resolve to exactly the
+   child's own width — 250px / 400px, confirmed live at the narrowest
+   focus-mode-eligible viewport, 1440px, so this is not a visual change to
+   the resting state: minmax(300px,400px)'s 300px floor is unreachable here)
+   rather than animating grid-template-columns' own value directly.
+   Live-verified (rAF-sampled, 24 frames @ ~17ms) that transitioning
+   grid-template-columns itself does not animate reliably: the nav's own
+   un-transitioned width:0 snapped to 0px by the very first sampled frame
+   regardless of what the grid track was doing, so the previous version of
+   this block never actually animated anything. width/padding/border-width
+   are universally, reliably transitionable, so the transition lives on the
+   child instead — the auto track re-measures every frame as the child's
+   width changes, giving a smooth collapse with no grid-level interpolation
+   required at all. */
+@media (min-width: 1440px) {
+    .lgx-builder__workspace {
+        grid-template-columns: auto 1fr;
+    }
+
+    .lgx-builder__navigation {
+        width: 250px;
+        transition: width 0.25s ease, padding 0.25s ease, border-right-width 0.25s ease, visibility 0s linear 0s;
+    }
+
+    .lgx-builder.is-focus-mode .lgx-builder__navigation {
+        width: 0;
+        padding: 0;
+        border-right-width: 0;
+        overflow: hidden;
+        visibility: hidden;
+        transition: width 0.25s ease, padding 0.25s ease, border-right-width 0.25s ease, visibility 0s linear 0.25s;
+    }
+
+    .lgx-builder__content {
+        grid-template-columns: auto 1fr;
+    }
+
+    .lgx-builder__settings {
+        width: 400px;
+        transition: width 0.25s ease, padding 0.25s ease, border-right-width 0.25s ease, visibility 0s linear 0s;
+    }
+
+    .lgx-builder.is-focus-mode .lgx-builder__settings {
+        width: 0;
+        padding: 0;
+        border-right-width: 0;
+        overflow: hidden;
+        visibility: hidden;
+        transition: width 0.25s ease, padding 0.25s ease, border-right-width 0.25s ease, visibility 0s linear 0.25s;
+    }
+}
+
+@media (min-width: 1440px) and (prefers-reduced-motion: reduce) {
+    .lgx-builder__navigation,
+    .lgx-builder__settings {
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Mobile Nav Select styling */
+.lgx-builder__nav-select {
+    width: 100%;
+    min-height: 36px;
+    padding: 0 10px;
+    border: 1px solid var(--lgx-border-color, #8c8f94);
+    border-radius: var(--lgx-control-radius, 3px);
+    background: #fff;
+    color: var(--lgx-text, #1d2327);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* B37: scoped under .lgx-builder (not !important) to out-specificity WP
+   core's .wp-core-ui select:focus, which otherwise wins this cascade — see
+   docs/ui/showcase/task013/reports/004-logging-and-navselect-check.md. */
+.lgx-builder .lgx-builder__nav-select:focus,
+.lgx-builder .lgx-builder__nav-select:focus-visible {
+    border-color: var(--lgx-accent, #2271b1);
+    box-shadow: var(--lgx-focus-shadow, 0 0 0 1px #2271b1);
+    outline: none;
+}
+
+/* --------------------------------------------------------------------------
+   Laptop Breakpoint: 1024px – 1439px
+   Live Preview stacks below the settings column, normal flow (009)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1439px) {
+    /* 004 §2/§3/008: the header's own main row (title+status pills | actions)
+       no longer fits every width once the Copy Shortcode pill, Template
+       pill, Save Draft, and Move to Trash are all present alongside it —
+       measured live (Puppeteer, 1200px): body.scrollWidth 1344px vs a
+       1200px viewport, a real horizontal-overflow regression, not a
+       hypothetical one (007-era finding, re-verified against 008's larger
+       header in this task's own verification). Reuses the same column-stack
+       treatment the 782px breakpoint below already applies (extended to
+       start here instead). Targets .lgx-builder__header-main specifically
+       (008: the utility strip above it already stacks unconditionally at
+       every width, this only concerns the identity/actions row). */
+    .lgx-builder__header-main {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    /* 011 §5: Save/Publish/Trash cluster renders first when header stacks */
+    .lgx-builder__header-actions {
+        order: 1;
+        justify-content: space-between; /* 013 §1: Anchor right instead of left */
+        width: 100%;
+    }
+    
+    .lgx-builder-status {
+        order: 2;
+    }
+
+    #lgx-builder-focus-toggle {
+        display: none;
+    }
+
+    .lgx-builder__workspace {
+        grid-template-columns: 200px 1fr;
+    }
+
+    .lgx-builder__content {
+        grid-template-columns: 1fr;
+    }
+
+    .lgx-builder__settings {
+        border-right: none;
+        max-height: none;
+    }
+
+    /* 009: Live Preview used to become an off-canvas slide-over drawer here
+       (position:fixed, transform: translateX(100%), visibility:hidden until
+       .is-open) — removed. .lgx-builder__content is already a single 1fr
+       track at this breakpoint (above), so with no positioning override
+       .lgx-builder__preview simply falls into normal flow as the second grid
+       item: a full-width block stacked below .lgx-builder__settings. This
+       also permanently removes the horizontal-overflow bug the drawer's own
+       translateX(100%) caused at narrow widths (007 addendum, item 11). */
+}
+
+/* --------------------------------------------------------------------------
+   004 §6, superseded: intentionally UNCONDITIONAL, at every viewport
+   width — not "mobile/tablet CSS-only" as originally shipped. Originally
+   scoped to max-width:1023px (git history: eb1169e) to protect 2-column
+   users from an unwanted reorder at desktop widths. That scoping was lost
+   by 05a71d0 ("006"), which is a confirmed regression there — but once
+   the screen is permanently forced to 1 column (force_screen_columns_for_
+   lgx_lsp_shortcodes + cap_screen_columns_for_lgx_lsp_shortcodes; see
+   docs/autonomous/mistake/reports/005-force-1column-mechanism-report.md),
+   2-column mode becomes unreachable on this screen and that protection is
+   no longer needed. What replaces it: #postbox-container-1 (side) always
+   precedes #postbox-container-2 (Builder) in DOM order, at every width,
+   with nothing else to reorder it — so this rule's flex/order pair must
+   stay active universally or any real side-context content (a reversed
+   Publish/Embed decision, any third-party metabox) pushes the Builder
+   down. Confirmed by direct regression: restoring the old max-width:1023px
+   scope alongside the 1-column force reintroduces exactly that push-down
+   at 1900px — see docs/autonomous/mistake/reports/006-part3-combined-regression-finding.md
+   and docs/autonomous/mistake/reports/007-reconciled-fix-verification.md.
+   Do not re-scope this rule to a viewport width without re-deciding this
+   dependency first.
+   -------------------------------------------------------------------------- */
+    body.post-type-lgx_lsp_shortcodes #post-body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    body.post-type-lgx_lsp_shortcodes #postbox-container-2 {
+        order: 1;
+    }
+
+    body.post-type-lgx_lsp_shortcodes #postbox-container-1 {
+        order: 2;
+    }
+
+/* --------------------------------------------------------------------------
+   Tablet Breakpoint: 782px – 1023px
+   Navigation rail becomes horizontal scroll strip
+   -------------------------------------------------------------------------- */
+@media (max-width: 1023px) {
+    /* 013 §3: Hide Configure Showcase label to free up horizontal space for pills */
+    .lgx-builder-status__title,
+    .lgx-builder-status__sep {
+        display: none !important;
+    }
+
+    .lgx-builder__workspace {
+        grid-template-columns: 1fr;
+    }
+
+    .lgx-builder__navigation {
+        position: static;
+        max-height: none;
+        border-right: none;
+        border-bottom: 1px solid var(--lgx-border-color-control, #c3c4c7);
+        padding: 10px 15px;
+        overflow-x: auto;
+    }
+
+    .lgx-builder__navigation .lgx-ui-tablist {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        border-right: none;
+        border-bottom: none;
+        gap: 4px;
+    }
+
+    .lgx-builder__navigation .lgx-builder-nav__chevron-icon,
+    .lgx-builder__navigation .lgx-builder-nav__subgroups {
+        display: none !important;
+    }
+
+    .lgx-builder__navigation .lgx-builder-nav__item {
+        display: inline-block;
+        margin-bottom: 0;
+    }
+
+    /* Task 014/Commit 020-Task-1 (orphaned-CSS audit): a
+       .lgx-builder-nav__tab-row rule used to sit here — no element in
+       builder-wrapper.php's nav markup ever carries that class (confirmed
+       via grep), so it never matched anything. Removed rather than left as
+       a rule with no possible target. */
+
+    .lgx-builder__navigation .lgx-ui-tab {
+        border-right: none;
+        border-bottom: 3px solid transparent;
+        flex-shrink: 0;
+        text-align: center;
+        padding: 8px 14px;
+    }
+
+    .lgx-builder__navigation .lgx-ui-tab[aria-selected="true"] {
+        border-bottom-color: var(--lgx-accent, #2271b1);
+        border-right-color: transparent;
+        /* Task 013 (1c): aria-orientation now correctly flips to "horizontal"
+           at this breakpoint (showcase-builder.js), so lgx-admin-ui.css's
+           [aria-orientation="vertical"] .lgx-ui-tab[aria-selected="true"]
+           rule (background: #f0f6fc) stops matching here. Before that fix,
+           the attribute was hardcoded "vertical" always, so this background
+           tint was already present at this breakpoint via that rule leaking
+           through — restoring it explicitly here keeps the same visual
+           result now that the attribute is accurate instead of stale. */
+        background: #f0f6fc;
+    }
+
+    /* Same reasoning as above: lgx-admin-ui.css's vertical-gated bold-label
+       rule stopped matching here once aria-orientation became accurate. */
+    .lgx-builder__navigation .lgx-ui-tab[aria-selected="true"] .lgx-ui-tab-label {
+        font-weight: 600;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Mobile Admin Breakpoint: < 782px
+   Navigation rail becomes native <select>
+   -------------------------------------------------------------------------- */
+@media (max-width: 782px) {
+    .lgx-builder__navigation .lgx-ui-tablist {
+        display: none;
+    }
+
+    .lgx-builder__nav-select-wrap {
+        display: block;
+        padding: 0;
+    }
+
+    .lgx-builder__navigation {
+        padding: 12px 15px;
+    }
+
+    /* 008: .lgx-builder__header-main's column-stack at ≤1439px (above)
+       already covers this width too — .lgx-builder__header itself has been
+       column-direction (utility strip above main row) at every width since
+       008, so no header-specific rule is needed here anymore. */
+
+    /* 004 rule for "hide docs links on mobile" removed per 011 §2.
+       The utility links now share the top row with Identity and naturally wrap
+       below it due to flex-wrap: wrap on .lgx-builder__header-top, maintaining
+       visibility without causing horizontal overflow. */
+}
+
+/* Task 014/Commit 4b: "007R-002: General Setup Cards" (.lgx-setup-cards-grid,
+   .lgx-setup-card and its __title/__content/__footer/__link parts) removed
+   here — this component was purpose-built for the General tab (its own
+   section header named it "General Setup Cards"), which no longer exists.
+   Confirmed via grep that no PHP/JS anywhere under admin/modules/
+   showcase-builder still references any of these classes. */
+
+/* Task 014/Commit 020-Task-1 (orphaned-CSS audit): "Content Source Radio
+   Cards" (.lgx-source-options, .lgx-source-option and its __title/__tick
+   parts) removed — pre-dates this task. Corroborates the existing BACKLOG
+   finding that the Content Source card_select control is never rendered
+   anywhere in the current builder (logged separately, not re-logged here) —
+   this was that control's CSS, with no markup left to apply it. Confirmed
+   via grep: zero matches anywhere under admin/ before removing. Not
+   reinstated automatically if that BACKLOG item is ever implemented — a
+   future implementation should design its own markup/CSS against whatever
+   the builder looks like at that time, not resurrect this. */
+
+/* ==========================================================================
+   007R-c: Current Layout — whole-card clickable button (opens the Layout
+   Gallery). Replaces the old info-display + separate boxed button. Keeps the
+   "selected item" blue treatment (matches Content Source's active option)
+   since this card always shows whichever layout is currently active.
+   ========================================================================== */
+
+.lgx-current-layout-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    /* 1d: more generous internal spacing than the old compressed row */
+    padding: 16px 18px;
+    margin: 0;
+    border: 1px solid var(--lgx-accent, #2271b1);
+    border-radius: var(--lgx-control-radius, 4px);
+    background: #f0f6fc;
+    box-shadow: 0 0 0 1px var(--lgx-accent, #2271b1);
+    color: var(--lgx-text, #1d2327);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+/* 1f: hover/focus feedback — pointer (native on <button>), darker border,
+   subtle shadow lift, within the requested 150-200ms range. */
+.lgx-current-layout-card:hover,
+.lgx-current-layout-card:focus-visible {
+    border-color: #135e96;
+    box-shadow: 0 0 0 1px #135e96, 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.lgx-current-layout-icon {
+    color: var(--lgx-accent, #2271b1);
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.lgx-current-layout-card__label {
+    flex: 1 1 auto;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: left;
+}
+
+/* 007R-e §2 (revised per Project Owner request): "Change Layout →" replaces
+   the bare chevron — a lightweight text affordance, not a button (no
+   border/background), so a first-time user immediately understands the
+   whole card is clickable. Single affordance per action: this replaces
+   the chevron, it doesn't join it. */
+.lgx-current-layout-card__cta {
+    color: var(--lgx-accent, #2271b1);
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: color 180ms ease;
+}
+
+/* Text darkens on hover/focus; the arrow (below) also nudges — two small,
+   combined signals so the card's interactivity reads clearly at a glance. */
+.lgx-current-layout-card:hover .lgx-current-layout-card__cta,
+.lgx-current-layout-card:focus-visible .lgx-current-layout-card__cta {
+    color: #135e96;
+}
+
+.lgx-current-layout-card__cta-arrow {
+    display: inline-block;
+    transition: transform 180ms ease;
+}
+
+.lgx-current-layout-card:hover .lgx-current-layout-card__cta-arrow,
+.lgx-current-layout-card:focus-visible .lgx-current-layout-card__cta-arrow {
+    transform: translateX(3px);
+}
+
+/* ==========================================================================
+   007R-002: Layout Gallery Overlay
+   ========================================================================== */
+
+.lgx-layout-gallery-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99998;
+    display: none;
+}
+
+.lgx-layout-gallery-overlay.lgx-gallery-open {
+    display: block;
+}
+
+/* ==========================================================================
+   007R-002: Layout Gallery Panel
+   ========================================================================== */
+
+.lgx-layout-gallery {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 99999;
+    background: #fff;
+    border: 1px solid var(--lgx-border-color-control, #c3c4c7);
+    border-radius: 6px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    width: 600px;
+    max-width: calc(100vw - 40px);
+    max-height: 80vh;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.lgx-layout-gallery.lgx-gallery-open {
+    display: flex;
+}
+
+.lgx-layout-gallery__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--lgx-border-color-control, #c3c4c7);
+    background: #f6f7f7;
+    flex-shrink: 0;
+}
+
+.lgx-layout-gallery__title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--lgx-text, #1d2327);
+}
+
+.lgx-layout-gallery__close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 1;
+    color: var(--lgx-text-muted, #646970);
+    padding: 2px 6px;
+    border-radius: var(--lgx-icon-button-radius, 3px);
+}
+
+.lgx-layout-gallery__close:hover {
+    background: #f0f0f1;
+    color: var(--lgx-text, #1d2327);
+}
+
+.lgx-layout-gallery__body {
+    overflow-y: auto;
+    padding: 20px;
+    flex: 1;
+}
+
+.lgx-layout-gallery__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+/* ==========================================================================
+   007R-002: Layout Gallery Card
+   ========================================================================== */
+
+.lgx-layout-gallery-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 25px 15px;
+    background: #fff;
+    border: 2px solid var(--lgx-border-color-control, #c3c4c7);
+    border-radius: var(--lgx-control-radius, 4px);
+    cursor: pointer;
+    text-align: center;
+    position: relative;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.lgx-layout-gallery-card__tick {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #00a32a;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
+.lgx-layout-gallery-card.is-selected .lgx-layout-gallery-card__tick {
+    opacity: 1;
+}
+
+.lgx-layout-gallery-card:hover,
+.lgx-layout-gallery-card:focus-visible {
+    border-color: var(--lgx-accent, #2271b1);
+    background: #f0f6fc;
+}
+
+.lgx-layout-gallery-card.is-selected {
+    border-color: var(--lgx-accent, #2271b1);
+    background: #f0f6fc;
+}
+
+.lgx-layout-gallery-card__icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: #50575e;
+    flex-shrink: 0;
+    margin-bottom: 5px;
+}
+
+.lgx-layout-gallery-card:hover .lgx-layout-gallery-card__icon,
+.lgx-layout-gallery-card.is-selected .lgx-layout-gallery-card__icon {
+    color: var(--lgx-accent, #2271b1);
+}
+
+.lgx-layout-gallery-card__label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--lgx-text, #1d2327);
+    line-height: 1.4;
+}
+
+.lgx-layout-gallery-card__desc {
+    display: block;
+    font-size: 12px;
+    color: var(--lgx-text-muted, #646970);
+    line-height: 1.4;
+}
+
+/* ==========================================================================
+   007R-001: Stage 007R UX Refinements (Task 001)
+   ========================================================================== */
+
+/* 007R-d: Click-to-open field help (global, replaces the 007R-012 hover
+   hybrid). Hover/focus on the ⓘ icon ONLY changes its color — it never
+   reveals help content. Content opens exclusively via click/tap or
+   Enter/Space (native button activation), through a single shared popover
+   (see below) positioned by JS in showcase-builder.js. */
+.lgx-field__label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.lgx-field__label label {
+    margin: 0;
+}
+
+.lgx-builder-help-icon {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0 0 0 2px;
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    line-height: 1;
+    color: var(--lgx-text-muted, #646970);
+    /* Resting state reads as secondary/non-attention-grabbing next to the
+       label -- 0.8 opacity keeps contrast at ~3.61:1 against a white field
+       background, above WCAG 1.4.11's 3:1 floor for interactive non-text
+       UI (this is a <button>, not decorative). Hover/focus-visible/
+       [aria-expanded="true"] below deliberately do NOT set opacity, so
+       they stay at full opacity + accent color as before. */
+    opacity: 0.8;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 180ms ease;
+}
+
+.lgx-builder-help-icon:hover,
+.lgx-builder-help-icon:focus-visible,
+.lgx-builder-help-icon[aria-expanded="true"] {
+    color: var(--lgx-accent, #2271b1);
+    /* CSS opacity isn't reset by :hover/:focus on its own -- without this,
+       the base rule's opacity: 0.8 would still apply here (the cascade
+       falls back to whichever rule sets a property, not to "unset"), so
+       the icon would stay dimmed even while active/focused. Added to match
+       the actual intent (full opacity on interaction), not a rewrite of
+       these states' color logic. */
+    opacity: 1;
+}
+
+/* 007R-d: shared help popover. One instance, moved to document.body and
+   positioned with JS-computed `top`/`left` in viewport (fixed) coordinates —
+   never clipped by the settings column's overflow:auto scroll container,
+   regardless of which field's ⓘ is currently open. */
+.lgx-help-popover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999999;
+    max-width: 260px;
+    padding: 8px 10px;
+    background: var(--lgx-text, #1d2327);
+    color: #fff;
+    font-size: 12px;
+    line-height: 1.4;
+    white-space: normal; /* supports multiline text */
+    border-radius: var(--lgx-control-radius, 4px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(4px); /* default: popover sits above the icon, so it eases in from below it */
+    transition: opacity 180ms ease, transform 180ms ease, visibility 0s linear 180ms;
+}
+
+/* When flipped below the icon (not enough room above), ease in from above instead. */
+.lgx-help-popover.lgx-help-popover--below {
+    transform: translateY(-4px);
+}
+
+.lgx-help-popover.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: opacity 180ms ease, transform 180ms ease, visibility 0s linear 0s;
+}
+
+/* Sticky Live Preview */
+.lgx-builder__preview-wrapper {
+    position: sticky;
+    /* 004 §3.1: same header-height offset as .lgx-builder__navigation above. */
+    top: calc(32px + var(--lgx-header-height, 119px));
+    z-index: 10;
+}
+
+/* Visual Density Reductions */
+.lgx-ui-panelbody-content {
+    padding: 12px 14px; /* Reduced from default padding */
+}
+
+.lgx-field {
+    margin-bottom: 12px; /* Reduced vertical spacing between fields */
+}
+
+.lgx-ui-panelbody {
+    margin-bottom: 12px; /* Reduced vertical spacing between accordions */
+}
+
+.lgx-card-select-label {
+    padding: 12px; /* Tighter card padding */
+}
+
+/* 007R: Layout Settings — hide groups not relevant to the selected Showcase Type.
+   Fields stay in the DOM (display:none only) so their values are still submitted
+   on save; see initLayoutSettingsVisibility() in showcase-builder.js. */
+.lgx-panelbody--type-hidden {
+    display: none;
+}
+
+/* Phase 2: Pro Field Locking UI */
+.lgx-pro-locked-field {
+    opacity: 0.6;
+    pointer-events: auto; /* Allow interactions so JS can intercept them */
+    transition: opacity 0.2s ease;
+}
+.lgx-pro-locked-field:hover {
+    opacity: 0.8;
+}
+
+/* Lock Indicator Icon */
+.lgx-pro-locked-indicator {
+    color: var(--lgx-border-color, #8c8f94);
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    margin-left: 6px;
+    vertical-align: middle;
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+.lgx-pro-locked-indicator:hover,
+.lgx-pro-locked-field:hover .lgx-pro-locked-indicator {
+    color: var(--lgx-accent, #2271b1);
+}
+
+/* Ensure the lock icon stays inline for text inputs */
+.lgx-pro-locked-field .lgx-field__control,
+.lgx-pro-locked-field td {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 8px;
+}
+.lgx-pro-locked-field .lgx-field__control .lgx-input,
+.lgx-pro-locked-field td .lgx-input,
+.lgx-pro-locked-field td .lgx_input_width {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+}
+
+/* 2026-09-06: the two places the generic rule above cannot reach, so the lock
+   icon ended up on its own line below the control. Per gate1-measure.js
+   (docs/autonomous/mistake/reports/002-gate1-full-run.md §6.1, independently
+   re-derived twice): rule (a) below matches 81 of 84 locked-field indicators;
+   removing rules (a)-(c) changes 9 of the 77 visible indicator-bearing
+   fields' geometry — the 7 option-locked selects plus the 2 Logo Image
+   Height/Width group fields below — and leaves the other 68 unaffected.
+
+   Not solved by absolutely positioning the icon: on a whole-field lock that
+   would be harmless (the control is inert and the whole .lgx-field__control
+   is one big modal trigger), but Link Target Type is an OPTION-level lock —
+   B60 deliberately keeps that <select> genuinely usable, so an icon floated
+   over its right edge would sit on the dropdown arrow, the exact spot people
+   click. Reserving space with flex/grid can never overlap; absolute can. */
+
+/* (a) Option-locked controls. The row never carries .lgx-pro-locked-field
+   (only the <option> is marked), so the rule above never applies and the
+   control stays display:block — the icon then wraps under the select.
+   Scoped defensively: .lgx-field__control and .lgx-pro-locked-indicator are
+   shared classes also emitted by the legacy meta-box template
+   (class-logo-slider-wp-meta-form.php), which is currently unhooked but not
+   structurally prevented from being re-registered — see
+   docs/autonomous/mistake/post_commit_2c0fd6c_mistake_audit.md §8.2.
+   Not a fix to any observed regression; scope hygiene only.
+
+   :where(.lgx-builder), not a plain .lgx-builder prefix: a plain prefix was
+   implemented and verified first, and failed verification — it raised this
+   rule's specificity from (0,2,0) to (0,3,0), which unintentionally out-ranked
+   an unrelated rule, .lgx-dep-locked-field .lgx-field__control (also (0,2,0),
+   later in source order), on any field carrying both a Pro lock and a
+   dependency lock. That flipped flex-wrap from nowrap to wrap→nowrap for 33
+   fields C3 was never meant to touch — confirmed by direct getComputedStyle
+   inspection, not inferred. :where() contributes zero specificity, so this
+   rule still wins its intended tie against the generic Pro-lock rule above by
+   source order (as it always did) without ever out-ranking the dep-lock rule.
+   Re-verified against the full 77-field walk at both 1600px and 1900px:
+   docs/autonomous/mistake/reports/004-c3-where-implementation.md. */
+:where(.lgx-builder) .lgx-field__control:has(> .lgx-pro-locked-indicator) {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 8px;
+}
+:where(.lgx-builder) .lgx-field__control:has(> .lgx-pro-locked-indicator) > select,
+:where(.lgx-builder) .lgx-field__control:has(> .lgx-pro-locked-indicator) > .lgx-input {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* (b) group2SelectText() sub-controls (Logo Image Height/Width). The icon is
+   nested inside .lgx_group_field_item, which is flex-direction:column — so it
+   became a third row under label and input rather than sitting beside the
+   input. Grid puts the label on its own row and the input + icon side by side;
+   minmax(0,1fr) lets the input shrink so the icon is never pushed off.
+
+   The .lgx-builder prefix is load-bearing, not decorative: without it this
+   selector ties on specificity (0,2,0) with `.lgx-builder .lgx_group_field_item`
+   further down the file, which sets display:flex and would win on source order —
+   grid-template-columns applied but display did not. */
+.lgx-builder .lgx_group_field_item:has(> .lgx-pro-locked-indicator) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 8px;
+}
+.lgx-builder .lgx_group_field_item:has(> .lgx-pro-locked-indicator) > .lgx_group_field_label {
+    grid-column: 1 / -1;
+}
+
+/* The icon reserves its space and never shrinks, in either layout.
+   .lgx-builder-scoped for the same reason as rule (a) above — this
+   selector is otherwise unscoped and shared with the unhooked legacy
+   meta-box template. */
+.lgx-builder .lgx-pro-locked-indicator {
+    flex: 0 0 auto;
+}
+
+/* B53: checkbox_list() — a list of checkboxes, not a single inline control,
+   so it opts out of the flex-row layout the generic Pro-lock rule above
+   forces on .lgx-field__control (that rule is written for single text/
+   select-style inputs sharing a row with the lock icon). */
+.lgx-pro-locked-field.lgx-field--checkbox-list .lgx-field__control {
+    display: block;
+}
+
+.lgx-field--checkbox-list .lgx-field__control {
+    display: flex;
+    flex-direction: column;
+    gap: var(--lgx-space-sm, 8px);
+}
+
+.lgx-checkbox-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--lgx-space-xs, 4px) var(--lgx-space-md, 12px);
+}
+
+/* Visual Consistency Pass: the checkbox itself was unstyled, so it fell
+   back to WP core's native input[type=checkbox] sizing (16x16px with a
+   -4px top margin core uses to baseline-align against its own ~14px/1.4
+   line-height forms). This list's text is a smaller, denser 13px, so the
+   untouched native checkbox reads oversized next to it. Scaled down to
+   14px and the core negative margin dropped in favor of the existing
+   flex align-items:center on .lgx-checkbox-list__item for centering. */
+.lgx-builder .lgx-checkbox-list__input {
+    width: 14px;
+    height: 14px;
+    min-width: 14px;
+    margin: 0;
+}
+
+.lgx-checkbox-list__item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--lgx-space-xs, 4px);
+    cursor: pointer;
+    color: var(--lgx-text, #1d2327);
+}
+
+.lgx-pro-locked-field .lgx-checkbox-list__item {
+    cursor: pointer; /* JS intercepts the click; not a native disabled state */
+}
+
+/* ==========================================================================
+   Phase 4-6: Pro Upgrade Modal & Sidebar Notice
+   ========================================================================== */
+
+/* Pro Upgrade Modal specific overrides (extending lgx-layout-gallery) */
+.lgx-pro-modal__body {
+    padding: 30px;
+}
+.lgx-pro-modal-content {
+    text-align: center;
+}
+.lgx-pro-modal-benefit {
+    font-size: 16px;
+    color: var(--lgx-text, #1d2327);
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+.lgx-pro-modal-features {
+    text-align: left;
+    margin: 0 auto 30px auto;
+    max-width: 350px;
+    padding: 20px;
+    background: #f0f6fc;
+    border-radius: 6px;
+    border: 1px solid var(--lgx-border-color-control, #c3c4c7);
+}
+.lgx-pro-modal-features li {
+    font-size: 14px;
+    color: #3c434a;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+}
+.lgx-pro-modal-features li:last-child {
+    margin-bottom: 0;
+}
+.lgx-pro-modal-features .dashicons-yes {
+    color: #00a32a;
+    margin-right: 8px;
+}
+.lgx-pro-modal-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+}
+.lgx-btn {
+    display: inline-block;
+    text-decoration: none;
+    border-radius: var(--lgx-control-radius, 4px);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.lgx-btn-lg {
+    padding: 10px 24px;
+    font-size: 15px;
+}
+.lgx-btn-primary {
+    background: var(--lgx-accent, #2271b1);
+    border: 1px solid var(--lgx-accent, #2271b1);
+    color: #fff;
+}
+.lgx-btn-primary:hover, .lgx-btn-primary:focus-visible {
+    background: #135e96;
+    border-color: #135e96;
+    color: #fff;
+}
+.lgx-btn-secondary {
+    background: #f6f7f7;
+    border: 1px solid var(--lgx-accent, #2271b1);
+    color: var(--lgx-accent, #2271b1);
+}
+.lgx-btn-secondary:hover, .lgx-btn-secondary:focus-visible {
+    background: #f0f6fc;
+    border-color: #135e96;
+    color: #135e96;
+}
+.lgx-btn-block {
+    display: block;
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* ==========================================================================
+   Task 014/Commit 1: Usage Modal
+   Extends .lgx-layout-gallery/.lgx-layout-gallery-overlay (same pattern
+   .lgx-pro-modal uses above) — only the usage-modal-specific parts are
+   defined here.
+   ========================================================================== */
+.lgx-usage-modal {
+    width: 640px;
+}
+.lgx-usage-modal__body {
+    padding: 24px;
+}
+.lgx-usage-modal__id {
+    margin: 0 0 12px;
+    font-size: 13px;
+    color: var(--lgx-text-muted, #646970);
+}
+.lgx-usage-modal__unsaved-notice {
+    margin: 0 0 16px;
+    padding: 10px 12px;
+    background: #fcf0f1;
+    border-left: 4px solid #d63638;
+    font-size: 13px;
+    color: #3c434a;
+}
+.lgx-usage-modal__cards {
+    /* Single column, full card width — the Shortcode/PHP snippet fields need
+       every pixel they can get (post IDs only grow over an install's
+       lifetime, WP assigns one to every auto-draft whether it's ever
+       finished or not), and a 2-column grid left them too narrow to display
+       a full snippet without clipping (found during Commit 1 review). */
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+.lgx-usage-modal-card {
+    padding: 16px;
+    background: #f6f7f7;
+    border: 1px solid var(--lgx-border-color-control, #c3c4c7);
+    border-radius: var(--lgx-control-radius, 4px);
+}
+.lgx-usage-modal-card .lgx-embed-panel__field {
+    /* WP core's .code class defaults to a slightly larger monospace size;
+       tightened here so more characters fit before any wrap/scroll is
+       needed, on top of the single-column width above. */
+    font-size: 12px;
+}
+.lgx-usage-modal-card__title {
+    margin: 0 0 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--lgx-text, #1d2327);
+}
+.lgx-usage-modal-card__desc {
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: var(--lgx-text-muted, #646970);
+    line-height: 1.4;
+}
+.lgx-usage-modal__footer {
+    padding: 14px 24px;
+    border-top: 1px solid var(--lgx-border-color-control, #c3c4c7);
+    background: #f6f7f7;
+    flex-shrink: 0;
+    text-align: right;
+    font-size: 13px;
+}
+/* Task (Usage modal doc link, Option 1 -- Owner-approved): icon-accompanied,
+   on-brand link. Previously an unstyled default link (WP core blue,
+   #3858e9) -- the only off-brand element in an otherwise deliberately
+   styled modal. #387d34/#2e672b (not #3b8437) because this footer's
+   background is #f6f7f7, a tinted background -- see this file's "013 §3"
+   WCAG-override section for why the two variants differ. */
+.lgx-usage-modal__doc-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #387d34;
+    text-decoration: none;
+    font-weight: 600;
+}
+.lgx-usage-modal__doc-link:hover,
+.lgx-usage-modal__doc-link:focus-visible {
+    color: #2e672b;
+    text-decoration: underline;
+}
+.lgx-usage-modal__doc-link .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Sidebar Notice */
+.lgx-builder__upgrade-sidebar {
+    margin-top: 20px;
+    padding: 20px 15px;
+    background: #fff;
+    border: 1px solid var(--lgx-border-color-control, #c3c4c7);
+    border-radius: var(--lgx-control-radius, 4px);
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.lgx-builder__upgrade-sidebar .lgx-upgrade-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: #f56e28;
+    margin-bottom: 10px;
+}
+.lgx-builder__upgrade-sidebar h4 {
+    margin: 0 0 10px 0;
+    font-size: 15px;
+    color: var(--lgx-text, #1d2327);
+}
+.lgx-builder__upgrade-sidebar p {
+    margin: 0 0 15px 0;
+    font-size: 13px;
+    color: #50575e;
+    line-height: 1.4;
+}
+.lgx-pro-star {
+    color: #f56e28;
+    margin-right: 8px;
+}
+
+/* ==========================================================================
+   Ticker-Dependent Field Locking
+   Legacy — task011g Phase 2 migrates Ticker Mode to the dependency engine.
+   New code uses .lgx-dep-locked-field + .lgx-dep-locked-field--force.
+   This rule retained for historical back-compat.
+   ========================================================================== */
+.lgx-ticker-locked-field { opacity: 0.6; pointer-events: auto; transition: opacity 0.2s ease; }
+.lgx-ticker-locked-field .lgx-field__control { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; }
+.lgx-ticker-locked-field .lgx_switch { cursor: not-allowed; }
+.lgx-ticker-lock-note { flex-basis: 100%; color: var(--lgx-text-muted, #646970); font-size: 12px; font-style: italic; margin-top: 6px; }
+.lgx-ticker-lock-note .dashicons { color: var(--lgx-border-color, #8c8f94); font-size: 14px; height: 14px; line-height: 14px; margin-right: 3px; vertical-align: text-bottom; width: 14px; }
+
+/* ==========================================================================
+   Dependency Field Locking � Mode A (grey-when-parent-off)
+   ========================================================================== */
+.lgx-dep-locked-field { opacity: 0.6; pointer-events: none; transition: opacity 0.2s ease; }
+.lgx-dep-locked-field .lgx-field__control { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; }
+.lgx-dep-locked-field .lgx_switch { cursor: not-allowed; }
+.lgx-dep-lock-note { flex-basis: 100%; color: var(--lgx-text-muted, #646970); font-size: 12px; font-style: italic; margin-top: 6px; }
+.lgx-dep-lock-note .dashicons { color: var(--lgx-border-color, #8c8f94); font-size: 14px; height: 14px; line-height: 14px; margin-right: 3px; vertical-align: text-bottom; width: 14px; }
+
+
+/* ==========================================================================
+   Dependency Field Locking — Mode B (task011g, Phase 2)
+   Force-value-when-parent-on: greyed + clickable. The click is intercepted
+   at the JS layer (re-asserts the forced state). pointer-events:auto so the
+   click reaches the JS handler — without this, CSS would block the click
+   entirely and the toggle would appear broken.
+   ========================================================================== */
+
+.lgx-dep-locked-field.lgx-dep-locked-field--force {
+    pointer-events: auto;
+}
+
+.lgx-dep-locked-field.lgx-dep-locked-field--force .lgx_switch {
+    cursor: not-allowed;  /* mirrors task011d's .lgx-ticker-locked-field .lgx_switch */
+}
+
+/* Mode B note styling — same base as Mode A. The "+--required" modifier
+   class is reserved; no rule today, available for future differentiation. */
+.lgx-dep-lock-note--required {
+    /* placeholder — extend here if Mode B needs its own note styling */
+}
+
+/* ==========================================================================
+   Responsive Settings & Live Preview Synchronization (Task 012A)
+   ========================================================================== */
+.lgx-field {
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.lgx-field.lgx-field--device-active {
+    background-color: #f0f6fc;
+    box-shadow: inset 3px 0 0 var(--lgx-accent, #2271b1);
+    border-radius: var(--lgx-control-radius, 4px);
+}
+
+/* ==========================================================================
+   Embed Metabox (Visual Consistency Pass): moved from static inline
+   style="" attributes in embed-metabox.php into real classes. Values are
+   unchanged from the inline styles they replace, except where an existing
+   spacing/typography value already matched a token exactly.
+
+   Task 014/Commit 020-Task-1 (orphaned-CSS audit): __group, __label, __desc
+   and __desc--flush removed here — embed-metabox.php itself no longer
+   exists anywhere in source (confirmed: only present in gitignored
+   dist/staging/ build output, a stale prior build artifact, not in the
+   actual admin/ tree), and per brief 007 §3's own factual correction,
+   "there is no Embed metabox in the current architecture." __row, __field,
+   and __copy-icon are kept — those three are still live, reused by the
+   Usage modal (Commit 1) and shared with whatever else in this file already
+   consumes them.
+   ========================================================================== */
+.lgx-embed-panel__row {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.lgx-embed-panel__field {
+    flex: 1 1 auto;
+    margin: 0;
+}
+
+.lgx-embed-panel__copy-icon {
+    margin-top: 3px;
+}
+
+/* ==========================================================================
+   Visual Consistency Pass: group2SelectText ("Logo Image Height"/"Logo
+   Image Width" - a Properties dropdown + a Value text input sharing one
+   field). This field type never got Showcase-Builder-native CSS when the
+   builder was rebuilt, so it was silently rendering under the OLD/legacy
+   admin/css/logo-slider-wp-admin.min.css rules instead: float:left items
+   (stacking instead of sitting in a row), a #999 label, and a select/input
+   with no declared border/height/font-size of their own (so the browser's
+   native control chrome showed through - a different grey, 40px tall, 14px
+   text - visually foreign next to every other field in the same panel,
+   which all use this builder's 32px/13px/var(--lgx-border-color) controls).
+   Scoped under .lgx-builder to win over the legacy rules (same specificity
+   pattern as B37's focus-ring fix), not !important. ========================================================================== */
+.lgx-builder .lgx_group_field_wrap {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--lgx-space-md, 12px);
+    flex-wrap: wrap;
+}
+
+.lgx-builder .lgx_group_field_item {
+    float: none; /* neutralize the legacy float:left stacking */
+    display: flex;
+    flex-direction: column;
+    gap: var(--lgx-space-xs, 4px);
+    padding: 0;
+    flex: 1 1 140px;
+    min-width: 0;
+}
+
+.lgx-builder .lgx_group_field_label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--lgx-text-muted, #646970);
+    margin-bottom: 0; /* spacing now comes from the item's flex gap instead */
+}
+
+.lgx-builder .lgx_group_field_wrap .lgx_input_width {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: var(--lgx-control-height, 32px);
+    padding: 0 var(--lgx-control-padding-x, 10px);
+    border: 1px solid var(--lgx-border-color, #8c8f94);
+    border-radius: var(--lgx-control-radius, 4px);
+    background: #fff;
+    color: var(--lgx-text, #1d2327);
+    font-size: 13px;
+    line-height: 2; /* matches .lgx-input's treatment so the select and text
+        input in the same row land at an identical 32px height, not a select
+        that's a few px taller than its paired input */
+    transition: border-color var(--lgx-transition, 150ms ease), box-shadow var(--lgx-transition, 150ms ease);
+}
+
+.lgx-builder .lgx_group_field_wrap .lgx_input_width:focus,
+.lgx-builder .lgx_group_field_wrap .lgx_input_width:focus-visible {
+    border-color: var(--lgx-accent, #2271b1);
+    box-shadow: var(--lgx-focus-shadow, 0 0 0 1px #2271b1);
+    outline: none;
+}
+
+/* ==========================================================================
+   Visual Consistency Pass: upload-field ("Preloader Icon", "Upload
+   Background Image") image preview + remove control. The old <img
+   style="width:24px"> had no height/object-fit, so any non-square source
+   image rendered squished/illegible (confirmed live with a real 360x140px
+   test icon: computed to 24x9.3px). An empty field also always rendered a
+   literal <img src="">, which browsers resolve to the current page's own
+   URL and try to load as a broken image, rather than showing nothing. Fixed
+   with a fixed-size, object-fit:contain preview box (hidden entirely, not
+   emptied, when there's no value) plus a small corner "x" badge replacing
+   the separate "Remove Icon" text button - also frees enough row width that
+   "Select Icon" no longer wraps onto its own line next to it.
+   ========================================================================== */
+.lgx-upload-preview {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    background: #f6f7f7;
+    border: 1px solid var(--lgx-border-color-control, #c3c4c7);
+    border-radius: var(--lgx-control-radius, 4px);
+}
+
+.lgx-upload-preview__img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+/* Same resting/hover color language as this builder's other small icon-only
+   dismiss controls (e.g. .lgx-builder__focus-cue-dismiss): muted at rest,
+   WP-core's own error red on hover/focus - reused, not a new color
+   introduced for this one control. */
+.lgx-upload-preview__remove {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    background: #fff;
+    border: 1px solid var(--lgx-border-color-control, #c3c4c7);
+    border-radius: 50%;
+    color: var(--lgx-text-muted, #646970);
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.lgx-upload-preview__remove:hover,
+.lgx-upload-preview__remove:focus-visible {
+    color: #d63638;
+    border-color: #d63638;
+    outline: none;
+}
+
+/* Task 014/Commit 3: 010 Part A's "Usage / Integration selector" CSS
+   (.lgx-usage-selector-row, .lgx-usage-divider, .lgx-usage-instruction)
+   removed here — its markup (tab-general_settings.php) and JS
+   (initUsageIntegrationSelector()) were removed in this same commit; the
+   header Usage modal (Commit 1/2) replaces it. */
+
+/* Task 014/Commit 4b: 010 Part B's "Showcase Name de-emphasis" CSS
+   (.lgx-setup-card--name, #lgx-showcase-name-field) removed here — the
+   General tab and its decorative name-mirror input are both gone (the
+   native #title field takes over directly; see this file's #titlediv
+   rules and initShowcaseNameSync() in showcase-builder.js). */
+
+/* ==========================================================================
+   013 §3: Text-contrast accessibility overrides for --lgx-accent (#469D42)
+   
+   #469D42 = 3.41:1 vs #ffffff, 3.13:1 vs #f0f6fc, 3.18:1 vs #f6f7f7
+   All fail WCAG AA SC 1.4.3 (4.5:1 minimum for text).
+   
+   Fix: scoped darker values. Selector specificity is deliberately one class
+   higher than the original rules — no !important required.
+   
+   Values:
+     #3b8437 resting — 4.62:1 vs #ffffff, 4.31:1 vs #f6f7f7 (both PASS)
+     #387d34 resting — 5.06:1 vs #ffffff, 4.71:1 vs #f6f7f7, 4.65:1 vs #f0f6fc (all PASS)
+     #2e672b hover   — 6.79:1 vs #ffffff, 6.33:1 vs #f6f7f7, 6.24:1 vs #f0f6fc (all PASS)
+   
+   Note: Non-text graphic usages (borders, focus rings, toggles, indicator dots)
+   are intentionally NOT overridden — they are correctly governed by the 3:1
+   non-text bar which #469D42 already meets.
+   ========================================================================== */
+
+/* --- Resting text on #ffffff background: #3b8437 (4.62:1) --- */
+/* Status pill bold value "Carousel", "Logo Library", etc. */
+/* Original rule: .lgx-builder-status__btn strong { color: var(--lgx-accent) } (0,2,0) */
+/* Our rule: (0,3,0) — wins without !important */
+.lgx-builder .lgx-builder-status__btn strong {
+    color: #3b8437;
+}
+
+/* Task 014/Commit 4b: the .lgx-setup-card__link WCAG override that used to
+   live here is removed along with the rest of the "General Setup Cards"
+   component (see this file's own comment at the component's former
+   location) — Copy Shortcode's own override is the separate rule below
+   (.lgx-builder-status__btn--action), untouched. */
+
+/* --- Resting text on tinted backgrounds (#f0f6fc, #f6f7f7): #387d34 --- */
+/* "Copy Shortcode" action pill sits on #f0f6fc: needs #387d34 (4.65:1) */
+/* Original rule: .lgx-builder-status__btn--action { color: var(--lgx-accent) } (0,1,0) */
+.lgx-builder .lgx-builder-status__btn--action {
+    color: #387d34;
+}
+
+/* Focus Cue action link ("Dismiss") sits on #f0f6fc: needs #387d34 */
+/* Original rule: .lgx-builder__focus-cue-action { color: var(--lgx-accent) } (0,1,0) */
+.lgx-builder .lgx-builder__focus-cue-action {
+    color: #387d34;
+}
+
+/* "Change Layout →" CTA sits on #f6f7f7: needs #387d34 (4.71:1) */
+/* Original rule: .lgx-current-layout-card__cta { color: var(--lgx-accent) } (0,1,0) */
+.lgx-builder .lgx-current-layout-card__cta {
+    color: #387d34;
+}
+
+/* Secondary button text sits on #f6f7f7: needs #387d34 (4.71:1) */
+/* Scoped to nav sidebar only — does NOT touch the Pro modal's .lgx-btn-secondary */
+/* Original rule: .lgx-btn-secondary { color: var(--lgx-accent) } (0,1,0) */
+.lgx-builder .lgx-builder__navigation .lgx-btn-secondary {
+    color: #387d34;
+    border-color: #387d34;
+}
+
+/* Upgrade sidebar primary CTA button sits on #fff inside the nav sidebar */
+/* Scoped to .lgx-builder__navigation only — does NOT reach the Pro modal's .lgx-btn-primary */
+/* Original rule: .lgx-btn-primary { background/border: var(--lgx-accent) } (0,1,0) */
+.lgx-builder .lgx-builder__navigation .lgx-btn-primary {
+    background: #387d34;
+    border-color: #387d34;
+}
+
+/* --- Hover/Focus text states: #2e672b (≥6.24:1 on all backgrounds) --- */
+/* Header utility links (Usage, Demo, Help, Support) hover on #f6f7f7 */
+/* Original rule: .lgx-builder__header-links a:hover (0,2,1) — our (0,3,1) wins */
+.lgx-builder .lgx-builder__header-links a:hover,
+.lgx-builder .lgx-builder__header-links a:focus-visible {
+    color: #2e672b;
+}
+
+/* Subgroup nav button hover on #f0f6fc */
+/* Original rule: .lgx-builder-nav__subgroup-btn:hover { color: var(--lgx-accent) } (0,2,0) */
+/* Our rule: (0,3,0) — wins cleanly */
+.lgx-builder .lgx-builder-nav__subgroup-btn:hover,
+.lgx-builder .lgx-builder-nav__subgroup-btn:focus {
+    color: #2e672b;
+}
+
+/* Secondary button hover — scoped to nav sidebar (not modal) */
+.lgx-builder .lgx-builder__navigation .lgx-btn-secondary:hover,
+.lgx-builder .lgx-builder__navigation .lgx-btn-secondary:focus-visible {
+    color: #2e672b;
+    border-color: #2e672b;
+}
+
+/* Primary button (nav sidebar) hover */
+.lgx-builder .lgx-builder__navigation .lgx-btn-primary:hover,
+.lgx-builder .lgx-builder__navigation .lgx-btn-primary:focus-visible {
+    background: #2e672b;
+    border-color: #2e672b;
+}
+
+/* --- Header "Get Pro!" pill: white text on a solid fill (#f6f7f7 header
+   background sits behind the fill, not behind the text, so what matters is
+   white-vs-fill contrast, not white-vs-#f6f7f7) --- */
+/* Found during Pro-modal-branding investigation: white text on the raw
+   --lgx-accent fill (#469D42) measures 3.41:1 -- the same documented-fail
+   ratio this section already fixes everywhere else, just missed here since
+   this element didn't exist yet when 013 §3 was written. */
+/* Original rule: .lgx-builder__header-link--upgrade { background: var(--lgx-accent, #2271b1) } (0,2,0 incl. .lgx-builder__header-links) */
+.lgx-builder__header-links a.lgx-builder__header-link--upgrade {
+    background: #3b8437;
+}
+.lgx-builder .lgx-builder__header-links a.lgx-builder__header-link--upgrade:hover,
+.lgx-builder .lgx-builder__header-links a.lgx-builder__header-link--upgrade:focus-visible {
+    background: #2e672b;
+}
+
+/* --- Pro Upgrade Modal CTAs: same white-on-fill / tinted-background-text
+   reasoning as above, sits on the modal's #fff body --- */
+/* Task (Pro modal branding, Option A -- Owner-approved): the modal's
+   .lgx-btn-primary/.lgx-btn-secondary previously rendered WP-core blue
+   (#2271b1) live, not any shade of the brand accent at all -- not a
+   deliberate second color, but var(--lgx-accent, #2271b1) silently falling
+   back because the modal is moved to document.body by JS, outside
+   .lgx-builder's *original* token scope. That root cause is fixed (token
+   block moved to :root, see this file's Design Tokens section) -- so the
+   raw accent (#469D42) now genuinely reaches this modal -- but #469D42
+   itself still fails white-text contrast (3.41:1), so it still needs the
+   same corrected value used everywhere else in this section. */
+/* Original rule: .lgx-btn-primary { background/border: var(--lgx-accent, #2271b1) } (0,1,0) */
+#lgx-pro-modal .lgx-btn-primary {
+    background: #3b8437;
+    border-color: #3b8437;
+}
+#lgx-pro-modal .lgx-btn-primary:hover,
+#lgx-pro-modal .lgx-btn-primary:focus-visible {
+    background: #2e672b;
+    border-color: #2e672b;
+}
+/* Original rule: .lgx-btn-secondary { border/color: var(--lgx-accent, #2271b1) } (0,1,0) */
+#lgx-pro-modal .lgx-btn-secondary {
+    border-color: #3b8437;
+    color: #3b8437;
+}
+#lgx-pro-modal .lgx-btn-secondary:hover,
+#lgx-pro-modal .lgx-btn-secondary:focus-visible {
+    border-color: #2e672b;
+    color: #2e672b;
+}
+
+/* Task (.lgx-usage-modal-copy-btn specificity fix): these 3 buttons carry
+   WP core's own `button` class (needed for native admin sizing), which
+   brings .wp-core-ui .button / :where(:not(.button-link)) into the match
+   set at (0,2,0) -- beating .lgx-btn-secondary's (0,1,0) unconditionally,
+   regardless of stylesheet load order. Confirmed live: resting and hover
+   both rendered WP-core's admin theme blue (#3858e9 family), not this
+   plugin's brand green. Scoped to #lgx-usage-modal ((1,1,0), beats (0,2,0)
+   outright) -- same ID-scoping pattern already used for #lgx-pro-modal's
+   own buttons above; works correctly regardless of the modal's
+   document.body relocation, since ID selectors don't care about DOM
+   position. Re-asserts .lgx-btn-secondary's own already-declared
+   backgrounds (only needed here because these buttons -- unlike the Pro
+   modal's, which lack the `button` class -- also lose the background
+   fight, not just border/color); #3b8437/#2e672b instead of the base
+   rule's own stale hardcoded-blue hover, matching #lgx-pro-modal's
+   established pair for this modal's identical #fff body background. */
+#lgx-usage-modal .lgx-btn-secondary {
+    background: #f6f7f7;
+    border-color: #3b8437;
+    color: #3b8437;
+}
+#lgx-usage-modal .lgx-btn-secondary:hover,
+#lgx-usage-modal .lgx-btn-secondary:focus-visible {
+    background: #f0f6fc;
+    border-color: #2e672b;
+    color: #2e672b;
+}

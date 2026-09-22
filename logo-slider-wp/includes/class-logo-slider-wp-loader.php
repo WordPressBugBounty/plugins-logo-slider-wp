@@ -1,4 +1,5 @@
 <?php
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
@@ -24,6 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @subpackage Logo_Slider_WP/includes
  * @author     LogicHunt <info.logichunt@gmail.com>
  */
+if ( ! class_exists( 'Logo_Slider_WP_Loader' ) ) {
 class Logo_Slider_WP_Loader {
 
 	/**
@@ -129,4 +131,5 @@ class Logo_Slider_WP_Loader {
 
 	}
 
+}
 }

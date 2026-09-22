@@ -1,19 +1,13 @@
-<?php
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
-?>
-
 <ul class="lgx-inline lgx-admin-list-get-pro">
     <li>
         <div class="circle-wrapper">
             <div class="lgx-error circle"></div>
             <div class="lgx-pro-icon">
 
-                <?php if(LGX_LS_PLUGIN_META_FIELD_PRO == 'disabled'): ?>
-                <a href="https://logichunt.com/product/wordpress-logo-slider/" target="_blank" ><span>Get Pro!</span></a>
+                <?php if ( ! lgx_ls_is_pro() ): ?>
+                    <a href="https://logichunt.com/product/wordpress-logo-slider/" target="_blank"><span>Get Pro!</span></a>
                 <?php else: ?>
-                <a href="https://docs.logichunt.com/logo-slider-wp" target="_blank" ><span>Usage</span></a>
+                    <a href="https://docs.logichunt.com/logo-slider-wp/" target="_blank"><span>Usage</span></a>
                 <?php endif; ?>
             </div>
         </div>
@@ -23,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         <div class="circle-wrapper">
             <div class="warning circle"></div>
             <div class="lgx-pro-icon">
-                <a href="https://demo.logichunt.com/logo-slider-wp" target="_blank" ><span>Demo</span></a>
+                <a href="https://demo.logichunt.com/logo-slider-wp/" target="_blank"><span>Demo</span></a>
             </div>
         </div>
     </li>
@@ -32,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         <div class="circle-wrapper">
             <div class="success circle"></div>
             <div class="lgx-pro-icon">
-                <a href="https://logichunt.com/support" target="_blank" ><span>Help</span></a>
+                <a href="https://logichunt.com/support/" target="_blank"><span>Help</span></a>
             </div>
         </div>
     </li>

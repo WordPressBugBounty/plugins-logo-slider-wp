@@ -6,7 +6,8 @@ if (!defined('WPINC')) {
 /********************************************************************************/
 $this->meta_form->header_spacer(
     array(
-        'label'     => __( 'Responsive Settings', 'logo-slider-wp'),
+        'layout'    => 'modern',
+        'label'     => __( 'Responsive Settings', 'logo-slider-wp' ),
     )
 );
 /********************************************************************************/
@@ -14,8 +15,9 @@ $this->meta_form->header_spacer(
 
 $this->meta_form->number(
     array(
-        'label'     => __( 'Item in Large Desktops', 'logo-slider-wp'),
-        'desc'      => __( 'Item in Large Desktops Devices (1200px and Up).', 'logo-slider-wp'),
+        'layout'    => 'modern',
+        'label'     => __( 'Item in Large Desktops', 'logo-slider-wp' ),
+        'desc'      => __( 'Item in Large Desktops Devices (1200px and Up).', 'logo-slider-wp' ),
         'name'      => 'meta_lgx_lsp_shortcodes[lgx_large_desktop_item]',
         'id'        => 'lgx_large_desktop_item',
         'default'   => 5
@@ -24,8 +26,9 @@ $this->meta_form->number(
 
 $this->meta_form->number(
     array(
-        'label'     => __( 'Item in Desktops', 'logo-slider-wp'),
-        'desc'      => __( 'Item in Desktops Devices (Desktops 992px and Up).', 'logo-slider-wp'),
+        'layout'    => 'modern',
+        'label'     => __( 'Item in Desktops', 'logo-slider-wp' ),
+        'desc'      => __( 'Item in Desktops Devices (Desktops 992px and Up).', 'logo-slider-wp' ),
         'name'      => 'meta_lgx_lsp_shortcodes[lgx_desktop_item]',
         'id'        => 'lgx_desktop_item',
         'default'   => 4
@@ -34,8 +37,9 @@ $this->meta_form->number(
 
 $this->meta_form->number(
     array(
-        'label'     => __( 'Item in Tablets', 'logo-slider-wp'),
-        'desc'      => __( 'Item in Tablets Devices (768px and Up).', 'logo-slider-wp'),
+        'layout'    => 'modern',
+        'label'     => __( 'Item in Tablets', 'logo-slider-wp' ),
+        'desc'      => __( 'Item in Tablets Devices (768px and Up).', 'logo-slider-wp' ),
         'name'      => 'meta_lgx_lsp_shortcodes[lgx_tablet_item]',
         'id'        => 'lgx_tablet_item',
         'default'   => 3
@@ -44,17 +48,11 @@ $this->meta_form->number(
 
 $this->meta_form->number(
     array(
-        'label'     => __( 'Item in Mobile', 'logo-slider-wp'),
-        'desc'      => __( 'Item in Mobile Devices (Less than 768px).', 'logo-slider-wp'),
+        'layout'    => 'modern',
+        'label'     => __( 'Item in Mobile', 'logo-slider-wp' ),
+        'desc'      => __( 'Item in Mobile Devices (Less than 768px).', 'logo-slider-wp' ),
         'name'      => 'meta_lgx_lsp_shortcodes[lgx_mobile_item]',
         'id'        => 'lgx_mobile_item',
         'default'   => 2
-    )
-);
-
-$this->meta_form->buy_pro(
-    array(
-        'status'  => LGX_LS_PLUGIN_META_FIELD_PRO,
-        'link' => 'https://logichunt.com/product/wordpress-logo-slider/',
     )
 );

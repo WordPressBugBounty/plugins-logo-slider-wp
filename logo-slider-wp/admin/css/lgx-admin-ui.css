@@ -1,0 +1,184 @@
+/* 
+ * LogicHunt Admin UI Kit Primitives
+ * Reusable presentation components for WAI-ARIA interfaces.
+ */
+
+/* ==========================================================================
+   WAI-ARIA Tablist (.lgx-ui-tablist)
+   ========================================================================== */
+.lgx-ui-tablist {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-bottom: 1px solid var(--lgx-border-color-control, #c3c4c7); /* Standard WP admin border color */
+}
+
+/* Vertical Orientation Support */
+.lgx-ui-tablist[aria-orientation="vertical"] {
+    flex-direction: column;
+    border-bottom: none;
+    border-right: 1px solid var(--lgx-border-color-control, #c3c4c7);
+}
+
+.lgx-ui-tablist .lgx-ui-tab {
+    display: block;
+    margin: 0;
+    /* 007R-c §3: tightened from 10px 15px — reduces item height ~6px so the
+       nav reads denser without feeling cramped. */
+    padding: 7px 15px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--lgx-text, #1d2327); /* Standard WP admin text color */
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+}
+
+/* 007R-c §4: nav icons sized down from the dashicons default (20px) so the
+   text label is the primary focus. */
+.lgx-ui-tablist .lgx-ui-tab .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+}
+
+.lgx-ui-tablist[aria-orientation="vertical"] .lgx-ui-tab {
+    border-bottom: none;
+    border-right: 3px solid transparent;
+    text-align: left;
+}
+
+.lgx-ui-tablist .lgx-ui-tab:hover,
+.lgx-ui-tablist .lgx-ui-tab:focus {
+    color: var(--lgx-accent, #2271b1); /* WP Admin primary blue */
+    background: #f0f0f1;
+    outline: none;
+}
+
+.lgx-ui-tablist .lgx-ui-tab[aria-selected="true"] {
+    color: var(--lgx-text, #1d2327);
+    border-bottom-color: var(--lgx-accent, #2271b1);
+}
+
+.lgx-ui-tablist[aria-orientation="vertical"] .lgx-ui-tab[aria-selected="true"] {
+    border-right-color: var(--lgx-accent, #2271b1);
+    background: #f0f6fc; /* 007R Final Polish (§10): subtle WP-blue tint instead of plain white, so the active state reads as "selected" against any sidebar background, not just via contrast with a gray one */
+}
+
+/* 007R-c §5: refined semi-bold label on the active tab — visible and crisp,
+   no additional color. Transition already covered by .lgx-ui-tab's own
+   `transition: all 0.2s ease-in-out`. */
+.lgx-ui-tablist[aria-orientation="vertical"] .lgx-ui-tab[aria-selected="true"] .lgx-ui-tab-label {
+    font-weight: 600;
+}
+
+/* Tab Content Panels */
+.lgx-ui-tabpanel {
+    display: none;
+    padding: 20px;
+}
+.lgx-ui-tabpanel.is-active {
+    display: block;
+}
+
+/* Responsive Fallback: On mobile, vertical becomes horizontal */
+@media screen and (max-width: 782px) {
+    .lgx-ui-tablist[aria-orientation="vertical"] {
+        flex-direction: row;
+        border-right: none;
+        border-bottom: 1px solid var(--lgx-border-color-control, #c3c4c7);
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    .lgx-ui-tablist[aria-orientation="vertical"] .lgx-ui-tab {
+        border-right: none;
+        border-bottom: 3px solid transparent;
+        flex: 1 0 auto;
+        text-align: center;
+    }
+    .lgx-ui-tablist[aria-orientation="vertical"] .lgx-ui-tab[aria-selected="true"] {
+        border-bottom-color: var(--lgx-accent, #2271b1);
+    }
+}
+
+
+/* ==========================================================================
+   PanelBody Accordion (.lgx-ui-panelbody)
+   ========================================================================== */
+.lgx-ui-panelbody {
+    background: #fff;
+    border: 1px solid var(--lgx-border-color-control, #c3c4c7);
+    margin-bottom: 15px;
+    border-radius: var(--lgx-control-radius, 4px);
+}
+
+.lgx-ui-panelbody-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 0;
+    padding: 12px 15px;
+    background: #fff;
+    border: none;
+    border-bottom: 1px solid transparent;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--lgx-text, #1d2327);
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.lgx-ui-panelbody-header:hover {
+    background: #f6f7f7;
+}
+
+.lgx-ui-panelbody-header:focus,
+.lgx-ui-panelbody-header:focus-visible {
+    outline: 2px solid var(--lgx-accent, #2271b1);
+    outline-offset: -2px;
+}
+
+/* The toggle icon (usually a dashicon) */
+.lgx-ui-panelbody-header-icon {
+    transition: transform 0.2s ease-in-out;
+    color: #787c82;
+}
+
+/* Expanded State */
+.lgx-ui-panelbody-header[aria-expanded="true"] {
+    border-bottom-color: var(--lgx-border-color-control, #c3c4c7);
+}
+
+.lgx-ui-panelbody-header[aria-expanded="true"] .lgx-ui-panelbody-header-icon {
+    transform: rotate(180deg);
+}
+
+.lgx-ui-panelbody-content {
+    display: none;
+    padding: 15px;
+}
+
+.lgx-ui-panelbody-header[aria-expanded="true"] + .lgx-ui-panelbody-content {
+    display: block;
+}
+
+
+
+/* 013 §3: Tab hover/focus text contrast fix
+   Original rule: .lgx-ui-tablist .lgx-ui-tab:hover { color: var(--lgx-accent) } (0,2,0) -> 3.41:1 vs #f0f0f1 hover bg
+   
+   #469D42 vs #f0f0f1 = 3.34:1 — fails 4.5:1 text threshold.
+   #2e672b vs #f0f0f1 = 6.17:1 — passes comfortably.
+   Scoped to .lgx-builder to win specificity without !important. */
+.lgx-builder .lgx-ui-tablist .lgx-ui-tab:hover,
+.lgx-builder .lgx-ui-tablist .lgx-ui-tab:focus {
+    color: #2e672b;
+}

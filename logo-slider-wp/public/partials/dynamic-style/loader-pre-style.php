@@ -9,7 +9,7 @@ if (!defined('WPINC')) {
         align-items: center;
         justify-content: center;
         text-align: center;
-        background: <?php echo esc_attr($lgx_shortcodes_meta['lgx_preloader_bg_color']);?>;
+        <?php echo lgx_ls_css_decl( 'background', lgx_ls_sanitize_css_color( $lgx_shortcodes_meta['lgx_preloader_bg_color'] ) ); ?>
         z-index: 9999;
         position: absolute;
         left: 0;

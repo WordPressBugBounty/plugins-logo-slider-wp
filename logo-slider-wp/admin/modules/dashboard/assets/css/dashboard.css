@@ -1,0 +1,1173 @@
+/**
+ * LogicHunt Admin Framework Stylesheet
+ *
+ * @package    Logo_Slider_WP
+ * @subpackage Logo_Slider_WP/admin/modules/dashboard/assets/css
+ */
+
+/*
+ * Round 3 brand-color tokens. Values are not invented -- confirmed by
+ * reading admin/css/lgx-admin-ui.css and admin/modules/showcase-builder/
+ * assets/css/showcase-builder.css (read-only reference, neither file
+ * imported/enqueued/modified). --lgx-accent matches the Builder's own
+ * general-purpose --lgx-accent default (#2271b1, WP admin blue) used for
+ * tabs/focus/active states site-wide. --lgx-upgrade-accent is the
+ * separate, WCAG-corrected brand-green pair (#3b8437 resting / #2e672b
+ * hover) the Builder reserves specifically for its three Pro-upgrade
+ * touchpoints (header "Get Pro!" pill, sidebar upgrade box, Pro modal
+ * CTA) -- not a general accent. This distinction is deliberate product
+ * language, not an oversight: see the implementation report's brand
+ * research section for the exact source lines this was read from.
+ */
+:root {
+	--lgx-accent: #2271b1;
+	--lgx-upgrade-accent: #3b8437;
+	--lgx-upgrade-accent-hover: #2e672b;
+}
+
+/* ==========================================================================
+   1. Dashboard Layout
+   ========================================================================== */
+.lgx-dashboard {
+	margin: 20px 20px 0 0;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	color: #2c3338;
+	overflow-x: hidden;
+}
+
+.lgx-dashboard__header {
+	background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+	padding: 40px 30px;
+	border-radius: 8px;
+	margin-bottom: 30px;
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	position: relative;
+	overflow: hidden;
+}
+
+/* Background grid overlay decoration */
+.lgx-dashboard__header::before {
+	content: '';
+	position: absolute;
+	top: 0; left: 0; right: 0; bottom: 0;
+	background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+	background-size: 20px 20px;
+	opacity: 0.8;
+}
+
+.lgx-dashboard__hero-content {
+	position: relative;
+	z-index: 1;
+}
+
+.lgx-dashboard__brand-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	flex-wrap: wrap;
+	width: 100%;
+	margin-bottom: 14px;
+}
+
+.lgx-dashboard__brand-link {
+	display: inline-flex;
+	align-items: center;
+	box-sizing: border-box;
+	flex: 0 1 160px;
+	max-width: 100%;
+	line-height: 0;
+	transition: opacity 0.15s ease-in-out;
+}
+
+.lgx-dashboard__brand-link:hover {
+	opacity: 0.85;
+}
+
+.lgx-dashboard__brand-link:focus-visible {
+	outline: 2px solid #38bdf8;
+	outline-offset: 2px;
+}
+
+.lgx-dashboard__brand-logo {
+	display: block;
+	width: min(160px, 100%);
+	max-width: 100%;
+	height: auto;
+}
+
+.lgx-dashboard__edition-status {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	flex: 0 0 auto;
+	font-size: 0.8rem;
+	font-weight: 600;
+	line-height: 1.2;
+	white-space: nowrap;
+	padding: 6px 12px;
+	border: 1px solid rgba(56, 189, 248, 0.28);
+	border-radius: 6px;
+	background: rgba(56, 189, 248, 0.04);
+}
+
+.lgx-dashboard__edition-status--pro {
+	color: #bbf7d0;
+}
+
+.lgx-dashboard__edition-status--free {
+	color: #cbd5e1;
+}
+
+.lgx-dashboard__edition-mark {
+	font-size: 0.9rem;
+	line-height: 1;
+}
+
+.lgx-dashboard__edition-status--pro .lgx-dashboard__edition-mark {
+	color: #86efac;
+}
+
+.lgx-dashboard__edition-status--free .lgx-dashboard__edition-mark {
+	color: #94a3b8;
+}
+
+.lgx-dashboard__title {
+	color: #ffffff;
+	font-size: 2.2rem;
+	font-weight: 700;
+	margin: 0 0 10px 0;
+	line-height: 1.2;
+}
+
+.lgx-dashboard__version {
+	font-size: 1.1rem;
+	font-weight: 500;
+	color: #94a3b8;
+	background: rgba(255, 255, 255, 0.1);
+	padding: 4px 10px;
+	border-radius: 50px;
+	margin-left: 12px;
+	vertical-align: middle;
+	display: inline-block;
+}
+
+.lgx-dashboard__subtitle {
+	color: #94a3b8;
+	font-size: 1.1rem;
+	margin: 0;
+	max-width: 100%;
+	line-height: 1.5;
+}
+
+.lgx-dashboard__content {
+	margin-top: 20px;
+}
+
+/* ==========================================================================
+   2. Grid System
+   ========================================================================== */
+.lgx-grid {
+	display: flex;
+	flex-wrap: wrap;
+	margin: -12px;
+}
+
+.lgx-grid__column {
+	box-sizing: border-box;
+	padding: 12px;
+	width: 100%;
+}
+
+.lgx-grid__column--full {
+	width: 100%;
+}
+
+.lgx-grid__column--half {
+	width: 50%;
+}
+
+.lgx-grid__column--one-third {
+	width: 33.3333%;
+}
+
+.lgx-grid__column--two-thirds {
+	width: 66.6667%;
+}
+
+/* Inner Grid Modifications */
+.lgx-grid--actions {
+	margin: -10px;
+	display: flex;
+	flex-wrap: wrap;
+}
+.lgx-grid--actions .lgx-grid__column {
+	padding: 10px;
+}
+
+/* ==========================================================================
+   3. Card Component
+   ========================================================================== */
+.lgx-card {
+	background: #ffffff;
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+	margin-bottom: 24px;
+	transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.lgx-card:hover {
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.lgx-card__header {
+	border-bottom: 1px solid #f1f5f9;
+	padding: 20px 24px;
+}
+
+.lgx-card__title {
+	font-size: 1.25rem;
+	font-weight: 600;
+	color: #0f172a;
+	margin: 0;
+	line-height: 1.4;
+}
+
+.lgx-card__body {
+	padding: 24px;
+}
+
+.lgx-card__footer {
+	border-top: 1px solid #f1f5f9;
+	padding: 16px 24px;
+	background: #f8fafc;
+}
+
+/* ==========================================================================
+   4. Onboarding Checklist
+   ========================================================================== */
+.lgx-card__header--flex {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.lgx-onboarding__progress {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	width: 35%;
+}
+
+.lgx-onboarding__percentage {
+	font-weight: 700;
+	color: #0f172a;
+	font-size: 0.9rem;
+}
+
+.lgx-progress-bar {
+	flex-grow: 1;
+	height: 8px;
+	background: #e2e8f0;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.lgx-progress-bar__fill {
+	height: 100%;
+	background: var(--lgx-accent, #2271b1);
+	border-radius: 4px;
+	transition: width 0.5s ease-in-out;
+}
+
+/*
+ * Round 3b: compact, state-aware status line shown only while the steps
+ * are collapsed (Owner feedback: an empty-looking box gave no clue what
+ * the card was for). Visibility is toggled by the same click handler that
+ * drives the steps wrapper below — plain show/hide, no animation, so it
+ * never competes with the steps' own transition or adds meaningful height.
+ */
+.lgx-onboarding-status {
+	margin: 0;
+	font-size: 0.9rem;
+	color: #475569;
+	line-height: 1.5;
+}
+
+/*
+ * Round 3 fix (Show Steps defect): the previous bare ".lgx-onboarding-steps
+ * { display: flex }" rule is an author-origin declaration, which overrides
+ * the browser's default "[hidden] { display: none }" UA-stylesheet rule
+ * regardless of selector specificity -- author styles always beat
+ * user-agent styles for elements they both target, at equal or lower
+ * specificity. Root-caused live: getComputedStyle().display stayed "flex"
+ * with the hidden attribute correctly present/absent on the element the
+ * whole time -- the DOM attribute was toggling correctly, the visual
+ * result never was. The wrapper below now owns the [hidden] override at
+ * higher specificity, and separately owns the animated
+ * grid-template-rows transition; ".lgx-onboarding-steps" itself keeps its
+ * plain flex layout, now only ever painted while genuinely un-hidden.
+ */
+.lgx-onboarding-steps-wrapper {
+	display: grid;
+	grid-template-rows: 0fr;
+	transition: grid-template-rows 220ms ease;
+}
+
+.lgx-onboarding-steps-wrapper[data-expanded="true"] {
+	grid-template-rows: 1fr;
+}
+
+.lgx-onboarding-steps-wrapper[hidden] {
+	display: none;
+}
+
+.lgx-onboarding-steps-inner {
+	overflow: hidden;
+	min-height: 0;
+}
+
+.lgx-onboarding-steps {
+	display: flex;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.lgx-onboarding-steps-wrapper {
+		transition: none;
+	}
+}
+
+.lgx-onboarding-step {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	background: #ffffff;
+	border: 1px solid #e2e8f0;
+	border-radius: 6px;
+	padding: 16px;
+	position: relative;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.lgx-onboarding-step__header {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+
+.lgx-onboarding-step__label {
+	font-size: 0.75rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	color: #64748b;
+}
+
+.lgx-onboarding-step__title {
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: #334155;
+	margin: 0 0 8px 0;
+	line-height: 1.3;
+}
+
+.lgx-onboarding-step__desc {
+	font-size: 0.85rem;
+	color: #64748b;
+	margin: 0 0 16px 0;
+	line-height: 1.4;
+	flex-grow: 1;
+}
+
+.lgx-onboarding-step .dashicons {
+	font-size: 20px;
+	width: 20px;
+	height: 20px;
+}
+
+.lgx-onboarding-step--completed {
+	border-color: #dcfce7;
+	background: #f0fdf4;
+}
+
+.lgx-onboarding-step--completed .lgx-onboarding-step__title {
+	color: #15803d;
+}
+
+.lgx-onboarding-step--completed .dashicons {
+	color: #15803d;
+}
+
+.lgx-onboarding-step--current {
+	border-color: var(--lgx-accent, #2271b1);
+	box-shadow: 0 2px 8px rgba(34, 113, 177, 0.1);
+}
+
+.lgx-onboarding-step__dot {
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	display: inline-block;
+}
+
+.lgx-onboarding-step__dot--current {
+	background: var(--lgx-accent, #2271b1);
+	box-shadow: 0 0 0 3px rgba(34, 113, 177, 0.2);
+}
+
+.lgx-onboarding-step__dot--pending {
+	background: #cbd5e1;
+}
+
+.lgx-onboarding-step--pending {
+	opacity: 0.7;
+}
+
+.lgx-onboarding-step__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.lgx-button--disabled {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+@media (max-width: 1024px) {
+	.lgx-onboarding-steps {
+		flex-direction: column;
+	}
+}
+
+/* ==========================================================================
+   5. Tables & Lists
+   ========================================================================== */
+.lgx-card__body--no-padding {
+	padding: 0;
+}
+
+.lgx-table {
+	width: 100%;
+	border-collapse: collapse;
+	text-align: left;
+}
+
+.lgx-table th,
+.lgx-table td {
+	padding: 16px 24px;
+	border-bottom: 1px solid #f1f5f9;
+	vertical-align: middle;
+}
+
+.lgx-table tr:last-child td {
+	border-bottom: none;
+}
+
+.lgx-table--recent .lgx-table__col-thumb {
+	width: 60px;
+	padding-right: 0;
+}
+
+.lgx-table--recent .lgx-table__col-title {
+	font-size: 0.95rem;
+	color: #0f172a;
+}
+
+.lgx-table--recent .lgx-table__col-shortcode {
+	width: 200px;
+}
+
+.lgx-input--shortcode {
+	width: 100%;
+	padding: 6px 12px;
+	background: #f8fafc;
+	border: 1px solid #e2e8f0;
+	border-radius: 4px;
+	color: #475569;
+	font-family: monospace;
+	font-size: 0.85rem;
+	cursor: pointer;
+	text-align: center;
+	transition: all 0.2s ease;
+}
+
+.lgx-input--shortcode:hover,
+.lgx-input--shortcode:focus {
+	background: #ffffff;
+	border-color: var(--lgx-accent, #2271b1);
+	box-shadow: 0 0 0 2px rgba(34, 113, 177, 0.1);
+	outline: none;
+}
+
+.lgx-table--recent .lgx-table__col-actions {
+	text-align: right;
+	width: 100px;
+}
+
+.lgx-recent-thumb {
+	width: 48px;
+	height: 48px;
+	object-fit: cover;
+	border-radius: 4px;
+	border: 1px solid #e2e8f0;
+	display: block;
+}
+
+.lgx-recent-thumb-placeholder {
+	width: 48px;
+	height: 48px;
+	background: #f8fafc;
+	border: 1px solid #e2e8f0;
+	border-radius: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.lgx-recent-thumb-placeholder .dashicons {
+	color: #94a3b8;
+}
+
+.lgx-empty-state {
+	padding: 40px 24px;
+	text-align: center;
+	background: #f8fafc;
+	border-radius: 0 0 8px 8px;
+}
+
+.lgx-empty-state p {
+	color: #64748b;
+	margin: 0 0 16px 0;
+	font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   6. Statistics
+   ========================================================================== */
+.lgx-stat {
+	background: #f8fafc;
+	border: 1px solid #f1f5f9;
+	border-radius: 6px;
+	padding: 20px;
+	text-align: center;
+	transition: background-color 0.15s ease-in-out;
+}
+
+.lgx-stat:hover {
+	background: #f1f5f9;
+}
+
+.lgx-stat__number {
+	display: block;
+	font-size: 2.5rem;
+	font-weight: 800;
+	color: var(--lgx-accent, #2271b1);
+	line-height: 1;
+	margin-bottom: 6px;
+}
+
+.lgx-stat__label {
+	font-size: 0.875rem;
+	color: #475569;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+/* ==========================================================================
+   5. Badges
+   ========================================================================== */
+.lgx-badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 4px 10px;
+	font-size: 0.75rem;
+	font-weight: 700;
+	border-radius: 50px;
+	text-transform: uppercase;
+	line-height: 1;
+}
+
+.lgx-badge--success,
+.lgx-badge--pass {
+	background: #dcfce7;
+	color: #15803d;
+}
+
+.lgx-badge--warning {
+	background: #fef9c3;
+	color: #a16207;
+}
+
+.lgx-badge--error,
+.lgx-badge--fail {
+	background: #fee2e2;
+	color: #b91c1c;
+}
+
+/* ==========================================================================
+   6. Buttons
+   ========================================================================== */
+.lgx-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 8px 16px;
+	font-size: 0.875rem;
+	font-weight: 600;
+	border-radius: 4px;
+	border: 1px solid transparent;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+.lgx-button--primary {
+	background: var(--lgx-accent, #2271b1);
+	color: #ffffff;
+}
+
+.lgx-button--primary:hover {
+	background: #135e96;
+	color: #ffffff;
+}
+
+/*
+ * Reserved for Pro-upgrade CTAs specifically (Get Help / Free-upgrade
+ * notice) -- matches the Builder's own #3b8437/#2e672b pair, used there
+ * only for its equivalent three upgrade touchpoints, never as a general
+ * accent. See the brand-color tokens comment near the top of this file.
+ */
+.lgx-button--upgrade {
+	background: var(--lgx-upgrade-accent, #3b8437);
+	color: #ffffff;
+}
+
+.lgx-button--upgrade:hover {
+	background: var(--lgx-upgrade-accent-hover, #2e672b);
+	color: #ffffff;
+}
+
+.lgx-button--secondary {
+	background: #ffffff;
+	border-color: #cbd5e1;
+	color: #475569;
+}
+
+.lgx-button--secondary:hover {
+	border-color: #94a3b8;
+	color: #334155;
+}
+
+/* Action button card variant */
+.lgx-button--action {
+	display: flex;
+	align-items: flex-start;
+	background: #ffffff;
+	border: 1px solid #cbd5e1;
+	border-radius: 6px;
+	padding: 16px;
+	color: #334155;
+	text-decoration: none;
+	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, transform 0.15s ease-in-out;
+	height: 100%;
+	box-sizing: border-box;
+}
+
+.lgx-button--action .dashicons {
+	font-size: 24px;
+	width: 24px;
+	height: 24px;
+	margin-right: 12px;
+	flex-shrink: 0;
+}
+
+/* Primary Action */
+.lgx-button--action--primary {
+	border-left: 4px solid var(--lgx-accent, #2271b1);
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.lgx-button--action--primary:hover {
+	border-color: var(--lgx-accent, #2271b1);
+	border-left-color: var(--lgx-accent, #2271b1);
+	box-shadow: 0 6px 15px rgba(34, 113, 177, 0.12);
+	transform: translateY(-1px);
+	color: var(--lgx-accent, #2271b1);
+}
+
+.lgx-button--action--primary:focus {
+	border-color: var(--lgx-accent, #2271b1);
+	outline: 1px solid transparent;
+	box-shadow: 0 0 0 1px #50575e, 0 0 0 3px var(--lgx-accent, #2271b1);
+	color: var(--lgx-accent, #2271b1);
+}
+
+.lgx-button--action--primary .dashicons {
+	color: var(--lgx-accent, #2271b1);
+}
+
+/* Secondary Action */
+.lgx-button--action--secondary {
+	border-color: #cbd5e1;
+}
+
+.lgx-button--action--secondary:hover {
+	border-color: #94a3b8;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+	transform: translateY(-1px);
+	color: #334155;
+}
+
+.lgx-button--action--secondary:focus {
+	border-color: #94a3b8;
+	outline: 1px solid transparent;
+	box-shadow: 0 0 0 1px #50575e, 0 0 0 3px var(--lgx-accent, #2271b1);
+	color: #334155;
+}
+
+.lgx-button--action--secondary .dashicons {
+	color: #64748b;
+	transition: color 0.15s ease-in-out;
+}
+
+.lgx-button--action--secondary:hover .dashicons {
+	color: var(--lgx-accent, #2271b1);
+}
+
+.lgx-button__action-text h3 {
+	margin: 0 0 4px 0;
+	font-size: 1rem;
+	font-weight: 600;
+	line-height: 1.3;
+}
+
+.lgx-button__action-text p {
+	margin: 0;
+	font-size: 0.85rem;
+	color: #64748b;
+	line-height: 1.4;
+}
+
+.lgx-button--action:hover .lgx-button__action-text p {
+	color: #475569;
+}
+
+.lgx-video-duration {
+	font-size: 0.75rem;
+	color: #94a3b8;
+	margin-left: 6px;
+}
+
+/* Diagnostics Table */
+.lgx-table--diagnostics {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.lgx-table--diagnostics td {
+	padding: 12px 0;
+	border-bottom: 1px solid #f1f5f9;
+	font-size: 0.9rem;
+	color: #334155;
+}
+
+.lgx-table--diagnostics tr:last-child td {
+	border-bottom: none;
+}
+
+.lgx-table__status-cell {
+	text-align: right;
+}
+
+/* ==========================================================================
+   6b. Demo Content (B87)
+   ========================================================================== */
+.lgx-demo-content__desc {
+	font-size: 0.9rem;
+	color: #475569;
+	margin: 0 0 8px 0;
+	line-height: 1.5;
+}
+
+.lgx-demo-content__note {
+	font-size: 0.85rem;
+	color: #64748b;
+	margin: 0 0 16px 0;
+	line-height: 1.4;
+}
+
+.lgx-demo-content__actions {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.lgx-demo-content__feedback {
+	font-size: 0.85rem;
+	color: #64748b;
+}
+
+/* ==========================================================================
+   8. Onboarding Toggle
+   ========================================================================== */
+.lgx-dashboard-onboarding-toggle {
+	margin-left: 4px;
+	padding: 4px 10px;
+	font-size: 0.75rem;
+	white-space: nowrap;
+}
+
+/* ==========================================================================
+   9. Help & Resources — Recommendations, FAQ, Documentation, Get Help
+   ========================================================================== */
+.lgx-help-recommendations__list {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.lgx-help-recommendations__item {
+	display: flex;
+	align-items: flex-start;
+	gap: 14px;
+	padding-bottom: 16px;
+	border-bottom: 1px solid #f1f5f9;
+}
+
+.lgx-help-recommendations__item:last-child {
+	padding-bottom: 0;
+	border-bottom: none;
+}
+
+.lgx-help-recommendations__icon {
+	flex-shrink: 0;
+	font-size: 22px;
+	width: 22px;
+	height: 22px;
+	color: #64748b;
+	margin-top: 2px;
+}
+
+.lgx-help-recommendations__text h3 {
+	margin: 0 0 4px 0;
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: #334155;
+}
+
+.lgx-help-recommendations__text p {
+	margin: 0;
+	font-size: 0.85rem;
+	color: #64748b;
+	line-height: 1.4;
+}
+
+/*
+ * FAQ visual language deliberately echoes the Showcase Builder's own
+ * PanelBody accordion (admin/css/lgx-admin-ui.css, .lgx-ui-panelbody*) —
+ * bordered rounded panel per item, #f6f7f7 hover, 2px inset focus ring,
+ * #787c82 chevron rotating 180deg on [aria-expanded="true"] — so this
+ * screen reads as part of the same admin system. Reference only: this
+ * file defines its own, separately-namespaced rules; lgx-admin-ui.css
+ * itself is not loaded, imported, or modified here.
+ */
+.lgx-help-faq__list {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.lgx-help-faq__item {
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.lgx-help-faq__heading {
+	margin: 0;
+	font-size: 1rem;
+}
+
+.lgx-help-faq__question {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	width: 100%;
+	background: #fff;
+	border: none;
+	cursor: pointer;
+	padding: 14px 18px;
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: #1d2327;
+	text-align: left;
+	transition: background-color 0.15s ease-in-out;
+}
+
+.lgx-help-faq__question:hover {
+	background: #f6f7f7;
+}
+
+.lgx-help-faq__question:focus,
+.lgx-help-faq__question:focus-visible {
+	outline: 2px solid var(--wp-admin-theme-color, #2271b1);
+	outline-offset: -2px;
+}
+
+.lgx-help-faq__question[aria-expanded="true"] {
+	background: #f6f7f7;
+	border-bottom: 1px solid #dcdcde;
+}
+
+.lgx-help-faq__question .dashicons {
+	flex-shrink: 0;
+	font-size: 18px;
+	width: 18px;
+	height: 18px;
+	color: #787c82;
+	transition: transform 0.2s ease-in-out;
+}
+
+.lgx-help-faq__question[aria-expanded="true"] .dashicons {
+	transform: rotate(180deg);
+}
+
+/*
+ * Smooth open/close via animated CSS grid rows (~220ms) -- handles
+ * variable-length answers correctly, unlike a fixed/oversized max-height
+ * hack. Padding lives on the -inner wrapper, not this grid container, so
+ * it collapses to true zero height (not just zero content) when closed.
+ * JS (logo-slider-wp-help-resources.js) removes/restores the [hidden]
+ * attribute at the start/end of the transition so the panel is still
+ * genuinely out of the accessibility tree and layout at rest, exactly
+ * like the pre-animation version -- the animation only runs during the
+ * brief open/close window.
+ */
+.lgx-help-faq__answer {
+	display: grid;
+	grid-template-rows: 0fr;
+	transition: grid-template-rows 220ms ease;
+}
+
+.lgx-help-faq__answer[data-expanded="true"] {
+	grid-template-rows: 1fr;
+}
+
+.lgx-help-faq__answer[hidden] {
+	display: none;
+}
+
+.lgx-help-faq__answer-inner {
+	overflow: hidden;
+	min-height: 0;
+	padding: 16px 18px 18px 18px;
+	background: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.lgx-help-faq__answer {
+		transition: none;
+	}
+}
+
+.lgx-help-faq__answer p {
+	margin: 0 0 8px 0;
+	font-size: 0.9rem;
+	color: #475569;
+	line-height: 1.5;
+}
+
+.lgx-help-faq__doc-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: var(--lgx-accent, #2271b1);
+	text-decoration: none;
+}
+
+.lgx-help-faq__doc-link .dashicons {
+	font-size: 14px;
+	width: 14px;
+	height: 14px;
+}
+
+.lgx-help-documentation__desc {
+	margin: 0 0 16px 0;
+	font-size: 0.9rem;
+	color: #64748b;
+	line-height: 1.5;
+}
+
+.lgx-help-get-help__list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.lgx-help-get-help__list li {
+	margin-bottom: 10px;
+}
+
+.lgx-help-get-help__list a {
+	display: flex;
+	align-items: center;
+	color: #475569;
+	text-decoration: none;
+	font-size: 0.9rem;
+	font-weight: 500;
+	transition: color 0.15s ease-in-out;
+}
+
+.lgx-help-get-help__list a:hover {
+	color: var(--lgx-accent, #2271b1);
+}
+
+.lgx-help-get-help__list a:focus {
+	outline: 1px solid transparent;
+	box-shadow: 0 0 0 1px #50575e, 0 0 0 3px var(--lgx-accent, #2271b1);
+	color: var(--lgx-accent, #2271b1);
+}
+
+.lgx-help-get-help__list a .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+	margin-right: 8px;
+	color: #64748b;
+}
+
+/*
+ * Get Help CTA (Round 3) — the primary visual element on the card;
+ * .lgx-help-get-help__list (Rate Plugin, video list) sits below it as a
+ * clearly secondary block, not a competing focal point. Uses the general
+ * UI accent (--lgx-accent, matching the Builder's own tabs/focus/active
+ * color), not the upgrade-green family -- Get Support is a normal support
+ * action, not a Pro/upgrade signal, and this product's own established
+ * language (see the brand-research section of the Round 3 report) reserves
+ * green specifically for Pro-upgrade touchpoints.
+ */
+.lgx-help-get-help__cta {
+	/* Round 3b: left-aligned to match the Documentation card (the chosen
+	   alignment reference) — was centered, the odd one out next to every
+	   other left-aligned card on this page. */
+	text-align: left;
+	padding: 8px 8px 24px 8px;
+	border-bottom: 1px solid #f1f5f9;
+	margin-bottom: 16px;
+}
+
+.lgx-help-get-help__cta-icon {
+	font-size: 28px;
+	width: 28px;
+	height: 28px;
+	color: var(--lgx-accent, #2271b1);
+}
+
+.lgx-help-get-help__cta-title {
+	margin: 8px 0 8px 0;
+	font-size: 1.15rem;
+	font-weight: 700;
+	color: #0f172a;
+}
+
+.lgx-help-get-help__cta-desc {
+	margin: 0 0 18px 0;
+	font-size: 0.88rem;
+	color: #64748b;
+	line-height: 1.5;
+}
+
+.lgx-help-get-help__cta-button {
+	display: inline-flex;
+}
+
+/*
+ * Free-upgrade CTA (Round 3) — same visual family as the Get Help CTA
+ * above, own card so it never appears for Pro (the whole <section> is
+ * conditionally rendered server-side, not just hidden by CSS).
+ */
+.lgx-help-upgrade .lgx-card__body {
+	text-align: center;
+}
+
+.lgx-help-upgrade__icon {
+	font-size: 28px;
+	width: 28px;
+	height: 28px;
+	color: var(--lgx-upgrade-accent, #3b8437);
+}
+
+.lgx-help-upgrade__title {
+	margin: 8px 0 8px 0;
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: #0f172a;
+}
+
+.lgx-help-upgrade__desc {
+	margin: 0 0 18px 0;
+	font-size: 0.85rem;
+	color: #64748b;
+	line-height: 1.5;
+}
+
+/* ==========================================================================
+   7. Responsive
+   ========================================================================== */
+@media (max-width: 1024px) {
+	.lgx-grid__column--two-thirds,
+	.lgx-grid__column--one-third {
+		width: 100%;
+	}
+}
+
+@media (max-width: 768px) {
+	.lgx-grid__column--half {
+		width: 100%;
+	}
+	.lgx-grid--actions .lgx-grid__column--one-third {
+		width: 100%;
+	}
+	.lgx-dashboard__header {
+		padding: 30px 20px;
+	}
+	.lgx-dashboard__brand-row {
+		align-items: flex-start;
+	}
+	.lgx-dashboard__title {
+		font-size: 1.75rem;
+	}
+	.lgx-card__header--flex {
+		flex-wrap: wrap;
+		gap: 12px;
+	}
+	.lgx-onboarding__progress {
+		width: 100%;
+	}
+}
+
+@media (max-width: 480px) {
+	.lgx-dashboard__brand-row {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 10px;
+	}
+	.lgx-dashboard__brand-link {
+		flex: 0 0 auto;
+		width: 160px;
+		max-width: 100%;
+	}
+	.lgx-dashboard__edition-status {
+		align-self: flex-end;
+	}
+}

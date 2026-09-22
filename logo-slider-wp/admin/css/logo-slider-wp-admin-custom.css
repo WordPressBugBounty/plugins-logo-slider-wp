@@ -1,0 +1,282 @@
+/* UI Modernization Styles */
+.lgx_meta_boxes_fields_logo_item .lgx-field-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+.lgx_meta_boxes_fields_logo_item .lgx-field-row:last-child {
+    border-bottom: none;
+}
+.lgx_meta_boxes_fields_logo_item .lgx-field-left {
+    flex: 0 0 18%;
+    max-width: 18%;
+    padding-right: 20px;
+    box-sizing: border-box;
+}
+.lgx_meta_boxes_fields_logo_item .lgx-field-right {
+    flex: 0 0 82%;
+    max-width: 82%;
+    box-sizing: border-box;
+}
+.lgx_meta_boxes_fields_logo_item .lgx-field__label {
+    font-weight: 600;
+    color: #222;
+}
+.lgx_meta_boxes_fields_logo_item .lgx-field__control {
+    width: 100% !important;
+    max-width: 550px;
+}
+
+/* Meta Box Styles to mimic competitor */
+#lgx_logosliderwp_metabox_postbox.postbox, 
+#postimagediv.postbox {
+    border: 1px solid #ddd;
+    box-shadow: none;
+    border-radius: 4px;
+}
+#lgx_logosliderwp_metabox_postbox.postbox > .postbox-header,
+#postimagediv.postbox > .postbox-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+}
+#lgx_logosliderwp_metabox_postbox.postbox .hndle,
+#postimagediv.postbox .hndle {
+    font-size: 13px;
+    font-weight: 700;
+    color: #333;
+}
+
+/* Feature Image Button Overrides */
+#postimagediv .inside {
+    padding: 12px 20px;
+    text-align: center;
+}
+#postimagediv #set-post-thumbnail {
+    display: inline-block;
+    background: #2271b1;
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 3px;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+#postimagediv #set-post-thumbnail:hover {
+    background: #135e96;
+}
+#postimagediv #set-post-thumbnail img {
+    max-width: 100%;
+    height: auto;
+}
+#postimagediv #remove-post-thumbnail {
+    display: inline-block;
+    margin-top: 10px;
+    color: #d63638;
+}
+
+/* Responsive Stacking for Meta Box Fields (WP Standard: 782px) */
+@media screen and (max-width: 782px) {
+    .lgx_meta_boxes_fields_logo_item .lgx-field-left,
+    .lgx_meta_boxes_fields_logo_item .lgx-field-right {
+        flex: 0 0 100%;
+        max-width: 100%;
+        padding-right: 0;
+    }
+    .lgx_meta_boxes_fields_logo_item .lgx-field-left {
+        margin-bottom: 8px;
+    }
+}
+
+/* Pre-existing bug fix (Task 021 Part 2 investigation): the @media block
+   above was missing this closing brace, silently nesting every rule below
+   -- .lgx-drag-handle, .lgx-cat-badge-link, .lgx-list-thumbnail and its
+   sub-elements, .column-title, table-hover, .tablenav .actions,
+   .search-box, and the two already-correctly-closed nested @media blocks
+   further down -- inside a "max-width: 782px" scope that was clearly only
+   meant to cover the two rules directly above. All of it was silently
+   inactive at normal desktop admin widths. Confirmed via the browser's
+   own parsed CSSStyleSheet.cssRules before/after, not just brace-counting. */
+
+/* All Logos List UI Improvements */
+
+/* HP-3: Reorder Loading States */
+table.wp-list-table.lgx-reorder-saving tbody {
+    opacity: 0.6;
+    pointer-events: none;
+}
+.lgx-reorder-success {
+    background-color: #f0f6ea !important;
+    transition: background-color 0.5s ease;
+}
+.lgx-reorder-error {
+    background-color: #fcf0f1 !important;
+    transition: background-color 0.5s ease;
+}
+
+/* MP-1 & LP-5: Drag Handle and Category Badges */
+.lgx-drag-handle {
+    cursor: grab; 
+    color: #8c8f94; 
+    font-size: 18px; 
+    line-height: 1;
+    padding: 6px;
+    border-radius: 4px;
+    transition: background 0.15s ease, color 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+td.lgx_ls_reorder, th#lgx_ls_reorder, th.column-lgx_ls_reorder {
+    width: 32px !important;
+    padding: 8px 0 !important;
+    text-align: center !important;
+    vertical-align: middle;
+}
+.lgx-drag-handle:hover {
+    background: #f0f0f1;
+    color: #3c434a;
+}
+.lgx-drag-handle-disabled {
+    cursor: default; 
+    color: #dcdcde; 
+    opacity: 0.6; 
+    font-size: 18px; 
+    line-height: 1;
+    padding: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.lgx-cat-badge-link {
+    display: inline-block;
+    padding: 2px 6px;
+    margin: 0 2px 2px 0;
+    border: 1px solid #a5adc3;
+    color: #2c3338;
+    background: #f6f7f7;
+    border-radius: 3px;
+    font-size: 12px;
+    text-decoration: none;
+    line-height: 1.2;
+}
+.lgx-cat-badge-link:hover {
+    background: #f0f0f1;
+    color: #2271b1;
+    border-color: #2271b1;
+}
+
+/* MP-5: Thumbnail Column Sizing Refinement */
+.column-lgx_ls_logo {
+    width: 80px !important;
+}
+.lgx-list-thumbnail {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 60px;
+    height: 60px;
+    padding: 4px;
+
+    margin: 0 auto;
+
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+
+    overflow: hidden;
+}
+.lgx-list-thumbnail-placeholder {
+    color: #dcdcde;
+    font-size: 24px;
+    line-height: 1;
+    opacity: 0.8;
+}
+.lgx-no-logo-placeholder {
+    font-size: 10px;
+    color: #a7aaad;
+    text-align: center;
+    line-height: 1.2;
+}
+.lgx-no-logo-placeholder .dashicons {
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+    margin-bottom: 2px;
+}
+.lgx-list-thumbnail a {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+.lgx-list-thumbnail img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* LP-3: Responsive Column Visibility */
+@media screen and (max-width: 960px) {
+    .column-lgx_ls_url,
+    .column-date { 
+        display: none; 
+    }
+}
+@media screen and (max-width: 782px) {
+    .column-lgx_ls_category { 
+        display: none; 
+    }
+    .lgx-drag-handle { 
+        display: none; 
+    }
+}
+
+/* Final Polish: Typography, Spacing, Hover States */
+.column-title {
+    font-weight: 600;
+    color: #1d2327;
+}
+table.wp-list-table tbody tr:hover {
+    background-color: #f6f7f7;
+    transition: background-color 0.15s ease;
+}
+td.column-lgx_ls_url,
+td.column-lgx_ls_category {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.tablenav.top .actions {
+    margin-right: 10px;
+}
+.search-box {
+    margin-bottom: 8px;
+}
+
+/* Task 021 Part 2: alertify toast restyle -- overrides the bundled
+   library's stock 2013-era theme (dark box, off-brand lime green/red) to
+   match this plugin's own design language. This file loads after
+   alertify.css on every plugin admin screen (Logos list, Showcases list,
+   Showcase Builder), confirmed live on all three -- so this plain
+   override wins on source order alone, no !important needed. Success/
+   error colors are not new: #3b8437 is this codebase's own already-
+   WCAG-verified accent variant (4.62:1 white-text contrast, vs. 3.41:1
+   for the raw --lgx-accent); #d63638 is WordPress core's own error red,
+   already reused elsewhere in this plugin rather than inventing a new
+   one. Shape/shadow reworked toward the Showcase Builder's own header-
+   pill language (soft, diffuse elevation) instead of alertify's flat
+   dark box. */
+.alertify-log {
+    border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+.alertify-log-success {
+    background: #3b8437;
+}
+.alertify-log-error {
+    background: #d63638;
+}

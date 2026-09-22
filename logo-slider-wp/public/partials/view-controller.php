@@ -15,14 +15,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @subpackage Logo_Slider_Wp/public/partials
  */
 
-if( (LGX_LS_PLUGIN_BASE == 'logo-slider-wp/logo-slider-wp.php') && (LGX_LS_PLUGIN_META_FIELD_PRO == 'enabled') ) {
-	die('<p style="color: red;">Please buy a pro version of this plugin.</p>');
-}
 
 
 //echo '<pre>';print_r($lgx_shortcodes_meta); echo '</pre>';
 
 $lgx_app_id             = $atts['id'];
+//$lgx_app_id_pre_loader  = $atts['id'] . rand();
 $lgx_showcase_type      = (isset($lgx_shortcodes_meta['lgx_lswp_showcase_type']) ? $lgx_shortcodes_meta['lgx_lswp_showcase_type'] : 'grid');
 
 //Basic Settings
@@ -35,6 +33,13 @@ $lgx_nofollow_en        = $lgx_shortcodes_meta['lgx_nofollow_en'];
 $lgx_item_sort_order    = (isset($lgx_shortcodes_meta['lgx_item_sort_order']) ? $lgx_shortcodes_meta['lgx_item_sort_order'] : 'ASC');
 $lgx_item_sort_order_by = (isset($lgx_shortcodes_meta['lgx_item_sort_order_by']) ? $lgx_shortcodes_meta['lgx_item_sort_order_by'] : 'menu_order');
 
+$lgx_logo_position = (isset($lgx_shortcodes_meta['lgx_logo_position']) ? $lgx_shortcodes_meta['lgx_logo_position'] : 'top');
+$lgx_logo_info_align= (isset($lgx_shortcodes_meta['lgx_logo_info_align']) ? $lgx_shortcodes_meta['lgx_logo_info_align'] : 'center');
+
+
+//Grid
+$lgx_grid_style = (isset($lgx_shortcodes_meta['lgx_grid_style']) ? $lgx_shortcodes_meta['lgx_grid_style'] : 'simple');
+$lgx_grid_outline_color = lgx_ls_sanitize_css_color(isset($lgx_shortcodes_meta['lgx_grid_outline_color']) ? $lgx_shortcodes_meta['lgx_grid_outline_color'] : '#e9e9e9');
 
 
 // Responsive
@@ -60,11 +65,13 @@ if($lgx_tooltip_en == 'yes') {
     $tooltipDataAttr_Arr['tt_distance']     =  intval($lgx_shortcodes_meta['lgx_tooltip_distance']);
     $tooltipDataAttr_Arr['tt_intersection'] = $lgx_shortcodes_meta['lgx_tooltip_min_intersection'];
     $tooltipDataAttr_Arr['tt_timer']        = $lgx_shortcodes_meta['lgx_tooltip_timer'];
+    
+    $tooltipDataAttr_Arr['tt_minwidth']     =  intval(isset($lgx_shortcodes_meta['lgx_tooltip_min_width']) ? $lgx_shortcodes_meta['lgx_tooltip_min_width'] : 0);
+    $tooltipDataAttr_Arr['tt_maxwidth']     =  (isset($lgx_shortcodes_meta['lgx_tooltip_max_width']) ? $lgx_shortcodes_meta['lgx_tooltip_max_width'] : '');
 
     // Apply Data Attribute
-    // Update date : 08.07.2026, By : @VibeLogic
     foreach ($tooltipDataAttr_Arr as $key => $value) {
-        $tooltipDataAttr_str .= ' data-' . esc_attr($key) . '="' . esc_attr($value) . '" ';
+        $tooltipDataAttr_str .= ' data-' . esc_attr( $key ) . '="' . esc_attr( $value ) . '" ';
     }
 
 }
@@ -110,6 +117,7 @@ $carouselDataAttr_str = '';
 $carousel_rtl_en = ((($lgx_shortcodes_meta['lgx_carousel_rtl_en'] == 'yes') && ( 'carousel' == $lgx_showcase_type)) ? 'yes' : 'no');
 $carousel_pagination = '';
 $carousel_navigation = '';
+$carousel_ticker_pause_control = '';
 
 
 
@@ -128,13 +136,12 @@ if ( 'grid' == $lgx_showcase_type ) {
     
     $carouselDataAttr_Arr = array();
 
-    $carouselDataAttr_Arr['effect']     = $lgx_shortcodes_meta['lgx_carousel_transition_effect'];
-    $carouselDataAttr_Arr['infinite']   = ($lgx_shortcodes_meta['lgx_carousel_infinite_en'] == 'no') ? 'false' : 'true';
-    //$carouselDataAttr_Arr['speed']    = $lgx_shortcodes_meta['lgx_carousel_transition_speed'];
-    $carouselDataAttr_Arr['speed']      = (is_numeric($lgx_shortcodes_meta['lgx_carousel_transition_speed']) ? $lgx_shortcodes_meta['lgx_carousel_transition_speed'] : '450');
-
+    $carouselDataAttr_Arr['effect']   = $lgx_shortcodes_meta['lgx_carousel_transition_effect'];
+    $carouselDataAttr_Arr['infinite'] = ($lgx_shortcodes_meta['lgx_carousel_infinite_en'] == 'no') ? 'false' : 'true';
+    $carouselDataAttr_Arr['speed'] = (is_numeric($lgx_shortcodes_meta['lgx_carousel_transition_speed']) ? $lgx_shortcodes_meta['lgx_carousel_transition_speed'] : '450');
     $carouselDataAttr_Arr['autoplay'] = ($lgx_shortcodes_meta['lgx_carousel_autoplay_en'] == 'no') ? 'false' : 'true';
-    $carouselDataAttr_Arr['delay']  = (($lgx_carousel_ticker_en == 'yes') ? 1 : $lgx_shortcodes_meta['lgx_carousel_autoplay_delay']) ;
+    $carouselDataAttr_Arr['delay']  = $lgx_shortcodes_meta['lgx_carousel_autoplay_delay'];
+    $carouselDataAttr_Arr['ticker'] = ($lgx_carousel_ticker_en == 'yes') ? 'true' : 'false';
     $carouselDataAttr_Arr['pause']  = ($lgx_shortcodes_meta['lgx_carousel_pause_mouse_enter_en'] == 'no') ? 'false' : 'true';
     $carouselDataAttr_Arr['space']  = $lgx_shortcodes_meta['lgx_carousel_space_between'];
 
@@ -158,9 +165,8 @@ if ( 'grid' == $lgx_showcase_type ) {
     $carouselDataAttr_Arr['lazy']        = ($lgx_carousel_lazy_load_en == 'no') ? 'false' : 'true';
 
     // Apply Data Attribute
-    // Update date : 08.07.2026, By : @VibeLogic
     foreach ($carouselDataAttr_Arr as $key => $value) {
-        $carouselDataAttr_str .= ' data-' . esc_attr($key) . '="' . esc_attr($value) . '" ';
+        $carouselDataAttr_str .= ' data-' . esc_attr( $key ) . '="' . esc_attr( $value ) . '" ';
     }
 
 
@@ -176,10 +182,30 @@ if ( 'grid' == $lgx_showcase_type ) {
     $lgx_nav_content = '<div class="lgx_lsw_nav_button lgx_lsw_nav_button_prev">'.$lgx_nav_text_left.'</div><div class="lgx_lsw_nav_button lgx_lsw_nav_button_next ">'.$lgx_nav_text_right.'</div>';
 
     if('yes' == $carousel_rtl_en) {
-        $lgx_nav_content = '<div class="lgx_lsw_nav_button lgx_lsw_nav_button_next ">'.$lgx_nav_text_right.'</div><div class="lgx_lsw_nav_button lgx_lsw_nav_button_prev">'.$lgx_nav_text_left.'</div>';
+        $lgx_nav_content = '<div class="lgx_lsw_nav_button lgx_lsw_nav_button_prev lgx_lsw_nav_button_prev_rtl">'.$lgx_nav_text_right.'</div><div class="lgx_lsw_nav_button lgx_lsw_nav_button_next lgx_lsw_nav_button_next_rtl ">'.$lgx_nav_text_left.'</div>';
+        //$lgx_nav_content = '<div class="lgx_lsw_nav_button lgx_lsw_nav_button_next lgx_lsw_nav_button_next_rtl ">'.$lgx_nav_text_left.'</div><div class="lgx_lsw_nav_button lgx_lsw_nav_button_prev lgx_lsw_nav_button_prev_rtl">'.$lgx_nav_text_right.'</div>';
     }
 
     $carousel_navigation = ((($lgx_shortcodes_meta['lgx_carousel_nav_en'] == 'yes') && ($lgx_carousel_ticker_en != 'yes') ) ? '<div class="lgx_lsw_nav_wrap lgx_lsw_nav_'.$lgx_shortcodes_meta['lgx_carousel_nav_position'].' '.(('yes' == $lgx_shortcodes_meta['lgx_carousel_nav_hover_en']) ? 'lgx_lsw_nav_wrap_hover' : '').' ">'.$lgx_nav_content.'</div>' : '');
+
+    // Task 014 (B38): keyboard/touch-accessible pause control for Ticker
+    // Mode's otherwise-uncontrollable continuous auto-scroll (WCAG 2.2.2).
+    // New key not yet present in older saved meta, so falls back to this
+    // field's own 'yes' default via the same isset()-or-default idiom used
+    // elsewhere in this file (e.g. lgx_item_sort_order above).
+    $lgx_ticker_pause_control_en = isset( $lgx_shortcodes_meta['lgx_carousel_ticker_pause_control_en'] )
+        ? $lgx_shortcodes_meta['lgx_carousel_ticker_pause_control_en']
+        : 'yes';
+    // Also requires Autoplay itself to be on: Ticker Mode and the master
+    // Autoplay toggle are independent (task011g confirmed only Autoplay
+    // Delay/Infinite Loop are force-set by Ticker, not Autoplay itself), and
+    // WCAG 2.2.2 only applies to motion that "starts automatically" — a
+    // pause control would be meaningless (and its "resume" action would
+    // introduce motion that was never there) on a Ticker showcase with
+    // Autoplay deliberately off.
+    $carousel_ticker_pause_control = ( ('yes' == $lgx_carousel_ticker_en) && ('yes' == $lgx_ticker_pause_control_en) && ('yes' == $lgx_shortcodes_meta['lgx_carousel_autoplay_en']) )
+        ? '<button type="button" class="lgx_lsw_ticker_pause_btn"><i class="fa fa-pause" aria-hidden="true"></i></button>'
+        : '';
 
     include 'template/view-default.php';
 
@@ -194,6 +220,6 @@ if ( 'grid' == $lgx_showcase_type ) {
 
 include 'dynamic-style/general-style.php';
 
-if( (LGX_LS_PLUGIN_BASE == 'logo-slider-wp-pro/logo-slider-wp-pro.php') ) {
+if ( lgx_ls_is_pro() ) {
     include 'dynamic-style/pro-style.php';
 }

@@ -20,6 +20,7 @@
  * @subpackage Logo_Slider_WP/includes
  * @author     LogicHunt <info.logichunt@gmail.com>
  */
+if ( ! class_exists( 'Logo_Slider_WP_Deactivator' ) ) {
 class Logo_Slider_WP_Deactivator {
 
 	/**
@@ -33,4 +34,5 @@ class Logo_Slider_WP_Deactivator {
 
 	}
 
+}
 }

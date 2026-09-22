@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 /**
  * The public-facing functionality of the plugin.
  *
@@ -11,6 +15,87 @@
  */
 
 /**
+ * M-001 — sanitize a stored colour for inline CSS output.
+ *
+ * The alpha-enabled colour picker stores #rgb, #rgba, #rrggbb, #rrggbbaa,
+ * rgb() and rgba() values; sanitize_hex_color() only accepts #rgb/#rrggbb and
+ * so turned every other picker-produced value into an empty declaration.
+ * Render-time only: nothing here writes to or normalises stored metadata.
+ *
+ * Returns the trimmed original value when it is one of the accepted forms
+ * with in-range components, otherwise an empty string. Named colours, url(),
+ * var(), and anything carrying CSS punctuation are rejected.
+ *
+ * @since  6.0.0
+ * @param  mixed $value Stored colour value.
+ * @return string       Safe CSS colour or ''.
+ */
+if ( ! function_exists( 'lgx_ls_sanitize_css_color' ) ) {
+    function lgx_ls_sanitize_css_color( $value ) {
+        if ( ! is_string( $value ) ) {
+            return '';
+        }
+        $value = trim( $value );
+        if ( '' === $value ) {
+            return '';
+        }
+
+        if ( preg_match( '/^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/iD', $value ) ) {
+            return $value;
+        }
+
+        $num = '(?:\d+(?:\.\d+)?|\.\d+)';
+        if ( preg_match( '/^rgba?\(\s*(' . $num . '%?)\s*,\s*(' . $num . '%?)\s*,\s*(' . $num . '%?)\s*(?:,\s*(' . $num . '%?)\s*)?\)$/iD', $value, $m ) ) {
+            $channels = array( $m[1], $m[2], $m[3] );
+            $percent  = ( '%' === substr( $channels[0], -1 ) );
+            foreach ( $channels as $c ) {
+                if ( ( '%' === substr( $c, -1 ) ) !== $percent ) {
+                    return '';
+                }
+                if ( (float) $c > ( $percent ? 100 : 255 ) ) {
+                    return '';
+                }
+            }
+            if ( isset( $m[4] ) && '' !== $m[4] ) {
+                if ( (float) $m[4] > ( '%' === substr( $m[4], -1 ) ? 100 : 1 ) ) {
+                    return '';
+                }
+            }
+            return $value;
+        }
+
+        return '';
+    }
+}
+
+/**
+ * M-001 — build one CSS declaration, or nothing when it would be incomplete.
+ *
+ * lgx_ls_sanitize_css_color() returns '' for an unusable stored colour. The
+ * colour render sites emit their declaration through this helper so that an
+ * invalid or empty colour results in the whole declaration being omitted,
+ * rather than a malformed "property: ;" or a colourless "border: 1px solid ;".
+ * It only ever sees the declarations built from the colour fields; other CSS
+ * is not passed through it.
+ *
+ * @since  6.0.0
+ * @param  string      $property CSS property name.
+ * @param  string      $value    Declaration value (a sanitized colour, or a shorthand ending in one).
+ * @param  string|null $required Optional value that must be non-empty for the declaration to be emitted
+ *                               (pass the colour for shorthands such as "border").
+ * @return string                "property: value;" or ''.
+ */
+if ( ! function_exists( 'lgx_ls_css_decl' ) ) {
+    function lgx_ls_css_decl( $property, $value, $required = null ) {
+        if ( null !== $required && '' === trim( (string) $required ) ) {
+            return '';
+        }
+        $value = trim( (string) $value );
+        return ( '' === $value ) ? '' : $property . ': ' . $value . ';';
+    }
+}
+
+/**
  * The public-facing functionality of the plugin.
  *
  * Defines the plugin name, version, and two examples hooks for how to
@@ -20,6 +105,7 @@
  * @subpackage Logo_Slider_WP/public
  * @author     LogicHunt <info.logichunt@gmail.com>
  */
+if ( ! class_exists( 'Logo_Slider_WP_Public' ) ) {
 class Logo_Slider_WP_Public {
 
 
@@ -46,7 +132,22 @@ class Logo_Slider_WP_Public {
      */
     private $settings_api;
 
+    /**
+     * Task 011 — the merged (saved + unsaved-preview-submitted) meta array,
+     * set by maybe_render_preview() only when a valid transient override
+     * exists, read by filter_preview_meta_override().
+     *
+     * @var array|null
+     */
+    private $preview_meta_override = null;
 
+    /**
+     * Task 011 — the post_id filter_preview_meta_override() is scoped to
+     * for the current request. See maybe_render_preview().
+     *
+     * @var int|null
+     */
+    private $preview_meta_override_post_id = null;
 
 
     /**
@@ -63,7 +164,9 @@ class Logo_Slider_WP_Public {
 
         $this->settings_api = new Lgx_Carousel_Settings_API($plugin_name, $version);
 
-        add_shortcode('logo-slider', array($this, 'logo_slider_wp_shortcode_function_dep' ));
+        if ( ! shortcode_exists( 'logo-slider' ) ) {
+            add_shortcode('logo-slider', array($this, 'logo_slider_wp_shortcode_function_legacy' ));
+        }
     }
 
 
@@ -85,7 +188,7 @@ class Logo_Slider_WP_Public {
 
         wp_register_style('lgx-logo-slider-owl', plugin_dir_url( __FILE__ ) . 'assets/libs/owl/assets/owl.carousel.min.css', array(), $this->version, 'all' );
         wp_register_style('lgx-logo-slider-owltheme', plugin_dir_url( __FILE__ ) . 'assets/libs/owl/assets/owl.theme.default.min.css', array('lgx-logo-slider-owl'), $this->version, 'all' );
-        wp_register_style( 'lgx-logo-slider-style-dep', plugin_dir_url( __FILE__ ) . 'assets/css/logosliderwppublic-dep.min.css', array('lgx-logo-slider-owl'), $this->version, 'all' );
+        wp_register_style( 'lgx-logo-slider-style-legacy', plugin_dir_url( __FILE__ ) . 'assets/css/logosliderwppublic-dep.min.css', array('lgx-logo-slider-owl'), $this->version, 'all' );
 
 
         /**
@@ -123,14 +226,14 @@ class Logo_Slider_WP_Public {
         // Deprecated Script
         wp_register_script('lgxlogoowljs', plugin_dir_url( __FILE__ ) . 'assets/libs/owl/owl.carousel.js', array( 'jquery' ), $this->version, false );
         wp_register_script('lgxlogoowljs-modified', plugin_dir_url( __FILE__ ) . 'assets/libs/owl/owl-modified.js', array( 'lgxlogoowljs' ), $this->version, false );
-        wp_register_script( 'lgx-logo-slider-script-dep', plugin_dir_url( __FILE__ ) . 'assets/js/logosliderwppublic-dep.js', array( 'lgxlogoowljs' ), $this->version, false );
+        wp_register_script( 'lgx-logo-slider-script-legacy', plugin_dir_url( __FILE__ ) . 'assets/js/logosliderwppublic-dep.js', array( 'lgxlogoowljs' ), $this->version, false );
 
         // Localize the script
         $translation_array = array(
             'owl_navigationTextL'    => plugin_dir_url( __FILE__ ). 'assets/img/prev.png',
             'owl_navigationTextR'    => plugin_dir_url( __FILE__ ) . 'assets/img/next.png',
         );
-        wp_localize_script( 'lgx-logo-slider-script-dep', 'logosliderwp', $translation_array );
+        wp_localize_script( 'lgx-logo-slider-script-legacy', 'logosliderwp', $translation_array );
 
         // wp_enqueue_script('jquery');
 
@@ -157,10 +260,18 @@ class Logo_Slider_WP_Public {
 
         //Main Script
         wp_register_script('logo-slider-wp-public', plugin_dir_url( __FILE__ ) . 'assets/js/logo-slider-wp-public.js', array('jquery'), $this->version, true );
+
+        // Task 014 (B38): translation-ready strings for the Ticker Mode
+        // pause/play button's dynamic aria-label (set in JS, not PHP markup,
+        // since wp_kses_post() would strip aria-pressed from a server string).
+        wp_localize_script( 'logo-slider-wp-public', 'lgxLsPublicI18n', array(
+            'tickerPause'  => __( 'Pause ticker scrolling', 'logo-slider-wp' ),
+            'tickerResume' => __( 'Resume ticker scrolling', 'logo-slider-wp' ),
+        ) );
     }
 
 
-
+    
 
     /**
      * Plugin Output Function
@@ -170,7 +281,8 @@ class Logo_Slider_WP_Public {
      *  @since 1.0.0
      */
 
-    public static function lgx_output_function_dep($params){
+    /* Developer note: no need to modify further inside the code, because we will drop this support very soon. */
+    public static function lgx_output_function_legacy($params){
 
         //Query args
         $cats       = esc_attr($params['cat'] );
@@ -277,7 +389,7 @@ class Logo_Slider_WP_Public {
         // Enqueue Style
         wp_enqueue_style( 'lgx-logo-slider-owl' );
         wp_enqueue_style( 'lgx-logo-slider-owltheme' );
-        wp_enqueue_style( 'lgx-logo-slider-style-dep');
+        wp_enqueue_style( 'lgx-logo-slider-style-legacy');
 
 
         //Enqueue Script
@@ -288,78 +400,62 @@ class Logo_Slider_WP_Public {
             wp_enqueue_script( 'lgxlogoowljs-modified' );
         }
 
-        wp_enqueue_script( 'lgx-logo-slider-script-dep' );
+        wp_enqueue_script( 'lgx-logo-slider-script-legacy' );
 
         // The Loop
-       if ( $logo_post->have_posts() ) {
+        if ( $logo_post->have_posts() ) {
 
-                $logo_item = '';
+            while ( $logo_post->have_posts() ) {
 
-                while ( $logo_post->have_posts() ) {
+                $logo_post->the_post();
+                $post_id            = get_the_ID();
+                $post_title         = get_the_title( $post_id );
+                $metavalues         = get_post_meta( $post_id, '_logosliderwpmeta', true );
+                $company_name       = ! empty( $metavalues['company_name'] ) ? $metavalues['company_name'] : $post_title;
+                $company_url        = ! empty( $metavalues['company_url'] ) ? $metavalues['company_url'] : '';
+                $company_desc       = ! empty( $metavalues['company_desc'] ) ? $metavalues['company_desc'] : '';
 
-                    $logo_post->the_post();
+                $logo_img = '';
+                if (has_post_thumbnail( $post_id )) {
+                    $thumb_url = wp_get_attachment_image_src( get_post_thumbnail_id( $post_id), true );
+                    $thumb_url      = $thumb_url[0];
+                    $alt_text = get_post_meta( get_post_thumbnail_id($post_id), '_wp_attachment_image_alt', true );
 
-                    $post_id    = get_the_ID();
-                    $metavalues = get_post_meta( $post_id, '_logosliderwpmeta', true );
 
-                    $company_name = ! empty( $metavalues['company_name'] ) ? $metavalues['company_name'] : '';
-                    $company_url  = ! empty( $metavalues['company_url'] ) ? $metavalues['company_url'] : '';
-                    $company_desc = ! empty( $metavalues['company_desc'] ) ? $metavalues['company_desc'] : '';
-
-                    $logo_img = '';
-
-                    if ( has_post_thumbnail( $post_id ) ) {
-
-                        $thumb_data = wp_get_attachment_image_src( get_post_thumbnail_id( $post_id ), 'full' );
-                        $thumb_url  = ! empty( $thumb_data[0] ) ? $thumb_data[0] : '';
-
-                        $alt_text = get_post_meta( get_post_thumbnail_id( $post_id ), '_wp_attachment_image_alt', true );
-
-                        $logo_img .= '<div class="lgx-logo-item" ' . wp_kses_post( $border_color_style ) . '>';
-
-                        if ( ! empty( $company_url ) ) {
-                            $logo_img .= '<a href="' . esc_url( $company_url ) . '" target="' . esc_attr( $target ) . '">';
-                        }
-
-                        $logo_img .= '<img class="lgx-logo-img skip-lazy" src="' . esc_url( $thumb_url ) . '" ' . wp_kses_post( $logo_style ) . ' alt="' . esc_attr( $alt_text ) . '" title="' . esc_attr( ! empty( $company_name ) ? $company_name : 'Company' ) . '" />';
-
-                        if ( ! empty( $company_url ) ) {
-                            $logo_img .= '</a>';
-                        }
-
-                        if ( ! empty( $company_name ) && $compnayanme_en === 'yes' ) {
-                            $logo_img .= '<h6 class="logo-company-name">' . esc_html( $company_name ) . '</h6>';
-                        }
-
-                        if ( ! empty( $company_desc ) && $compnaydesc_en === 'yes' ) {
-                            $logo_img .= '<p class="logo-company-desc">' . esc_html( $company_desc ) . '</p>';
-                        }
-
-                        $logo_img .= '</div>';
+                    $logo_img .= '<div class="lgx-logo-item" '.esc_attr($border_color_style).'>';
+                    if ( ! empty( $company_url ) ) {
+                        $logo_img .= '<a href="' . esc_url( $company_url ) . '" target="' . esc_attr( $target ) . '">';
                     }
+                    $logo_img .= '<img class="lgx-logo-img skip-lazy" src="' . esc_url( $thumb_url ) . '" ' . wp_kses_post( $logo_style ) . ' alt="' . esc_attr( $alt_text ) . '" title="' . esc_attr( ! empty( $company_name ) ? $company_name : 'Company' ) . '" />';
+                    if ( ! empty( $company_url ) ) {
+                        $logo_img .= '</a>';
+                    }
+                    $logo_img .= ( ! empty( $company_name ) && $compnayanme_en == 'yes' ) ? '<h6 class="logo-company-name">' . esc_html( $company_name ) . '</h6>' : '';
+                    $logo_img .= ( ! empty( $company_desc ) && $compnaydesc_en == 'yes' ) ? '<p class="logo-company-desc">' . esc_html( $company_desc ) . '</p>' : '';
+                    $logo_img .= '</div>';
 
-                    $logo_item .= '<div class="item lgx-log-item">';
-                    $logo_item .= $logo_img;
-                    $logo_item .= '</div>';
                 }
 
-                wp_reset_postdata();
+                $logo_item .= '<div class="item lgx-log-item" >';
+                $logo_item .= $logo_img;
+                $logo_item .=  '</div>';
 
-                // Wrapper Output
-                $output  = '<div class="lgx_logo_slider_app_wrapper lgx-logo-slider-wp">';
-                $output .= '<div class="lgx-logo-wrapper ' . esc_attr( $border_class ) . ' nav-position-' . esc_attr( $navposition ) . ' hover-' . esc_attr( $hovertype ) . '" ' . wp_kses_post( $bg_style ) . '>';
-                $output .= '<div class="owl-carousel lgx-logo-carousel" ' . wp_kses_post( $data_attr_str ) . '>';
-                $output .= $logo_item;
-                $output .= '</div>';
-                $output .= '</div>';
-                $output .= '</div>';
+            }
+            wp_reset_postdata();// Restore original Post Data
 
-                return wp_kses_post( $output );
+            //Output String
+            $output  = '<div  class="lgx_logo_slider_app_wrapper lgx-logo-slider-wp">';
+            $output .= '<div class="lgx-logo-wrapper '.$border_class.' nav-position-'.$navposition.' hover-'.$hovertype.'" '.$bg_style.' >';
+            $output .= '<div class="owl-carousel lgx-logo-carousel" ' . $data_attr_str . ' >' . $logo_item . '</div>';
+            $output .= '</div>';
+            $output .= '</div>';
 
-            } else {
+            return $output;
 
-                return '<p>' . esc_html__( 'There are no logo item. Please add some logo Item', 'logo-slider-wp' ) . '</p>';
-            }   
+        } // Check post exist
+        else {
+            _e('There are no logo item. Please add some logo Item', 'logo-slider-wp');
+        }
 
 
 
@@ -375,7 +471,8 @@ class Logo_Slider_WP_Public {
      * @since 1.0.0
      */
 
-    public function logo_slider_wp_shortcode_function_dep($atts) {
+    /* Developer note: no need to modify further inside the code, because we will drop this support very soon. */
+    public function logo_slider_wp_shortcode_function_legacy($atts) {
 
         $cats_set       = $this->settings_api->get_option('logosliderwp_settings_cat', 'logosliderwp_adv', '');
 
@@ -470,11 +567,10 @@ class Logo_Slider_WP_Public {
             'navmobile'        => esc_attr($nav_set_mobile),
         ), $atts, 'logo-slider');
 
-        $output = $this->lgx_output_function_dep($atts);
+        $output = $this->lgx_output_function_legacy($atts);
 
         return $output;
     }
-
 
 
     /**
@@ -484,6 +580,8 @@ class Logo_Slider_WP_Public {
      */
 
     public function register_lgx_logo_slider_shortcode() {
+        // wp_register_style('logo-slider-wp-swiper-css', plugin_dir_url( __FILE__ ) . 'js/swiper-bundle.min.css', array(), $this->version );
+        // wp_register_script('logo-slider-wp-swiper-js', plugin_dir_url( __FILE__ ) . 'js/swiper-bundle.min.js', array(), $this->version, true );
 
         add_shortcode('lgxlogoslider', array( $this, 'display_lgx_logo_slider' ) );
     }
@@ -495,6 +593,16 @@ class Logo_Slider_WP_Public {
             $lgx_shortcodes_meta = get_post_meta( $atts['id'], '_lgx_lsp_shortcodes_meta', true );
 
             if(empty($lgx_shortcodes_meta)) {
+                // Task 011 Phase 4b/B03: Avoid throwing an error in the Live Preview if the showcase is completely new
+                // and has not been saved yet (which means get_post_meta returns empty).
+                if ( ! empty( $_GET['lgx_preview'] ) ) {
+                    // Reuses the exact .lgx-preview-spinner markup/CSS/keyframe name from
+                    // admin/modules/showcase-builder/assets/css/showcase-builder.css (already
+                    // driving the builder page's own preview-loading overlay) — inlined here,
+                    // not enqueued, because this document is the iframe's own separate page
+                    // load (preview-template.php) and never receives showcase-builder.css.
+                    return '<style>.lgx-preview-spinner{width:32px;height:32px;border:3px solid #c3c4c7;border-top-color:#2271b1;border-radius:50%;animation:lgx-preview-spin 700ms linear infinite;}@keyframes lgx-preview-spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}</style><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;height:100vh;color:#888;font-family:sans-serif;"><span class="lgx-preview-spinner" aria-hidden="true"></span>' . esc_html__( 'Loading preview...', 'logo-slider-wp' ) . '</div>';
+                }
                 return '<p style="color: red;">Error: The showcase ID is not valid. Please add a valid Showcase ID.</p>';
             }
             //echo '<pre>';print_r($lgx_shortcodes_meta['showcase_type']);echo '</pre>';
@@ -505,10 +613,317 @@ class Logo_Slider_WP_Public {
         }
     }
 
+    /**
+     * Task 010 / ADR-009 Decision 5 — Live Preview endpoint.
+     *
+     * Whitelist the query vars the preview URL uses so get_query_var() reads
+     * them reliably regardless of permalink structure ("plain" or otherwise).
+     *
+     * @since 6.1.0
+     * @param array $vars
+     * @return array
+     */
+    public function register_preview_query_vars( $vars ) {
+        $vars[] = 'lgx_preview';
+        $vars[] = 'post_id';
+        $vars[] = 'nonce';
+        return $vars;
+    }
+
+    /**
+     * Task 010 Phase 2 fix — suppress the wp-admin toolbar inside the Live
+     * Preview iframe for logged-in users viewing the builder.
+     *
+     * show_admin_bar() must run before _wp_admin_bar_init(), which core hooks
+     * to template_redirect at priority 0 (wp-includes/default-filters.php).
+     * maybe_render_preview() itself (below) runs on template_redirect at the
+     * default priority 10 — too late; by then the admin bar object already
+     * exists and wp_footer()'s back-compat wp_admin_bar_render() call (also
+     * core, for themes that don't call wp_body_open()) would still render it.
+     * This method is therefore registered on the much earlier `init` hook
+     * instead (see includes/class-logo-slider-wp.php).
+     *
+     * WordPress has not parsed query vars yet this early (that happens during
+     * the `wp` action, after `init`), so this checks $_GET directly rather
+     * than get_query_var() — a plain boolean gate only, not used for anything
+     * security-sensitive. The actual nonce and post validation still happens
+     * in maybe_render_preview() on template_redirect, unchanged.
+     *
+     * @since 6.1.0
+     */
+    public function maybe_disable_admin_bar_for_preview() {
+        if ( ! empty( $_GET['lgx_preview'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- boolean gate only; real validation happens later in maybe_render_preview().
+            show_admin_bar( false );
+        }
+    }
+
+    /**
+     * Task 010 / ADR-009 Decision 5 — Live Preview endpoint handler.
+     *
+     * Intercepts any front-end request carrying ?lgx_preview=1&post_id=X&nonce=Y
+     * (hooked to template_redirect — see includes/class-logo-slider-wp.php).
+     * Validates the nonce and the target post, bypasses caching, and renders
+     * shortcode-only output via a minimal template (partials/preview-template.php)
+     * — no theme header, footer, sidebar, or wp-admin bar (ADR-009 Decision 5
+     * "Implementation requirements"). Reuses display_lgx_logo_slider() unchanged
+     * for the actual render — no shortcode logic is duplicated.
+     *
+     * Explicitly registers + enqueues the plugin's styles/scripts itself before
+     * wp_head() runs, rather than relying on the normal wp_enqueue_scripts timing
+     * a theme's own the_content() pass would provide — this endpoint has no theme
+     * around it, so nothing else would trigger that registration in time.
+     *
+     * @since 6.1.0
+     */
+    public function maybe_render_preview() {
+
+        if ( empty( get_query_var( 'lgx_preview' ) ) ) {
+            return;
+        }
+
+        $post_id = absint( get_query_var( 'post_id' ) );
+        $nonce   = sanitize_text_field( get_query_var( 'nonce' ) );
+
+        if ( ! $post_id || ! wp_verify_nonce( $nonce, 'lgx_preview_' . $post_id ) ) {
+            wp_die( esc_html__( 'Invalid or expired preview link.', 'logo-slider-wp' ), '', array( 'response' => 403 ) );
+        }
+
+        if ( 'lgx_lsp_shortcodes' !== get_post_type( $post_id ) ) {
+            wp_die( esc_html__( 'Invalid preview target.', 'logo-slider-wp' ), '', array( 'response' => 404 ) );
+        }
+
+        // Cache-bypass: WP core's standard helper for exactly this purpose
+        // (Cache-Control: no-cache, no-store, must-revalidate + Expires in
+        // the past) — ADR-009 Decision 5's "must bypass caching" requirement.
+        nocache_headers();
+
+        // Task 011: if handle_preview_render_ajax() stored a merged,
+        // unsaved-values override for this post within the last 60s, use it
+        // instead of the plain saved meta. Implemented as a get_post_metadata
+        // filter, not by touching display_lgx_logo_slider()'s own DB read —
+        // that function (and its full call chain) stays byte-for-byte the
+        // same code path Task 010 and the real [lgxlogoslider] shortcode
+        // both already use. The filter is left attached for the rest of
+        // this request rather than removed after one use: display_lgx_logo_slider()
+        // reads this meta key exactly once into a local variable and shares
+        // that scope with every included partial, so nothing re-queries it —
+        // there is nothing later in this request the filter could wrongly affect.
+        $override = get_transient( $this->get_preview_transient_key( $post_id ) );
+        if ( is_array( $override ) ) {
+            $this->preview_meta_override          = $override;
+            $this->preview_meta_override_post_id   = $post_id;
+            add_filter( 'get_post_metadata', array( $this, 'filter_preview_meta_override' ), 10, 4 );
+        }
+
+        // Register + enqueue before wp_head() runs (see docblock above).
+        $this->enqueue_styles();
+        $this->enqueue_scripts();
+        $preview_html = $this->display_lgx_logo_slider( array( 'id' => $post_id ) );
+
+        include plugin_dir_path( __FILE__ ) . 'partials/preview-template.php';
+        exit;
+    }
+
+    /**
+     * Task 011 — get_post_metadata short-circuit filter. See maybe_render_preview()
+     * above for why this exists instead of a change to display_lgx_logo_slider().
+     * Only ever active during a request that already confirmed a valid preview
+     * override exists for this exact post_id — inert otherwise.
+     *
+     * @since 6.2.0
+     */
+    public function filter_preview_meta_override( $value, $object_id, $meta_key, $single ) {
+        if ( '_lgx_lsp_shortcodes_meta' !== $meta_key || (int) $object_id !== (int) $this->preview_meta_override_post_id ) {
+            return $value;
+        }
+        // Always return the override wrapped in an array, for BOTH $single
+        // states. Core's get_metadata_raw() does
+        // `if ( $single && is_array( $check ) ) { return $check[0]; }`
+        // (wp-includes/meta.php) — so a $single=true short-circuit whose value
+        // is itself an array must be wrapped, or core unwraps element 0 of the
+        // settings array instead of returning the settings array. This meta key
+        // is always read with $single=true, so returning it unwrapped yielded a
+        // missing [0], which get_metadata_default() then turned into '' — the
+        // renderer received an empty string and bailed with "The showcase ID is
+        // not valid." (Task 011 Phase 4; fixed in Phase 4b.)
+        return array( $this->preview_meta_override );
+    }
+
+    /**
+     * Task 011 Phase 1 — dedicated AJAX action for the real-time preview
+     * (ADR-009 Decision A: "prefer a dedicated AJAX action" over extending
+     * the GET preview endpoint with POST support, keeping that endpoint
+     * clean/GET-only).
+     *
+     * Collects the unsaved field values the JS layer sends (Phase 2: the
+     * whole builder form via `new FormData(...)`), merges them **in memory
+     * only** over the post's saved meta, and stores the merged result in a
+     * short-lived transient — never written to post meta, never persisted
+     * beyond 60 seconds. maybe_render_preview() (above) picks this override
+     * up on the very next GET request for the same post, which is exactly
+     * what the cache-busted iframe src reload (ADR-009's 2026-07-27 Task 011
+     * amendment) triggers moments later.
+     *
+     * Registered wp_ajax_ only — no wp_ajax_nopriv_ counterpart (the builder
+     * itself is admin-only; see includes/class-logo-slider-wp.php).
+     *
+     * Nonce: reused from the existing `meta_lgx_lsp_shortcodes` save-form
+     * nonce, read from its natural nested location
+     * ($_POST['meta_lgx_lsp_shortcodes']['nonce']) rather than requiring a
+     * second, separately-embedded nonce — since Phase 2's FormData collection
+     * captures the whole builder form as-is, that's where this nonce already
+     * lives. No new nonce action/field was introduced for this endpoint.
+     *
+     * @since 6.2.0
+     */
+    public function handle_preview_render_ajax() {
+
+        $submitted = array();
+        if ( isset( $_POST['meta_lgx_lsp_shortcodes'] ) && is_array( $_POST['meta_lgx_lsp_shortcodes'] ) ) {
+            $submitted = wp_unslash( $_POST['meta_lgx_lsp_shortcodes'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- sanitized field-by-field below, before use.
+        }
+
+        $nonce = isset( $submitted['nonce'] ) ? sanitize_text_field( $submitted['nonce'] ) : '';
+        if ( ! wp_verify_nonce( $nonce, 'meta_lgx_lsp_shortcodes' ) ) {
+            wp_send_json_error( array( 'message' => __( 'Security check failed.', 'logo-slider-wp' ) ), 403 );
+        }
+
+        $post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
+
+        if ( ! $post_id || 'lgx_lsp_shortcodes' !== get_post_type( $post_id ) ) {
+            wp_send_json_error( array( 'message' => __( 'Invalid preview target.', 'logo-slider-wp' ) ), 404 );
+        }
+
+        if ( ! current_user_can( 'edit_post', $post_id ) ) {
+            wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'logo-slider-wp' ) ), 403 );
+        }
+
+        $saved_meta = get_post_meta( $post_id, '_lgx_lsp_shortcodes_meta', true );
+        $saved_meta = is_array( $saved_meta ) ? $saved_meta : array();
+
+        unset( $submitted['nonce'] ); // form-security field, not a showcase meta key.
+
+        // Submitted values win where present. This is correct as a plain
+        // array_merge() for every text-like field — they always submit
+        // something (even an empty string) as long as the field exists in
+        // the DOM, which per ADR-005 it always does (hidden ≠ removed).
+        // Toggle/checkbox fields are the one HTML form quirk that breaks a
+        // plain merge: an UNCHECKED checkbox is omitted from form
+        // submission entirely (standard HTML behaviour), so "toggle just
+        // turned off" would otherwise silently keep the old saved "yes"
+        // value. Resolved explicitly below for every field the registry
+        // marks as type=switch, exactly like the real save handler already
+        // does elsewhere in this plugin (isset($postData[...]) ? 'yes' : 'no') —
+        // this is a correctness fix, not optional polish, since a preview
+        // that can't show "I just turned this off" defeats the feature.
+        $merged = array_merge( $saved_meta, $this->sanitize_preview_submission( $submitted ) );
+
+        foreach ( $this->get_toggle_field_ids() as $toggle_id ) {
+            $merged[ $toggle_id ] = isset( $submitted[ $toggle_id ] ) ? 'yes' : 'no';
+        }
+
+        // Never written to post meta / the database — set_transient() only.
+        // 60s comfortably covers the debounce window + the reload that
+        // follows; if it expires unread, maybe_render_preview() simply
+        // falls back to plain saved meta, same as before Task 011.
+        set_transient( $this->get_preview_transient_key( $post_id ), $merged, 60 );
+
+        wp_send_json_success( array( 'ready' => true ) );
+    }
+
+    /**
+     * Task 011 — every registry field with type=switch, used by
+     * handle_preview_render_ajax() to resolve "checkbox omitted from POST"
+     * to 'no' rather than silently falling back to a stale saved 'yes'.
+     * Reads config.php directly (plain data, no admin-only calls in it) —
+     * safe from a front-end AJAX context. Result cached for the life of
+     * the request; the registry doesn't change mid-request.
+     *
+     * @since 6.2.0
+     * @return string[]
+     */
+    private function get_toggle_field_ids() {
+        static $ids = null;
+        if ( null !== $ids ) {
+            return $ids;
+        }
+        $ids = array();
+
+        $config_path = plugin_dir_path( dirname( __FILE__ ) ) . 'admin/modules/showcase-builder/config/config.php';
+        if ( ! file_exists( $config_path ) ) {
+            return $ids;
+        }
+        $registry = include $config_path;
+        if ( ! is_array( $registry ) ) {
+            return $ids;
+        }
+
+        foreach ( $registry as $tab ) {
+            if ( empty( $tab['groups'] ) || ! is_array( $tab['groups'] ) ) {
+                continue;
+            }
+            foreach ( $tab['groups'] as $group ) {
+                if ( empty( $group['fields'] ) || ! is_array( $group['fields'] ) ) {
+                    continue;
+                }
+                foreach ( $group['fields'] as $field ) {
+                    if ( isset( $field['type'], $field['id'] ) && 'switch' === $field['type'] ) {
+                        $ids[] = $field['id'];
+                    }
+                }
+            }
+        }
+        return $ids;
+    }
+
+    /**
+     * Task 011 — recursively sanitize the submitted preview field values.
+     * Lighter-touch than the real save handler's per-field-type validation
+     * deliberately: these values are never persisted, and still pass
+     * through the same output-escaping the real render path already applies
+     * (esc_attr()/sanitize_hex_color()/etc. throughout general-style.php and
+     * view-controller.php, unchanged). This pass exists so obviously
+     * malformed input can't sit in a transient at all, not to duplicate the
+     * save handler's full validation.
+     *
+     * @since 6.2.0
+     */
+    private function sanitize_preview_submission( $data ) {
+        $sanitized = array();
+        foreach ( $data as $key => $value ) {
+            $key = sanitize_key( $key );
+            if ( is_array( $value ) ) {
+                $sanitized[ $key ] = $this->sanitize_preview_submission( $value );
+            } else {
+                $sanitized[ $key ] = sanitize_text_field( $value );
+            }
+        }
+        return $sanitized;
+    }
+
+    /**
+     * Task 011 — transient key for a post+user's in-progress preview
+     * override. Scoped per-user as well as per-post so two admins with the
+     * same showcase open can't clobber each other's in-progress preview.
+     *
+     * @since 6.2.0
+     */
+    private function get_preview_transient_key( $post_id ) {
+        return 'lgx_preview_ovr_' . absint( $post_id ) . '_' . get_current_user_id();
+    }
 
 
 
 
+    /**
+     *
+     *  Version 3 End ***************************************************************************
+     *
+     */
+
+
+
+}
 }
 
 
