@@ -117,9 +117,25 @@ foreach ( $registry as $tab_data ) {
  */
 $lgx_is_empty_meta = $post ? empty( get_post_meta( absint( $post->ID ), '_lgx_lsp_shortcodes_meta', true ) ) : true;
 wp_localize_script( 'logo-slider-wp-showcase-builder', 'lgxShowcaseBuilderDefaults', array(
-    'fields'      => $lgx_field_defaults,
-    'isEmptyMeta' => $lgx_is_empty_meta,
-    'publishText' => __( 'Publish' ),
+    'fields'              => $lgx_field_defaults,
+    'isEmptyMeta'         => $lgx_is_empty_meta,
+    'publishText'         => __( 'Publish' ),
+    'sources'             => lgx_ls_get_registered_sources(),
+    'unknownSourceFormat' => __( 'Unknown source: %s', 'logo-slider-wp' ),
+    // T-226b (B189): texts of showcase-builder.js; the script keeps the English text as fallback.
+    'layoutUpdated'       => __( 'Layout updated', 'logo-slider-wp' ),
+    'showcaseSaved'       => __( 'Showcase saved', 'logo-slider-wp' ),
+    'shortcodeCopied'     => __( 'Shortcode copied', 'logo-slider-wp' ),
+    'copiedLabel'         => __( 'Copied!', 'logo-slider-wp' ),
+    'copiedToClipboard'   => __( 'Copied to clipboard.', 'logo-slider-wp' ),
+    'previewFailed'       => __( 'Preview update failed — showing the last successful preview.', 'logo-slider-wp' ),
+    'proFeature'          => __( 'Pro Feature', 'logo-slider-wp' ),
+    'moreInfo'            => __( 'More information', 'logo-slider-wp' ),
+    'showcaseNameHelp'    => __( 'Internal showcase name for admin reference only.', 'logo-slider-wp' ),
+    /* translators: shown in place of a stored source value that is not text (for example a number). */
+    'notText'             => __( '(not text)', 'logo-slider-wp' ),
+    /* translators: %s: the name of the setting that must be switched on first. Keep the <strong> tag. */
+    'depLockNote'         => __( 'Enable <strong>%s</strong> to use this setting.', 'logo-slider-wp' ),
 ) );
 
 // Load the Generic Renderer Class
@@ -132,7 +148,16 @@ if ( file_exists( $renderer_path ) ) {
 $saved_meta      = $post ? get_post_meta( absint( $post->ID ), '_lgx_lsp_shortcodes_meta', true ) : array();
 $saved_meta      = is_array( $saved_meta ) ? $saved_meta : array();
 $current_type    = isset( $saved_meta['lgx_lswp_showcase_type'] ) ? sanitize_text_field( $saved_meta['lgx_lswp_showcase_type'] ) : 'carousel';
-$current_source  = isset( $saved_meta['lgx_lswp_content_source'] ) ? sanitize_text_field( $saved_meta['lgx_lswp_content_source'] ) : 'logo_library';
+// The raw stored source value, exactly as PHP and the front end read it (escaped for the attribute, never cleaned), so the page script and
+// lgx_ls_describe_source() below work from the same value. A missing key sends no attribute (the script reads that as Logo Library);
+// a stored value that is not text sends a flag instead of a value (the script reads that as "not text").
+$current_source_raw   = isset( $saved_meta['lgx_lswp_content_source'] ) ? $saved_meta['lgx_lswp_content_source'] : null;
+$current_source_attrs = '';
+if ( is_string( $current_source_raw ) ) {
+    $current_source_attrs = ' data-current-source="' . esc_attr( $current_source_raw ) . '"';
+} elseif ( null !== $current_source_raw ) {
+    $current_source_attrs = ' data-current-source-nontext="1"';
+}
 
 // Layout map for status display
 $status_layout_map = array(
@@ -150,20 +175,9 @@ $status_layout_map = array(
     ),
 );
 
-// Content source map for status display
-$status_source_map = array(
-    'logo_library' => array(
-        'label' => __( 'Logo Library', 'logo-slider-wp' ),
-        'icon'  => 'dashicons-format-gallery',
-    ),
-    'woocommerce_brands' => array(
-        'label' => __( 'WooCommerce Brands', 'logo-slider-wp' ),
-        'icon'  => 'dashicons-cart',
-    ),
-);
-
 $status_layout = isset( $status_layout_map[ $current_type ] ) ? $status_layout_map[ $current_type ] : $status_layout_map['carousel'];
-$status_source = isset( $status_source_map[ $current_source ] ) ? $status_source_map[ $current_source ] : $status_source_map['logo_library'];
+// Content source for status display: the one source registry (raw stored value, null when no key).
+$status_source = lgx_ls_describe_source( isset( $saved_meta['lgx_lswp_content_source'] ) ? $saved_meta['lgx_lswp_content_source'] : null );
 
 /* Task 014/Commit 4a: Layout Gallery card data, relocated verbatim from
    tab-general_settings.php (which used the name $layout_map). Kept as its
@@ -218,7 +232,7 @@ if ( ! defined( 'LGX_LS_SHOWCASE_TEMPLATE_ENABLED' ) ) {
 ?>
 
 <?php /* RB-2/B52: exposes the true stored content-source value for showcase-builder.js's initBuilderStatus() to fall back to when no Content Source radio is checked (a legacy stored value with no matching radio left in the UI) — see 003-fix-plan.md §1d. */ ?>
-<div class="lgx-builder" data-builder-version="6.0.0" data-current-source="<?php echo esc_attr( $current_source ); ?>">
+<div class="lgx-builder" data-builder-version="6.0.0"<?php echo $current_source_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built above with esc_attr(). ?>>
     <script>
     (function() {
         try {

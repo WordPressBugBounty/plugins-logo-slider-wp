@@ -362,15 +362,42 @@ if (!class_exists('Lgx_Meta_Form')) {
 
         $is_modern = (isset($args['layout']) && $args['layout'] === 'modern');
 
+        // T-213 (Stage 2, A3): a select with the keep_unknown flag shows a stored value
+        // that matches no option as one extra first option, selected and disabled. A
+        // disabled option is not posted, so the save keeps the stored value. A missing
+        // key gets no extra option. Selects without the flag are unchanged.
+        $keep_unknown_safe      = '';
+        $keep_unknown_note_safe = '';
+        if (! empty($args['keep_unknown']) && is_array($meta) && array_key_exists($args['id'], $meta)) {
+            $stored_raw = $meta[$args['id']];
+            if (! is_string($stored_raw) || ! array_key_exists($stored_raw, $args['options'])) {
+                if (is_string($stored_raw)) {
+                    // Same cut as lgx_ls_describe_source(): 40 characters plus an ellipsis.
+                    $unknown_shown = (mb_strlen($stored_raw, 'UTF-8') > 40) ? mb_substr($stored_raw, 0, 40, 'UTF-8') . "\xE2\x80\xA6" : $stored_raw;
+                    $unknown_value = htmlspecialchars($stored_raw, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', true);
+                    /* translators: %s: the stored value, cut to 40 characters. */
+                    $unknown_text  = sprintf(__('Unknown (%s)', 'logo-slider-wp'), $unknown_shown);
+                } else {
+                    /* translators: shown in place of a stored value that is not text (for example a number). */
+                    $unknown_shown = __('(not text)', 'logo-slider-wp');
+                    $unknown_value = '';
+                    $unknown_text  = __('Unknown (not text)', 'logo-slider-wp');
+                }
+                $keep_unknown_safe      = '<option value="' . $unknown_value . '" selected="selected" disabled="disabled">' . esc_html($unknown_text) . '</option>';
+                /* translators: %s: the stored value, cut to 40 characters. */
+                $keep_unknown_note_safe = '<p class="lgx-field__unknown-note">' . esc_html(sprintf(__('The stored value "%s" is not a known option. It is kept unless you pick one of the options.', 'logo-slider-wp'), $unknown_shown)) . '</p>';
+            }
+        }
+
         // Model A "exempt value" fallback (§3.3): if the saved value doesn't match any
         // real option key, fall back to exempting the default instead — never let a
         // stale/corrupt saved value lock every option with no escape.
-        $exempt_value = array_key_exists($meta_value, $args['options']) ? $meta_value : $default_value;
+        $exempt_value = ('' === $keep_unknown_safe && array_key_exists($meta_value, $args['options'])) ? $meta_value : $default_value;
 
         // Options
-        $options_safe = '';
+        $options_safe = $keep_unknown_safe;
         foreach ($args['options'] as $option_value => $option_text) {
-            $selected = selected($option_value, $meta_value, false);
+            $selected = ('' !== $keep_unknown_safe) ? '' : selected($option_value, $meta_value, false);
 
             $is_option_pro = class_exists('Lgx_Pro_Locking')
                 ? Lgx_Pro_Locking::is_option_locked($args['id'], $option_value, $status, $exempt_value, false, $args['free_options'] ?? array())
@@ -391,11 +418,12 @@ if (!class_exists('Lgx_Meta_Form')) {
                 $output_safe .= '<button type="button" class="dashicons dashicons-info lgx-builder-help-icon" aria-label="' . esc_attr__( 'More information', 'logo-slider-wp' ) . '" aria-expanded="false" aria-controls="lgx-help-popover" data-help="' . esc_attr( $args['desc'] ) . '"></button>';
             }
             $output_safe .= '</div>';
-            $output_safe .= '<div class="lgx-field__control">';
+            $output_safe .= '<div class="lgx-field__control' . ('' !== $keep_unknown_note_safe ? ' lgx-field__control--has-note' : '') . '">';
             $output_safe .= '<select name="' . esc_attr($args['name']) . '" class="lgx-input lgx_app_meta_filed" id="' . esc_attr($args['id']) . '" ' . $is_multiple . ' ' . $pro_input_attr . '>';
             $output_safe .= $options_safe;
             $output_safe .= '</select>';
             $output_safe .= $is_pro_label;
+            $output_safe .= $keep_unknown_note_safe;
             $output_safe .= '</div></div>';
         } else {
             $output_safe  = '<tr class="' . esc_attr(trim($pro_css_class)) . '">';

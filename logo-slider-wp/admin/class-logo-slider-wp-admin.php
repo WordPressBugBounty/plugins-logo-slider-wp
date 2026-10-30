@@ -1426,20 +1426,41 @@ class Logo_Slider_WP_Admin {
                 $savable_Data  = $existing_meta;
 
                 $savable_Data['lgx_lswp_showcase_type']             = sanitize_text_field( $postData['lgx_lswp_showcase_type'] );
-                // RB-2/B52: the WooCommerce Brands radio was removed from the
-                // General tab, so a showcase with a preserved legacy value
-                // (e.g. 'woocommerce_brands') now renders with no radio in
-                // this group checked, and this key is absent from $postData —
-                // not because it's Pro-locked, but because the control that
-                // used to submit it no longer offers anything else to choose.
-                // Retain the previously-stored value in that case (same
-                // has-previous/default shape as the RB-4 enforcement pass
-                // below) instead of overwriting it with the 'logo_library'
-                // default, which would misrepresent — not migrate — the
-                // stored value.
-                $savable_Data['lgx_lswp_content_source']            = ( isset( $postData['lgx_lswp_content_source'] ) )
-                    ? sanitize_text_field( $postData['lgx_lswp_content_source'] )
-                    : ( array_key_exists( 'lgx_lswp_content_source', $existing_meta ) ? $existing_meta['lgx_lswp_content_source'] : 'logo_library' );
+                // Content source (WP1.4): a submitted registered id (logo_library,
+                // woo_product_brand) is stored; an empty or whitespace submit keeps the
+                // stored value (logo_library when nothing usable is stored); an absent,
+                // non-string or unregistered value keeps the stored value exactly, even an
+                // unknown one (ADR-019, ADR-021). No lock applies: the Brand source is Free.
+                $savable_Data['lgx_lswp_content_source'] = $this->lgx_resolve_source_value( $postData, $existing_meta );
+
+                // WooCommerce Brand settings (WP1.3): options and defaults come from the
+                // registry only. A submitted registered option is stored; an absent or
+                // unregistered value keeps the stored value, else the registry default.
+                // term_ids is normalised when submitted and otherwise kept as stored.
+                $brand_select_fields = array(
+                    'lgx_woo_product_brand_sort_order_by' => array( 'id' => 'lgx_woo_product_brand_sort_order_by' ),
+                    'lgx_woo_product_brand_no_logo'       => array( 'id' => 'lgx_woo_product_brand_no_logo' ),
+                    'lgx_woo_product_brand_empty'         => array( 'id' => 'lgx_woo_product_brand_empty' ),
+                    'lgx_woo_product_brand_scope'         => array( 'id' => 'lgx_woo_product_brand_scope' ),
+                );
+                foreach ( $this->lgx_get_showcase_builder_registry_fields() as $registry_field ) {
+                    if ( isset( $registry_field['id'] ) && isset( $brand_select_fields[ $registry_field['id'] ] ) ) {
+                        $brand_select_fields[ $registry_field['id'] ] = $registry_field;
+                    }
+                }
+
+                $savable_Data['lgx_woo_product_brand_sort_order_by'] = $this->lgx_resolve_registry_select_value( $brand_select_fields['lgx_woo_product_brand_sort_order_by'], $postData, $existing_meta );
+                $savable_Data['lgx_woo_product_brand_no_logo']       = $this->lgx_resolve_registry_select_value( $brand_select_fields['lgx_woo_product_brand_no_logo'], $postData, $existing_meta );
+                $savable_Data['lgx_woo_product_brand_empty']         = $this->lgx_resolve_registry_select_value( $brand_select_fields['lgx_woo_product_brand_empty'], $postData, $existing_meta );
+                $savable_Data['lgx_woo_product_brand_scope']         = $this->lgx_resolve_registry_select_value( $brand_select_fields['lgx_woo_product_brand_scope'], $postData, $existing_meta );
+
+                if ( isset( $postData['lgx_woo_product_brand_term_ids'] ) ) {
+                    $savable_Data['lgx_woo_product_brand_term_ids'] = lgx_ls_normalise_term_ids( $postData['lgx_woo_product_brand_term_ids'] );
+                } elseif ( array_key_exists( 'lgx_woo_product_brand_term_ids', $existing_meta ) ) {
+                    $savable_Data['lgx_woo_product_brand_term_ids'] = $existing_meta['lgx_woo_product_brand_term_ids'];
+                } else {
+                    $savable_Data['lgx_woo_product_brand_term_ids'] = '';
+                }
 
                 // Basic Settings : ok
                 $savable_Data['lgx_brand_name_en']      = (( isset($postData['lgx_brand_name_en'])) ? 'yes' : 'no');
@@ -1686,6 +1707,143 @@ class Logo_Slider_WP_Admin {
     }// End  Meta Save
 
     /**
+     * T-216 (Stage 2, S-30): what a save would store for the content source and
+     * the four WooCommerce Brand selects and the Brand term ids, for the live
+     * preview (filter lgx_ls_preview_clean, see handle_preview_render_ajax()).
+     *
+     * Applies the save's own rules in the save's order: the source through
+     * lgx_resolve_source_value(), the Brand selects through the same registry
+     * lookup and lgx_resolve_registry_select_value(), the term ids with the
+     * save's inline rule, then the save's Pro lock pass
+     * lgx_enforce_pro_lock_retain_on_reject() on these keys only. That pass
+     * skips every registry field that is not in the array it gets and decides
+     * each key from that key's value, the stored data and the submitted data
+     * alone, so each key comes out as in a full save.
+     *
+     * Reads no post, writes nothing, checks no nonce or capability (the
+     * preview handler has done that).
+     *
+     * @since 6.1.0
+     *
+     * @param mixed $clean         The filter's default value (an empty array); not used.
+     * @param mixed $postData      The submitted data, already unslashed (the save's $postData).
+     * @param mixed $existing_meta The stored data.
+     * @return array The six keys with the values a save would store, or an empty
+     *               array when the lock class is not available (the save refuses then).
+     */
+    public function lgx_preview_clean_source_and_brand( $clean, $postData, $existing_meta ) {
+        if ( ! class_exists( 'Lgx_Pro_Locking' ) ) {
+            return array();
+        }
+
+        $postData      = is_array( $postData ) ? $postData : array();
+        $existing_meta = is_array( $existing_meta ) ? $existing_meta : array();
+
+        $result = array();
+
+        $result['lgx_lswp_content_source'] = $this->lgx_resolve_source_value( $postData, $existing_meta );
+
+        $brand_select_fields = array(
+            'lgx_woo_product_brand_sort_order_by' => array( 'id' => 'lgx_woo_product_brand_sort_order_by' ),
+            'lgx_woo_product_brand_no_logo'       => array( 'id' => 'lgx_woo_product_brand_no_logo' ),
+            'lgx_woo_product_brand_empty'         => array( 'id' => 'lgx_woo_product_brand_empty' ),
+            'lgx_woo_product_brand_scope'         => array( 'id' => 'lgx_woo_product_brand_scope' ),
+        );
+        foreach ( $this->lgx_get_showcase_builder_registry_fields() as $registry_field ) {
+            if ( isset( $registry_field['id'] ) && isset( $brand_select_fields[ $registry_field['id'] ] ) ) {
+                $brand_select_fields[ $registry_field['id'] ] = $registry_field;
+            }
+        }
+
+        $result['lgx_woo_product_brand_sort_order_by'] = $this->lgx_resolve_registry_select_value( $brand_select_fields['lgx_woo_product_brand_sort_order_by'], $postData, $existing_meta );
+        $result['lgx_woo_product_brand_no_logo']       = $this->lgx_resolve_registry_select_value( $brand_select_fields['lgx_woo_product_brand_no_logo'], $postData, $existing_meta );
+        $result['lgx_woo_product_brand_empty']         = $this->lgx_resolve_registry_select_value( $brand_select_fields['lgx_woo_product_brand_empty'], $postData, $existing_meta );
+        $result['lgx_woo_product_brand_scope']         = $this->lgx_resolve_registry_select_value( $brand_select_fields['lgx_woo_product_brand_scope'], $postData, $existing_meta );
+
+        if ( isset( $postData['lgx_woo_product_brand_term_ids'] ) ) {
+            $result['lgx_woo_product_brand_term_ids'] = lgx_ls_normalise_term_ids( $postData['lgx_woo_product_brand_term_ids'] );
+        } elseif ( array_key_exists( 'lgx_woo_product_brand_term_ids', $existing_meta ) ) {
+            $result['lgx_woo_product_brand_term_ids'] = $existing_meta['lgx_woo_product_brand_term_ids'];
+        } else {
+            $result['lgx_woo_product_brand_term_ids'] = '';
+        }
+
+        $enforced = $this->lgx_enforce_pro_lock_retain_on_reject( $result, $existing_meta, $postData );
+
+        return is_array( $enforced ) ? $enforced : array();
+    }
+
+    /**
+     * Resolves the value to store for the content source key (lgx_lswp_content_source).
+     *
+     * 1. A submitted string identical to a registered id is stored.
+     * 2. A submitted empty or whitespace string keeps the stored value; when nothing
+     *    usable is stored (no key, null, empty or whitespace) it writes logo_library.
+     * 3. Anything else (key absent or null, not a string, not a registered id) keeps the
+     *    stored value exactly as stored, even an unknown one; logo_library only when no
+     *    key is stored.
+     *
+     * Whether an id is registered comes from lgx_ls_is_registered_source().
+     *
+     * @since 6.1.0
+     *
+     * @param array $postData      The submitted data, already unslashed.
+     * @param array $existing_meta The stored data.
+     * @return mixed
+     */
+    private function lgx_resolve_source_value( $postData, $existing_meta ) {
+        $key        = 'lgx_lswp_content_source';
+        $has_stored = array_key_exists( $key, $existing_meta );
+        $stored     = $has_stored ? $existing_meta[ $key ] : null;
+        $submitted  = isset( $postData[ $key ] ) ? $postData[ $key ] : null;
+
+        if ( is_string( $submitted ) && lgx_ls_is_registered_source( $submitted ) ) {
+            return $submitted;
+        }
+
+        if ( is_string( $submitted ) && '' === trim( $submitted ) ) {
+            $nothing_usable = ! $has_stored || null === $stored || ( is_string( $stored ) && '' === trim( $stored ) );
+            return $nothing_usable ? 'logo_library' : $stored;
+        }
+
+        return $has_stored ? $stored : 'logo_library';
+    }
+
+    /**
+     * Resolves the value to store for one registry select field.
+     *
+     * 1. A submitted string that is identical to one of the registry options
+     *    is the value to store.
+     * 2. Otherwise the stored value is kept exactly as stored, even when it
+     *    is not a registry option.
+     * 3. Otherwise the registry default is used (an empty string when the
+     *    field has none).
+     *
+     * @since 6.1.0
+     *
+     * @param array $field         The registry field (id, options, default).
+     * @param array $postData      The submitted data, already unslashed.
+     * @param array $existing_meta The stored data.
+     * @return mixed
+     */
+    private function lgx_resolve_registry_select_value( $field, $postData, $existing_meta ) {
+        $id         = isset( $field['id'] ) ? $field['id'] : '';
+        $registered = ( isset( $field['options'] ) && is_array( $field['options'] ) )
+            ? array_map( 'strval', array_keys( $field['options'] ) )
+            : array();
+
+        if ( array_key_exists( $id, $postData ) && is_string( $postData[ $id ] ) && in_array( $postData[ $id ], $registered, true ) ) {
+            return $postData[ $id ];
+        }
+
+        if ( array_key_exists( $id, $existing_meta ) ) {
+            return $existing_meta[ $id ];
+        }
+
+        return isset( $field['default'] ) ? $field['default'] : '';
+    }
+
+    /**
      * RB-4 (B51): reject a Pro-locked field or option arriving from a
      * Free-mode POST and retain the previously-stored value instead of the
      * hardcoded default (ADR-011 §5-7, Invariant 9). Provenance-based
@@ -1907,11 +2065,8 @@ class Logo_Slider_WP_Admin {
      * Get a display label for a content source value.
      */
     private function get_source_label( $value ) {
-        $labels = array(
-            'logo_library'      => __( 'Logo Library', 'logo-slider-wp' ),
-            'woocommerce_brands' => __( 'WooCommerce Brands', 'logo-slider-wp' ),
-        );
-        return isset( $labels[ $value ] ) ? $labels[ $value ] : $value;
+        $described = lgx_ls_describe_source( $value );
+        return $described['label'];
     }
 
     public function define_admin_column_value_for_lgx_logo_showcase($column, $post_id) {

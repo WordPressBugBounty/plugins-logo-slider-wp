@@ -42,39 +42,17 @@ if ( ! defined( 'ABSPATH' ) ) {
                         //     }
                         // }
 
-                        // After (v5.5) — no front-end limit in free version:
-                        $lgx_logo_limit = (($lgx_shortcodes_meta['lgx_item_limit'] <= 0) ? -1 : $lgx_shortcodes_meta['lgx_item_limit']);
+                        // After (v5.5) — no fixed front-end cap in the free version (the logo limit is a showcase setting):
+                        // WP1.6 / WP1.7 / WP1.8: the stored source is resolved once. The Logo Library (or a missing value) gives a WP_Query,
+                        // the Brand source (when the taxonomy exists) gives an array of items; any other case shows the neutral visitor sentence,
+                        // plus an editor hint if permitted. Nothing is written.
+                        $lgx_source_value    = isset( $lgx_shortcodes_meta['lgx_lswp_content_source'] ) ? $lgx_shortcodes_meta['lgx_lswp_content_source'] : null;
+                        unset( $lgx_item_context );
+                        $lgx_source_provider = lgx_ls_resolve_source_provider( $lgx_source_value );
+                        $lgx_source_result   = ( null === $lgx_source_provider ) ? null : $lgx_source_provider->get_items( $lgx_shortcodes_meta );
 
-                            $lgx_from_category   = $lgx_shortcodes_meta['lgx_from_category'];
-
-                            $lgx_logo_slider_args = array(
-                                'post_type'         => array( 'logosliderwp' ),
-                                'post_status'       => array( 'publish' ),
-                                'order'             => $lgx_item_sort_order,
-                                'orderby'           => $lgx_item_sort_order_by,
-                                'posts_per_page'    => $lgx_logo_limit
-                            );
-
-
-                            // Category to Array Convert
-                            if( !empty($lgx_from_category) && $lgx_from_category != '' && $lgx_from_category != 'all'  ){
-                                $lgx_from_category = trim($lgx_from_category);
-                                $lgx_from_category_arr   = explode(',', $lgx_from_category);
-
-                                if(is_array($lgx_from_category_arr) && sizeof($lgx_from_category_arr) > 0){
-                                    $lgx_logo_slider_args['tax_query'] = array(
-                                        array(
-                                            'taxonomy' => 'logosliderwpcat',
-                                            //  'field'    => 'slug',
-                                            'field'    => 'id',
-                                            'terms'    => $lgx_from_category_arr
-                                        )
-                                    );
-                                }
-                            }
-
-                            // The  Query
-                            $lgx_logo_slider_loop = new WP_Query( $lgx_logo_slider_args );
+                        if ( $lgx_source_result instanceof WP_Query ) {
+                            $lgx_logo_slider_loop = $lgx_source_result;
 
                             if ( $lgx_logo_slider_loop->have_posts() ){
                                 while ( $lgx_logo_slider_loop->have_posts() ) : $lgx_logo_slider_loop->the_post();
@@ -90,6 +68,23 @@ if ( ! defined( 'ABSPATH' ) ) {
                             else{
                                 esc_html_e('There are no logo item. Please add some logo Item', 'logo-slider-wp');
                             }
+                        } elseif ( is_array( $lgx_source_result ) && isset( $lgx_source_result['items'] ) && is_array( $lgx_source_result['items'] ) && ! empty( $lgx_source_result['items'] ) ) {
+                            // Brand source: the item array is the item context of the card; no global post is touched.
+                            foreach ( $lgx_source_result['items'] as $lgx_item_context ) {
+                                include('_item.php');
+                            }
+                            unset( $lgx_item_context );
+                        } else {
+                            $lgx_empty_reason = ( is_array( $lgx_source_result ) && isset( $lgx_source_result['reason'] ) && is_string( $lgx_source_result['reason'] ) ) ? $lgx_source_result['reason'] : '';
+                            $lgx_showcase_id  = absint( $lgx_app_id );
+                            $lgx_is_editor    = ( $lgx_showcase_id > 0 && current_user_can( 'edit_post', $lgx_showcase_id ) );
+                            $lgx_empty_state  = lgx_ls_get_empty_state( $lgx_source_value, $lgx_is_editor, $lgx_empty_reason );
+                            echo '<div class="lgx-ls-source-state"><p class="lgx-ls-source-empty">' . esc_html( $lgx_empty_state['visitor'] ) . '</p>';
+                            if ( '' !== $lgx_empty_state['hint'] ) {
+                                echo '<p class="lgx-ls-source-hint">' . esc_html( $lgx_empty_state['hint'] ) . '</p>';
+                            }
+                            echo '</div>';
+                        } // Source resolved
                             ?>
                         </div> <!--//.APP CONTENT INNER END-->
 

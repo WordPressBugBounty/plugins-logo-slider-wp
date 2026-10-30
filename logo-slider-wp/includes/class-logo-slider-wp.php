@@ -146,6 +146,36 @@ class Logo_Slider_WP {
 		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-logo-slider-wp-pro-locking.php';
 
 		/**
+		 * The internal source provider contract.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-logo-slider-wp-source-provider.php';
+
+		/**
+		 * The Logo Library source provider.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-logo-slider-wp-source-logo-library.php';
+
+		/**
+		 * The WooCommerce Brand source provider.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-logo-slider-wp-source-brand.php';
+
+		/**
+		 * The shared term-id normaliser used by the save handler and the render path (WooCommerce Brand).
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/lgx-ls-term-ids.php';
+
+		/**
+		 * The shared helper to read Brand options with safe defaults.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/lgx-ls-brand-options.php';
+
+		/**
+		 * The one content source registry (ids, labels, icons, availability).
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/lgx-ls-sources.php';
+
+		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-logo-slider-wp-admin.php';
@@ -253,6 +283,9 @@ class Logo_Slider_WP {
 
         //Save metadata of post type. Pattern --> save_post_{post_type}.
         $this->loader->add_action( 'save_post_lgx_lsp_shortcodes', $plugin_admin, 'save_post_metadata_of_lgx_lsp_shortcodes', 10, 2 );
+
+        // T-216 (Stage 2, S-30): the live preview (an admin-ajax request) applies the save's own rules to the source and the Brand keys.
+        $this->loader->add_filter( 'lgx_ls_preview_clean', $plugin_admin, 'lgx_preview_clean_source_and_brand', 10, 3 );
 
         // Phase E: Save & Add Another Redirect
         $this->loader->add_filter( 'redirect_post_location', $plugin_admin, 'save_and_add_another_redirect', 10, 2 );

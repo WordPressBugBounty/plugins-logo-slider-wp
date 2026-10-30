@@ -822,6 +822,20 @@ class Logo_Slider_WP_Public {
             $merged[ $toggle_id ] = isset( $submitted[ $toggle_id ] ) ? 'yes' : 'no';
         }
 
+        // T-216 (Stage 2, S-30): the content source and the WooCommerce Brand keys
+        // follow the save's own rules (the admin class hooks lgx_ls_preview_clean),
+        // computed from the raw submitted values, before sanitize_text_field(), as
+        // the save does. Only string or number values are laid over $merged. With
+        // nothing hooked the filter returns array() and the preview is unchanged.
+        $lgx_preview_clean = apply_filters( 'lgx_ls_preview_clean', array(), $submitted, $saved_meta );
+        if ( is_array( $lgx_preview_clean ) ) {
+            foreach ( $lgx_preview_clean as $lgx_clean_key => $lgx_clean_value ) {
+                if ( is_string( $lgx_clean_key ) && ( is_string( $lgx_clean_value ) || is_int( $lgx_clean_value ) || is_float( $lgx_clean_value ) ) ) {
+                    $merged[ $lgx_clean_key ] = $lgx_clean_value;
+                }
+            }
+        }
+
         // Never written to post meta / the database — set_transient() only.
         // 60s comfortably covers the debounce window + the reload that
         // follows; if it expires unread, maybe_render_preview() simply

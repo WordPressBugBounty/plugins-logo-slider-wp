@@ -2111,6 +2111,136 @@ body.post-type-lgx_lsp_shortcodes #side-sortables .postbox .postbox-header h2 {
     display: none;
 }
 
+/* T-213 (Stage 2): Content Source panel — one radio card per source.
+   Real labels around real (visible) radio inputs, so the native focus
+   ring and keyboard handling apply unchanged. */
+.lgx-source-cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--lgx-space-sm);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+}
+
+.lgx-source-card {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--lgx-space-sm);
+    padding: 10px 12px;
+    border: 1px solid var(--lgx-border-color);
+    border-radius: var(--lgx-control-radius);
+    cursor: pointer;
+    transition: border-color var(--lgx-transition), box-shadow var(--lgx-transition);
+}
+
+.lgx-source-card input[type="radio"] {
+    margin: 2px 0 0;
+    flex-shrink: 0;
+}
+
+.lgx-source-card.is-selected {
+    border-color: var(--lgx-accent);
+    box-shadow: 0 0 0 1px var(--lgx-accent);
+    background: #e7f1fb;
+}
+
+.lgx-source-card.is-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.lgx-source-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.lgx-source-card__title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--lgx-text);
+}
+
+.lgx-source-card__desc {
+    font-size: 12px;
+    color: var(--lgx-text-muted);
+}
+
+.lgx-source-card__reason,
+.lgx-source-panel__note,
+.lgx-field__unknown-note {
+    font-size: 12px;
+    font-style: italic;
+    color: var(--lgx-text-muted);
+}
+
+.lgx-source-panel__note {
+    margin: var(--lgx-space-md) 0 0;
+}
+
+/* T-214: the Company URL hint and the Free note under the WooCommerce Brand
+   fields reuse the note look above; the Free note follows the hint closely
+   and carries a small lock icon in the existing lock colour and opacity. */
+.lgx-brand-panel__note + .lgx-brand-panel__note {
+    margin-top: var(--lgx-space-xs);
+}
+
+.lgx-brand-panel__note-icon {
+    width: 14px;
+    height: 14px;
+    margin-right: var(--lgx-space-xs);
+    font-size: 14px;
+    line-height: 1;
+    color: var(--lgx-border-color);
+    opacity: 0.6;
+    vertical-align: text-bottom;
+}
+
+/* new status style: "Unavailable" / "Not recognised" tags (Dashboard status-badge colours) */
+.lgx-source-tag {
+    display: inline-block;
+    margin-left: var(--lgx-space-xs);
+    padding: 0 6px;
+    border-radius: 3px;
+    background: #fef9c3;
+    color: #a16207;
+    font-size: 11px;
+    font-weight: 500;
+    font-style: normal;
+    line-height: 18px;
+    vertical-align: middle;
+}
+
+/* new status style: the yellow notice box at the top of the WooCommerce Brand panel */
+.lgx-source-notice {
+    margin: 0 0 var(--lgx-space-md);
+    padding: var(--lgx-space-sm) var(--lgx-space-md);
+    border: 1px solid #eab308;
+    border-radius: var(--lgx-control-radius);
+    background: #fefce8;
+    color: #854d0e;
+    font-size: 13px;
+}
+
+/* T-213: WooCommerce Brand panel selects are at most 230px wide. */
+#lgx-group-source_settings-woo_brand_settings select.lgx-input {
+    max-width: 230px;
+}
+
+/* T-213 (A3): the "Unknown (value)" note under a keep_unknown select.
+   T-214: selector raised so it wins over the Pro-lock nowrap rule. */
+.lgx-builder .lgx-field__control.lgx-field__control--has-note {
+    flex-wrap: wrap;
+}
+
+.lgx-field__unknown-note {
+    flex: 0 0 100%;
+    margin: var(--lgx-space-xs) 0 0;
+}
+
 /* Phase 2: Pro Field Locking UI */
 .lgx-pro-locked-field {
     opacity: 0.6;
@@ -2274,6 +2404,97 @@ body.post-type-lgx_lsp_shortcodes #side-sortables .postbox .postbox-header h2 {
 
 .lgx-pro-locked-field .lgx-checkbox-list__item {
     cursor: pointer; /* JS intercepts the click; not a native disabled state */
+}
+
+/* T-215: the WooCommerce Brands picker (search, counter, scrolling box of
+   checkboxes, missing-brand list). Same item look as the checkbox list
+   above. Like the checkbox list it opts out of the Pro-lock flex row, so a
+   locked (Free) picker stacks with the lock icon under it. */
+.lgx-builder .lgx-brand-picker-field .lgx-field__control,
+.lgx-builder .lgx-pro-locked-field.lgx-brand-picker-field .lgx-field__control {
+    display: block;
+}
+
+.lgx-brand-picker {
+    display: flex;
+    flex-direction: column;
+    gap: var(--lgx-space-sm);
+    min-width: 0;
+}
+
+.lgx-brand-picker__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--lgx-space-sm);
+    font-size: 12px;
+    color: var(--lgx-text-muted);
+}
+
+.lgx-brand-picker__box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--lgx-space-xs) var(--lgx-space-md);
+    max-height: 200px;
+    overflow-y: auto;
+    padding: var(--lgx-space-sm);
+    border: 1px solid var(--lgx-border-color-light);
+    border-radius: var(--lgx-control-radius);
+}
+
+.lgx-brand-picker__item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--lgx-space-xs);
+    cursor: pointer;
+    color: var(--lgx-text);
+}
+
+.lgx-builder .lgx-brand-picker__input {
+    width: 14px;
+    height: 14px;
+    min-width: 14px;
+    margin: 0;
+}
+
+.lgx-brand-picker__item[hidden],
+.lgx-brand-picker__missing[hidden] {
+    display: none;
+}
+
+.lgx-brand-picker__item .lgx-source-tag {
+    margin-left: 0;
+}
+
+.lgx-brand-picker__missing-title {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--lgx-text);
+}
+
+.lgx-brand-picker__missing-list {
+    margin: var(--lgx-space-xs) 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.lgx-brand-picker__missing-item {
+    display: flex;
+    align-items: center;
+    gap: var(--lgx-space-sm);
+    margin: 0 0 var(--lgx-space-xs);
+    font-size: 12px;
+    color: var(--lgx-text-muted);
+}
+
+.lgx-brand-picker__missing .lgx-brand-picker__missing-note {
+    margin: var(--lgx-space-xs) 0 0;
+}
+
+/* T-215: the no-logo note under "Brands without a logo" sits close to its select. */
+.lgx-brand-nologo-note {
+    margin: calc(-1 * var(--lgx-space-xs)) 0 var(--lgx-space-md);
 }
 
 /* ==========================================================================

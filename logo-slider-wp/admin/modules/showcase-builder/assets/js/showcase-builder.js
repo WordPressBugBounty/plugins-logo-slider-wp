@@ -205,7 +205,7 @@ function initLayoutGallery() {
         document.dispatchEvent(new CustomEvent('lgx:status-update'));
 
         // Task 021: a real, meaningful state change that was previously silent.
-        lgxNotifySuccess('Layout updated');
+        lgxNotifySuccess(lgxText('layoutUpdated', 'Layout updated'));
     }
 
     // — Event Listeners —
@@ -264,6 +264,91 @@ function initLayoutGallery() {
 }
 
 /**
+ * T-226b (B189): a translated text from lgxShowcaseBuilderDefaults (builder-wrapper.php),
+ * or the English fallback when the key is missing or empty.
+ *
+ * @param {string} key      The key in lgxShowcaseBuilderDefaults.
+ * @param {string} fallback The English text.
+ * @return {string}
+ */
+function lgxText( key, fallback ) {
+    var data = window.lgxShowcaseBuilderDefaults;
+    return ( data && typeof data === 'object' && typeof data[ key ] === 'string' && data[ key ] !== '' ) ? data[ key ] : fallback;
+}
+
+/**
+ * WP1.5: describes any stored content source value for display.
+ *
+ * JS twin of lgx_ls_describe_source() in includes/lgx-ls-sources.php. The
+ * labels and icons are not kept here: they come from the PHP registry through
+ * lgxShowcaseBuilderDefaults.sources (and the translated format string through
+ * lgxShowcaseBuilderDefaults.unknownSourceFormat). A blank value reads as
+ * logo_library; an unknown value is shown as "Unknown source: <value>" (cut at
+ * 40 characters) and is never shown as the Logo Library.
+ *
+ * @param {*} value A stored source value.
+ * @return {{id: string, label: string, icon: string, available: boolean, known: boolean}}
+ */
+function lgxDescribeSource( value ) {
+    var data = window.lgxShowcaseBuilderDefaults;
+    var sources = ( data && typeof data === 'object' && data.sources && typeof data.sources === 'object' ) ? data.sources : {};
+    var format = ( data && typeof data === 'object' && typeof data.unknownSourceFormat === 'string' && data.unknownSourceFormat !== '' ) ? data.unknownSourceFormat : 'Unknown source: %s';
+    var warning = 'dashicons-warning';
+
+    function unknownLabel( shown ) {
+        // First placeholder only: "%s" or the numbered form "%1$s" that a translation may use.
+        return format.replace( /%(?:1\$)?s/, function () { return shown; } );
+    }
+
+    // PHP trim() removes exactly: space, tab, newline, carriage return, NUL, vertical tab.
+    if ( value === undefined || value === null || ( typeof value === 'string' && /^[ \t\n\r\0\x0B]*$/.test( value ) ) ) {
+        value = 'logo_library';
+    }
+
+    if ( typeof value !== 'string' ) {
+        return { id: '', label: unknownLabel( lgxText( 'notText', '(not text)' ) ), icon: warning, available: false, known: false };
+    }
+
+    if ( Object.prototype.hasOwnProperty.call( sources, value ) ) {
+        var entry = sources[ value ];
+        if ( entry && typeof entry === 'object' ) {
+            return {
+                id: value,
+                label: String( entry.label ),
+                icon: String( entry.icon ),
+                available: ( entry.available === true ),
+                known: true
+            };
+        }
+    }
+
+    // Cut by code points (not UTF-16 units) so a surrogate pair is never split.
+    var chars = Array.from( value );
+    var shown = value;
+    if ( chars.length > 40 ) {
+        shown = chars.slice( 0, 40 ).join( '' ) + String.fromCharCode( 0x2026 );
+    }
+    return { id: value, label: unknownLabel( shown ), icon: warning, available: false, known: false };
+}
+
+/**
+ * The stored content source value exactly as builder-wrapper.php sent it (escaped in the attribute, never cleaned).
+ * No attribute = no stored value (null, read as Logo Library); the nontext flag = a stored value that is not text.
+ *
+ * @param {Element|null} builderEl The .lgx-builder element.
+ * @return {*} A value for lgxDescribeSource().
+ */
+function lgxStoredSource( builderEl ) {
+    if ( ! builderEl ) {
+        return 'logo_library';
+    }
+    if ( builderEl.hasAttribute( 'data-current-source-nontext' ) ) {
+        return [];
+    }
+    return builderEl.hasAttribute( 'data-current-source' ) ? builderEl.getAttribute( 'data-current-source' ) : null;
+}
+
+/**
  * 007R-003: Builder Header Status
  *
  * Dynamically updates the "Current Setup" status line in the builder header
@@ -284,27 +369,23 @@ function initBuilderStatus() {
         'flexbox':  { icon: 'dashicons-columns', label: 'Flexbox' }
     };
 
-    var sourceMap = {
-        'logo_library':      { icon: 'dashicons-format-gallery', label: 'Logo Library' },
-        'woocommerce_brands': { icon: 'dashicons-cart', label: 'WooCommerce Brands' }
-    };
+    // The source labels and icons are not kept here: lgxDescribeSource() reads
+    // them from the PHP registry (lgxShowcaseBuilderDefaults.sources).
 
     function update() {
         var layoutValue = layoutInput ? layoutInput.value : 'carousel';
-        var checkedRadio = document.querySelector('input[name="meta_lgx_lsp_shortcodes[lgx_lswp_content_source]"]:checked');
-        // RB-2/B52: with the WooCommerce Brands radio removed, a showcase
-        // whose stored source doesn't match the one remaining radio (Logo
-        // Library) renders with nothing checked. Falling back to a
-        // hardcoded 'logo_library' here would silently relabel that
-        // showcase's status bar to the wrong source moments after page
-        // load — fall back to the true stored value (builder-wrapper.php's
-        // data-current-source) instead.
+        // T-213 (S-05, A1): the pill follows the one posted source input
+        // (tab-source_settings.php). While it is disabled (stored value
+        // missing, blank or not text, and no pick yet) the pill keeps the
+        // true stored value (builder-wrapper.php's data-current-source), so
+        // it never relabels a showcase to the wrong source after page load.
+        var sourceField = document.getElementById('lgx_lswp_content_source_field');
         var builderEl = document.querySelector('.lgx-builder');
-        var trueCurrentSource = builderEl ? builderEl.dataset.currentSource : 'logo_library';
-        var sourceValue = checkedRadio ? checkedRadio.value : trueCurrentSource;
+        var trueCurrentSource = lgxStoredSource( builderEl );
+        var sourceValue = ( sourceField && ! sourceField.disabled ) ? sourceField.value : trueCurrentSource;
 
         var layout = layoutMap[layoutValue] || layoutMap['carousel'];
-        var source = sourceMap[sourceValue] || sourceMap['logo_library'];
+        var source = lgxDescribeSource(sourceValue);
 
         var layoutBtn = statusEl.querySelector('.lgx-layout-trigger');
         var sourceBtn = statusEl.querySelector('.lgx-source-trigger');
@@ -421,10 +502,6 @@ function initShowcaseNameSync() {
         grid: 'Grid',
         flexbox: 'Flexbox'
     };
-    const sourceMap = {
-        logo_library: 'Logo Library',
-        woocommerce_brands: 'WooCommerce Brands'
-    };
 
     // Blank title on load is the sole signal — no separate flag needed.
     let isAutoGenerating = titleField.value.trim() === '';
@@ -437,8 +514,8 @@ function initShowcaseNameSync() {
 
     function currentSourceLabel() {
         const builderEl = document.querySelector('.lgx-builder');
-        const value = builderEl ? builderEl.dataset.currentSource : 'logo_library';
-        return sourceMap[value] || sourceMap.logo_library;
+        const value = lgxStoredSource(builderEl);
+        return lgxDescribeSource(value).label;
     }
 
     // Task 020/Task 6: appends the real post ID so multiple showcases stay
@@ -601,6 +678,13 @@ function initTitleFieldIcons() {
         'aria-label="More information" aria-expanded="false" aria-controls="lgx-help-popover" ' +
         'data-help="Internal showcase name for admin reference only."></button>';
 
+    // T-226b (B189): the translated texts are set with setAttribute, which needs no HTML escaping.
+    const helpBtn = row.querySelector('.lgx-builder-help-icon');
+    if (helpBtn) {
+        helpBtn.setAttribute('aria-label', lgxText('moreInfo', 'More information'));
+        helpBtn.setAttribute('data-help', lgxText('showcaseNameHelp', 'Internal showcase name for admin reference only.'));
+    }
+
     titlewrap.insertAdjacentElement('afterend', row);
 
     if (titleField) {
@@ -651,10 +735,10 @@ function initHeaderShortcodeCopy() {
         document.execCommand('copy');
         document.body.removeChild(temp);
 
-        lgxNotifySuccess('Shortcode copied');
+        lgxNotifySuccess(lgxText('shortcodeCopied', 'Shortcode copied'));
 
         if (labelEl) {
-            labelEl.textContent = 'Copied!';
+            labelEl.textContent = lgxText('copiedLabel', 'Copied!');
             btn.classList.add('is-copied');
             if (resetTimer) clearTimeout(resetTimer);
             resetTimer = setTimeout(function () {
@@ -722,7 +806,7 @@ function initStickySaveButton() {
 function initSaveSuccessNotice() {
     const message = document.getElementById('message');
     if (message && message.classList.contains('notice-success')) {
-        lgxNotifySuccess('Showcase saved');
+        lgxNotifySuccess(lgxText('showcaseSaved', 'Showcase saved'));
     }
 }
 
@@ -739,7 +823,10 @@ function initLayoutSettingsVisibility() {
     const layoutInput = document.getElementById('lgx_lswp_showcase_type_field');
     if (!panel) return;
 
-    // Maps each settings group's visible title to the Showcase Type it applies to.
+    // Maps each settings group's panel id to the Showcase Type it applies to.
+    // T-226c: keyed by the panel id (lgx-group-{tab id}-{group key}, from
+    // Lgx_Showcase_Renderer::render_group() and the config.php group keys),
+    // not by the visible title, which is translated on non-English sites.
     var groupTypeMap = {
         // 007R-c: Carousel Settings / Navigation Settings were split into
         // smaller focused groups — all still map to 'carousel'.
@@ -747,15 +834,15 @@ function initLayoutSettingsVisibility() {
         // retitled to 'Navigation' — both updated here in the same commit
         // as the config.php reorder (see showcase-builder.css's sibling
         // group definitions for the current group set).
-        'Playback':                 'carousel',
-        'Touch & Mouse Interaction': 'carousel',
-        'Slide Behaviour':          'carousel',
-        'Navigation':               'carousel',
-        'Navigation Style':         'carousel',
-        'Navigation Border':        'carousel',
-        'Pagination Settings':      'carousel',
-        'Grid Settings':            'grid',
-        'Flexbox Settings':         'flexbox'
+        'lgx-group-layout_settings-carousel_general':         'carousel', // Playback
+        'lgx-group-layout_settings-carousel_interaction':     'carousel', // Touch & Mouse Interaction
+        'lgx-group-layout_settings-carousel_slide_behaviour': 'carousel', // Slide Behaviour
+        'lgx-group-layout_settings-carousel_nav_content':     'carousel', // Navigation
+        'lgx-group-layout_settings-carousel_navigation':      'carousel', // Navigation Style
+        'lgx-group-layout_settings-carousel_nav_border':      'carousel', // Navigation Border
+        'lgx-group-layout_settings-carousel_pagination':      'carousel', // Pagination Settings
+        'lgx-group-layout_settings-grid_settings':            'grid',     // Grid Settings
+        'lgx-group-layout_settings-flexbox_settings':         'flexbox'   // Flexbox Settings
     };
 
     function update() {
@@ -763,9 +850,7 @@ function initLayoutSettingsVisibility() {
         var panels = panel.querySelectorAll('.lgx-ui-panelbody');
 
         panels.forEach(function (panelbody) {
-            var titleEl = panelbody.querySelector('.lgx-ui-panelbody-title');
-            var title = titleEl ? titleEl.textContent.trim() : '';
-            var appliesTo = groupTypeMap[title];
+            var appliesTo = Object.prototype.hasOwnProperty.call(groupTypeMap, panelbody.id) ? groupTypeMap[panelbody.id] : '';
 
             // Groups not present in the map are left as-is (always visible).
             if (!appliesTo) return;
@@ -791,7 +876,12 @@ function initSourceSettingsVisibility() {
     const panels = document.querySelectorAll('.lgx-source-dependent-panel');
     if (!panels.length) return;
 
-    const sourceRadioSelector = 'input[name="meta_lgx_lsp_shortcodes[lgx_lswp_content_source]"]';
+    // T-213 (S-02 to S-06): the Content Source radio cards (name
+    // lgx_source_picker, never read by the save) and the one posted hidden
+    // source input. The current source is the checked card; the extra
+    // "Unknown source" card has the value '' and matches no panel.
+    const sourceRadioSelector = 'input[name="lgx_source_picker"]';
+    const sourceField = document.getElementById('lgx_lswp_content_source_field');
 
     function update() {
         var checkedRadio = document.querySelector(sourceRadioSelector + ':checked');
@@ -801,13 +891,175 @@ function initSourceSettingsVisibility() {
             var appliesTo = panel.dataset.sourcePanel;
             panel.classList.toggle('lgx-panelbody--type-hidden', appliesTo !== currentSource);
         });
+
+        document.querySelectorAll(sourceRadioSelector).forEach(function (radio) {
+            var card = radio.closest('.lgx-source-card');
+            if (card) {
+                card.classList.toggle('is-selected', radio.checked);
+            }
+        });
     }
 
-    // Reflect saved data on load (edit context), then keep in sync on change.
+    // Server-rendered classes already match the saved data; this only keeps
+    // them in sync. An explicit pick is the only thing that changes the
+    // posted value (A1/S-03): it sets the picked id and enables the input.
     update();
     document.querySelectorAll(sourceRadioSelector).forEach(function (radio) {
-        radio.addEventListener('change', update);
+        radio.addEventListener('change', function () {
+            if (!radio.checked || radio.disabled) return;
+            if (sourceField) {
+                sourceField.value = radio.value;
+                sourceField.disabled = false;
+            }
+            update();
+            // Left menu, header pill and live preview follow this event.
+            document.dispatchEvent(new CustomEvent('lgx:status-update'));
+        });
     });
+
+    // S-05: the header pill keeps its jump to the Content tab and then
+    // scrolls to the Content Source panel through its own left-menu entry.
+    document.querySelectorAll('.lgx-source-trigger').forEach(function (trigger) {
+        trigger.addEventListener('click', function () {
+            setTimeout(function () {
+                var navBtn = document.querySelector('.lgx-builder-nav__subgroup-btn[data-target-group="lgx-group-source_settings-content_source"]');
+                if (navBtn) {
+                    navBtn.click();
+                }
+            }, 0);
+        });
+    });
+}
+
+/**
+ * T-215 (S-20 to S-24): the WooCommerce Brands picker (tab-source_settings.php).
+ *
+ * The markup, the texts and the missing-brand list are server-rendered; this
+ * only filters, counts and writes the one hidden input. The hidden input keeps
+ * the exact stored string until the user changes the selection (tick, untick,
+ * Clear selection, Remove); only then is it written, as the save's own clean
+ * form (positive whole numbers, no duplicates, ascending, comma-joined), and
+ * enabled. A missing (not found) id stays in the value until its Remove
+ * button is used. Not the category list's initCheckboxListSync(), which drops
+ * unmatched ids. A locked picker (Free) gets no handlers at all: the existing
+ * initProFieldLocking() intercepts its clicks.
+ */
+function initBrandPicker() {
+    var row = document.getElementById('lgx-brand-picker-row');
+    var picker = row ? row.querySelector('.lgx-brand-picker') : null;
+    if (!picker) return;
+
+    // S-23: "All brands" hides the row with CSS only; the hidden input stays in the form.
+    var scopeSelect = document.getElementById('lgx_woo_product_brand_scope');
+    if (scopeSelect) {
+        scopeSelect.addEventListener('change', function () {
+            row.classList.toggle('lgx-panelbody--type-hidden', scopeSelect.value === 'all');
+        });
+    }
+
+    if (picker.getAttribute('data-locked') === '1') return;
+
+    var hiddenInput = document.getElementById(picker.getAttribute('data-picker-for') || '');
+    if (!hiddenInput) return;
+
+    var inputs = Array.prototype.slice.call(picker.querySelectorAll('.lgx-brand-picker__input'));
+    var counter = picker.querySelector('.lgx-brand-picker__count');
+    var search = picker.querySelector('.lgx-brand-picker__search');
+    var clearBtn = picker.querySelector('.lgx-brand-picker__clear');
+    var missingBox = picker.querySelector('.lgx-brand-picker__missing');
+    var missingTitle = picker.querySelector('.lgx-brand-picker__missing-title');
+
+    function fill(format, values) {
+        var i = 0;
+        return String(format || '').replace(/%(\d)\$d|%d/g, function (match, pos) {
+            var index = pos ? parseInt(pos, 10) - 1 : i++;
+            return String(values[index]);
+        });
+    }
+
+    // Ids are compared as digit strings (length first), never as Numbers, so a
+    // large stored id keeps every digit.
+    function compareIds(a, b) {
+        if (a.length !== b.length) return a.length - b.length;
+        return a < b ? -1 : (a > b ? 1 : 0);
+    }
+
+    function missingItems() {
+        return Array.prototype.slice.call(picker.querySelectorAll('.lgx-brand-picker__missing-item'));
+    }
+
+    function updateCounts() {
+        var ticked = inputs.filter(function (cb) { return cb.checked; }).length;
+        if (counter) {
+            counter.textContent = fill(picker.getAttribute('data-text-counter'), [ticked, inputs.length]);
+        }
+        var missing = missingItems().length;
+        if (missingTitle) {
+            var format = missing === 1 ? picker.getAttribute('data-text-missing-one') : picker.getAttribute('data-text-missing-many');
+            missingTitle.textContent = fill(format, [missing]);
+        }
+        if (missingBox) {
+            missingBox.hidden = (missing === 0);
+        }
+    }
+
+    function writeValue() {
+        var seen = {};
+        var ids = [];
+        function add(id) {
+            id = String(id || '').replace(/^0+/, '');
+            if (/^[0-9]+$/.test(id) && !seen[id]) {
+                seen[id] = true;
+                ids.push(id);
+            }
+        }
+        inputs.forEach(function (cb) {
+            if (cb.checked) add(cb.value);
+        });
+        missingItems().forEach(function (item) {
+            add(item.getAttribute('data-brand-id'));
+        });
+        ids.sort(compareIds);
+
+        hiddenInput.value = ids.join(',');
+        hiddenInput.disabled = false;
+        updateCounts();
+        // Live preview and the configured-dot indicator follow form changes.
+        hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    inputs.forEach(function (cb) {
+        cb.addEventListener('change', writeValue);
+    });
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function () {
+            inputs.forEach(function (cb) { cb.checked = false; });
+            writeValue();
+        });
+    }
+
+    picker.addEventListener('click', function (e) {
+        var btn = e.target.closest ? e.target.closest('.lgx-brand-picker__remove') : null;
+        if (!btn) return;
+        var item = btn.closest('.lgx-brand-picker__missing-item');
+        if (!item) return;
+        var next = item.nextElementSibling || item.previousElementSibling;
+        item.parentNode.removeChild(item);
+        writeValue();
+        var focusTarget = next ? next.querySelector('.lgx-brand-picker__remove') : clearBtn;
+        if (focusTarget) focusTarget.focus();
+    });
+
+    if (search) {
+        search.addEventListener('input', function () {
+            var query = search.value.trim().toLowerCase();
+            picker.querySelectorAll('.lgx-brand-picker__item').forEach(function (item) {
+                var name = item.getAttribute('data-brand-name') || '';
+                item.hidden = (query !== '' && name.indexOf(query) === -1);
+            });
+        });
+    }
 }
 
 /**
@@ -1240,12 +1492,12 @@ function initLivePreviewAutoUpdate() {
                     setLoading(false);
                     // Task 021: this used to fail completely silently —
                     // the user had no way to know their change wasn't reflected.
-                    lgxNotifyError('Preview update failed — showing the last successful preview.');
+                    lgxNotifyError(lgxText('previewFailed', 'Preview update failed — showing the last successful preview.'));
                 }
             })
             .catch(function () {
                 setLoading(false);
-                lgxNotifyError('Preview update failed — showing the last successful preview.');
+                lgxNotifyError(lgxText('previewFailed', 'Preview update failed — showing the last successful preview.'));
             });
     }
 
@@ -2037,6 +2289,7 @@ if (document.readyState === 'loading') {
         initSaveSuccessNotice();
         initLayoutSettingsVisibility();
         initSourceSettingsVisibility();
+        initBrandPicker();
         initFieldTooltips();
         initLivePreview();
         initLivePreviewAutoUpdate();
@@ -2064,6 +2317,7 @@ if (document.readyState === 'loading') {
     initSaveSuccessNotice();
     initLayoutSettingsVisibility();
     initSourceSettingsVisibility();
+    initBrandPicker();
     initFieldTooltips();
     initLivePreview();
     initLivePreviewAutoUpdate();
@@ -2254,7 +2508,9 @@ function initProUpgradeModal() {
         lastTrigger = triggerElement;
         
         // Find feature name for context
-        let featureName = 'Pro Feature';
+        // T-226b (B189): the default name is translated; the check below compares with the same value.
+        const defaultFeatureName = lgxText('proFeature', 'Pro Feature');
+        let featureName = defaultFeatureName;
         if (triggerElement) {
             // First try to find standard row label
             const rowLabel = triggerElement.closest('.lgx-field--row') || triggerElement.closest('tr');
@@ -2263,7 +2519,7 @@ function initProUpgradeModal() {
                 if (labelEl) featureName = labelEl.textContent;
             }
             // Fallback to group label or ID
-            if (featureName === 'Pro Feature' && triggerElement.id) {
+            if (featureName === defaultFeatureName && triggerElement.id) {
                 featureName = triggerElement.id.replace('lgx_', '').replace(/_/g, ' ');
                 // Capitalize
                 featureName = featureName.charAt(0).toUpperCase() + featureName.slice(1);
@@ -2427,7 +2683,7 @@ function initUsageModal() {
                 // a DOM mutation and re-announces via aria-live.
                 copyStatus.textContent = '';
                 window.setTimeout(function () {
-                    copyStatus.textContent = 'Copied to clipboard.';
+                    copyStatus.textContent = lgxText('copiedToClipboard', 'Copied to clipboard.');
                 }, 10);
             }
 
@@ -2435,7 +2691,7 @@ function initUsageModal() {
             // aria-live region above (which stays — that's for screen
             // readers, not a duplicate of this). Per-button message via
             // data-copy-success-msg, set in builder-wrapper.php per card.
-            lgxNotifySuccess(btn.getAttribute('data-copy-success-msg') || 'Copied to clipboard');
+            lgxNotifySuccess(btn.getAttribute('data-copy-success-msg') || lgxText('copiedToClipboard', 'Copied to clipboard'));
 
             if (iconEl) {
                 iconEl.className = defaultIconClass.replace('dashicons-admin-page', 'dashicons-yes-alt');
@@ -2672,9 +2928,25 @@ const FIELD_DEPENDENCIES = [
 ];
 
 
-const DEP_LOCK_NOTE_TEMPLATE = 'Enable <strong>%s</strong> to use this setting.';
+// T-226b (B189): translated through lgxShowcaseBuilderDefaults.depLockNote; the English text is the fallback.
+const DEP_LOCK_NOTE_TEMPLATE = lgxText('depLockNote', 'Enable <strong>%s</strong> to use this setting.');
 const DEP_NOTE_CLASS = 'lgx-dep-lock-note';
 const DEP_LOCK_CLASS = 'lgx-dep-locked-field';
+
+/**
+ * T-226c: escapes text for use inside HTML (& < > " ').
+ *
+ * @param {string} text Plain text.
+ * @return {string}
+ */
+function lgxEscapeHtml(text) {
+    return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
 
 function getParentLabel(parentId) {
     const el = document.getElementById(parentId);
@@ -2707,7 +2979,7 @@ function getOrCreateLockNoteForChild(depEntry, childId) {
     note.hidden = true;
     note.innerHTML =
         '<span class="dashicons dashicons-info-outline" aria-hidden="true"></span>' +
-        DEP_LOCK_NOTE_TEMPLATE.replace('%s', getParentLabel(depEntry.parent));
+        DEP_LOCK_NOTE_TEMPLATE.replace('%s', lgxEscapeHtml(getParentLabel(depEntry.parent)));
     control.appendChild(note);
     return note;
 }
@@ -2794,7 +3066,7 @@ function getOrCreateForceNote(depEntry, childId) {
     note.hidden = true;
     note.innerHTML =
         '<span class="dashicons dashicons-info-outline" aria-hidden="true"></span> ' +
-        'Required for <strong>' + getParentLabel(depEntry.parent) + '</strong>.';
+        'Required for <strong>' + lgxEscapeHtml(getParentLabel(depEntry.parent)) + '</strong>.';
     control.appendChild(note);
     return note;
 }

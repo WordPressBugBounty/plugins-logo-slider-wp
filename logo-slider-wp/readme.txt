@@ -2,30 +2,60 @@
 Contributors: LogicHunt, themearth, vaskarjewel
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=vaspal.kt@gmail.com&lc=US&item_name=LogicHunt&item_number=wp&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted
 Tags: logo slider, logo carousel, logo showcase, logo gallery, client logos
-Requires at least: 4.3
+Requires at least: 5.8
 Tested up to: 7.1
-Stable tag: 6.0.0
-Requires PHP: 7.0
+Stable tag: 6.1.0
+Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Display client logos and partner brands. Build responsive logo carousels, grids, or flexbox layouts natively in Gutenberg or with shortcodes!
+Show client logos and WooCommerce brand logos in a responsive logo slider, carousel, grid or flexbox layout, with a Gutenberg block or shortcode.
 
 == Description ==
 
 👉 [Live Demo](https://demo.logichunt.com/logo-slider-wp/) | [Documentation](https://docs.logichunt.com/logo-slider-wp/) | [Support](https://logichunt.com/support/) | [Get Pro](https://logichunt.com/product/wordpress-logo-slider/)
 
-**Logo Slider WP** lets you showcase client logos, sponsors, and partner brands with a native Gutenberg block, shortcodes, or PHP — no page builder required. Unlimited logos, three layout types, and a full visual Showcase Builder are free, not a trial.
+**Logo Slider WP** shows logos on your WordPress site: the client, sponsor and partner logos you upload, and — new in 6.1.0 — the brand logos of your WooCommerce store. Display them as a responsive logo slider, logo carousel, grid or flexbox showcase with a native Gutenberg block, a shortcode or PHP. No page builder and no coding needed. Unlimited logos, three layout types, and a full visual Showcase Builder are free, not a trial.
 
-A WordPress.org reviewer who compared four logo-slider plugins in one sitting called this "the best" — and rated the nearest competitor 1★, describing its free tier as the most restrictive they'd encountered in 15+ years of WordPress. We built this the other way: a Free edition you can actually build something real with.
+The Free edition includes both logo sources, the Gutenberg block, the shortcode and the Showcase Builder with live preview. Pro adds more styling options, hover effects, Ticker mode and brand selection.
 
+* Two logo sources in one plugin: your own Logo Library or your WooCommerce Brands
 * Unlimited logos, unlimited showcases — no artificial caps on the Free edition
 * Native Gutenberg block, plus shortcode and PHP function support for any theme or builder
 * A real visual Showcase Builder — Carousel, Grid, and Flexbox layouts, live preview as you configure
 * Category filtering, drag-and-drop ordering, and per-logo links — all Free
 
-= What's new in 6.0.0 =
+= Two logo sources in one plugin =
 
-**6.0.0 is a full rebuild of the admin experience.** The new Showcase Builder replaces the old settings-tab interface with a single-page, live-preview editor — see your changes rendered in real time as you configure Content, Layout, Style, Responsive, Section, and Advanced settings, without saving and refreshing. Category filtering is now Free. On a new site, a demo showcase and six sample logos are added automatically, so there's something real to explore immediately.
+Every showcase starts with one choice in the **Content Source** panel: where do the logos come from?
+
+**Logo Library — your own logos.** Upload client, partner, sponsor or team logos, give each one a name, link, tooltip and category, and order them by drag and drop. Works on every WordPress site.
+
+**WooCommerce Brands — the brands you sell.** Show the brands from **Products → Brands** without uploading anything twice. Each brand shows its own logo (the brand thumbnail) and can link to its brand page. The showcase reads your brands directly from WooCommerce.
+
+Both sources share the same layouts, styling options, live preview, Gutenberg block and shortcode. You can switch a showcase to the other source at any time, and all its other settings are kept.
+
+= WooCommerce brand logo slider =
+
+Turn your store's brands into a brand logo slider, carousel or grid in three steps:
+
+1. Give each brand a thumbnail image under **Products → Brands**.
+2. In **Logo Slider → Showcases**, create a showcase and pick **WooCommerce Brands** in the Content Source panel.
+3. Choose Carousel, Grid or Flexbox and add the showcase to any page with the block or shortcode.
+
+**Free:** show every brand that has a logo and at least one product, so the showcase has no empty tiles. Sort them by name, by the order they were added or at random, set how many to show, and use every Free display control.
+
+**Pro:** choose or exclude specific brands with a searchable list, show brands without a logo as their name, and show brands that have no products.
+
+This source needs WooCommerce with its Brands feature active (Products → Brands). Brands is part of WooCommerce and is on by default from version 9.6. If WooCommerce is turned off, the showcase keeps its settings and shows no logos until it is active again.
+
+= What's new in 6.1.0 =
+
+* New **Content Source** panel: choose the Logo Library or WooCommerce Brands for each showcase.
+* The brand source is Free, with Pro controls for brand selection and display.
+* Safer brand settings: a stored brand setting the builder does not recognise is shown as "Unknown" and kept, never changed silently.
+* The texts shown by the Showcase Builder script can now be translated.
+* Your existing logos, showcases and shortcodes are not changed by this update.
+* Requires WordPress 5.8 or later and PHP 7.4 or later.
 
 = Showcase types =
 
@@ -36,12 +66,16 @@ A WordPress.org reviewer who compared four logo-slider plugins in one sitting ca
 = Perfect for =
 
 * Agencies showcasing client work
+* WooCommerce stores showing the brands they sell
 * SaaS and software companies displaying integration partners
 * Conferences and events listing sponsors
 * Membership and community sites crediting supporting brands
 * Any site that needs "as seen in" or "trusted by" social proof
 
 = Why Logo Slider WP =
+
+**One plugin for logos and brands**
+Use the same builder for your client logos and your store's brands — no second slider plugin needed.
 
 **Live Preview in the Editor**
 With our native Gutenberg block, see exactly how your slider looks without leaving the WordPress editor.
@@ -64,11 +98,13 @@ All users — Free and Pro — get direct support at the [LogicHunt Support Cent
 * Carousel, Grid & Flexbox showcase types
 * Unlimited logos — no display cap
 * Multiple independent showcases per page
+* Content source: Logo Library or WooCommerce Brands
 
 **Logo Management**
 * Category-based filtering
 * Drag-and-drop logo ordering
 * Per-logo link URL
+* Brand source: show every brand with a logo and at least one product; sort by name, order added or random
 * Brand name show/hide
 * Logo height & width control (Max Width unlocked)
 * Logo position & info alignment
@@ -91,7 +127,7 @@ All users — Free and Pro — get direct support at the [LogicHunt Support Cent
 * Grid column/row gaps & outline color
 * Flexbox gaps, align items, and basic justify-content (Start, Center)
 * Brand name color, size & top margin
-* Description color, size & top margin
+* Description color, size & top margin (apply when descriptions are shown with Pro)
 * Logo image border (color, width, radius)
 * Item padding & margin
 
@@ -112,6 +148,7 @@ All users — Free and Pro — get direct support at the [LogicHunt Support Cent
 
 **Logo Management**
 * Link target (new tab) & nofollow attribute
+* Brand source: choose or exclude specific brands, show brands without a logo as text, show brands without products
 * Brand/item description field
 * Logo width sizing modes beyond Max Width (Width, Min Width)
 
@@ -132,7 +169,7 @@ All users — Free and Pro — get direct support at the [LogicHunt Support Cent
 * Description font weight & bottom margin
 * Item card border (color, width, radius)
 * Item card background color
-* Hover animations on logo items
+* Hover effects on logo items (grayscale, box shadow, overlay with link or title) and hover animations
 
 **Section & Header**
 * Section header typography (alignment, size, color, weight, margins)
@@ -145,18 +182,17 @@ All users — Free and Pro — get direct support at the [LogicHunt Support Cent
 
 👉 [View Pro features & upgrade →](https://logichunt.com/product/wordpress-logo-slider/)
 
-= Per-logo fields =
+= Per-logo fields (Logo Library) =
 
-Each logo entry supports:
+WooCommerce Brands uses each store brand's name, thumbnail and brand page. Each Logo Library entry supports:
 
-* Logo image
-* Brand / company name
-* Custom brand name (display a different name without renaming the entry)
-* Item description (Pro)
-* Company URL
-* Custom tooltip text
-* Image alt text
-* Category assignment
+* Brand Name and Logo Image (the two required fields)
+* Website URL (leave empty for a logo that is not clickable)
+* Tooltip (uses the Brand Name until you change it)
+* Alt Text (uses the Brand Name until you change it)
+* Custom Brand Name (show a different name without renaming the logo)
+* Description (shown with Pro, in layouts that support descriptions)
+* Categories (used for category filtering)
 
 
 = Embedding methods =
@@ -213,6 +249,22 @@ After activation, **Logo Slider** appears in your admin sidebar.
 * **Method A (Recommended):** Add the native **Logo Slider WP Block** in the Gutenberg editor. Select your newly created showcase from the dropdown and enjoy a live preview!
 * **Method B:** Copy the generated shortcode (e.g., `[lgxlogoslider id="39"]`) and paste it into Elementor, Divi, WPBakery, or any other page builder.
 
+= Can I show WooCommerce brand logos in a slider or carousel? =
+
+Yes. Since version 6.1.0 a showcase can use **WooCommerce Brands** as its content source. Create a showcase, pick that source in the Content Source panel and choose Carousel, Grid or Flexbox. The logos are the brand thumbnails you set under **Products → Brands**. When the link option in the Essential panel is on, each logo links to its brand page.
+
+= Which brands are shown, and can I choose them? =
+
+Free shows every brand that has a logo and at least one product, sorted by name, by the order added or at random. Pro lets you show only selected brands or exclude some, show brands without a logo as text, and show brands without products.
+
+= Do I need WooCommerce? =
+
+No. It is needed only for the brand source. The Logo Library works on any WordPress site.
+
+= What happens to a brand showcase if WooCommerce is turned off? =
+
+Its settings are kept and stay editable, and it shows no logos until WooCommerce is active again. You can also switch the showcase back to the Logo Library at any time.
+
 = Can I switch between shortcode and block? =
 
 Absolutely! The shortcodes and the new Gutenberg block share the exact same showcases. You can use a shortcode on one page, and the block on another. Both render the same showcase with the same settings.
@@ -235,10 +287,10 @@ No. The 20-logo cap is permanently removed. Item Limit defaults to -1, which sho
 
 = Does this plugin work with Elementor, Divi, WPBakery? =
 
-Yes. Paste `&#91;lgxlogoslider id="39"&#93;` into:
+Yes. Paste `[lgxlogoslider id="39"]` into:
 * **Elementor** — Shortcode widget
-* **Divi** — Code or Shortcode module
-* **WPBakery** — Raw HTML or Shortcode element
+* **Divi** — Code module
+* **WPBakery** — Text Block element
 * **Beaver Builder** — HTML module
 
 = Can I run multiple showcases on the same page? =
@@ -251,7 +303,7 @@ Yes. Each showcase has a unique wrapper class. Add CSS via **Appearance → Cust
 
 = What is the difference between free and Pro? =
 
-Free covers all three layout types, unlimited logo display, the native Gutenberg Block, category filtering, responsive control, RTL direction, preloader, and full shortcode compatibility. Pro adds hover animations, Coverflow 3D, grayscale and overlay effects, full typography control, background images, branded preloader, ticker mode, and priority developer support.
+Free covers all three layout types, unlimited logo display, the native Gutenberg Block, category filtering, WooCommerce Brands as a content source, responsive control, RTL direction, preloader, and full shortcode compatibility. Pro adds brand selection, hover effects (grayscale, box shadow and overlays), hover animations, Coverflow 3D, full typography control, background images, branded preloader, ticker mode, and priority developer support.
 
 = Is there a live demo? =
 
@@ -292,6 +344,9 @@ Both Free and Pro users get direct help at the [LogicHunt Support Center](https:
 
 == Upgrade Notice ==
 
+= 6.1.0 =
+Adds WooCommerce Brands as a second logo source and a Content Source panel in the Showcase Builder. Requires WordPress 5.8+ and PHP 7.4+. Your existing logos, showcases and shortcodes are not changed.
+
 = 6.0.0 =
 A full rebuild of the Showcase Builder — the old settings-tab interface is replaced with a single-page, live-preview editor. Category filtering is now Free, and your existing logos, showcases, and shortcodes carry over.
 
@@ -303,6 +358,18 @@ Security: Fixed stored XSS vulnerability. Fixed dynamic CSS not rendering for ca
 
 
 == Changelog ==
+
+= 6.1.0 =
+* New: WooCommerce Brands as a second content source (Free). Show your store's brand logos, sorted by name, order added or at random. Each logo links to its brand page when the link option is on.
+* New: Content Source panel in the Showcase Builder to choose between your own logos and your store's brands. Switching source keeps all other settings.
+* New (Pro): choose or exclude specific brands with a searchable brand list, show brands without a logo as text, and show brands without products.
+* New: A stored brand setting that matches no option is shown as "Unknown (value)" and kept when you save.
+* Improvement: The live preview follows the same Pro rules as saving.
+* Improvement: Showcase Builder script texts are translatable.
+* Improvement: Brand name text, the empty-state message and the editor hint have front-end styles.
+* Hardening: Field labels in builder notes are escaped.
+* Tweak: Requires WordPress 5.8 and PHP 7.4.
+* Tested: WordPress 7.1
 
 = 6.0.0 =
 * New: Full Showcase Builder rebuild — single-page, live-preview admin experience
