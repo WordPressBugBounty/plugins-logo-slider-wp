@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=vaspa
 Tags: logo slider, logo carousel, logo showcase, logo gallery, client logos
 Requires at least: 5.8
 Tested up to: 7.1
-Stable tag: 6.1.0
+Stable tag: 6.1.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -344,6 +344,9 @@ Both Free and Pro users get direct help at the [LogicHunt Support Center](https:
 
 == Upgrade Notice ==
 
+= 6.1.1 =
+Bug-fix release: a cleaner live preview, a PHP 8 fix for the Flexbox layout and clearer Pro prompts in the Free edition. Your showcases and settings are not changed.
+
 = 6.1.0 =
 Adds WooCommerce Brands as a second logo source and a Content Source panel in the Showcase Builder. Requires WordPress 5.8+ and PHP 7.4+. Your existing logos, showcases and shortcodes are not changed.
 
@@ -358,6 +361,17 @@ Security: Fixed stored XSS vulnerability. Fixed dynamic CSS not rendering for ca
 
 
 == Changelog ==
+
+= 6.1.1 =
+* Fix: The live preview no longer loads scripts and styles from other plugins, so it stays clean and fast.
+* Fix: Choosing a Content Source now refreshes the live preview once instead of twice.
+* Fix: A new, unsaved showcase no longer shows two loading spinners in the preview.
+* Fix: Activating the Free edition while Pro is active no longer shows "Plugin activated" next to the warning.
+* Fix: The Flexbox layout no longer causes an error on PHP 8 when a column count is empty or 0; a default is used.
+* Improvement: Clearer wording for a stored source that is not text and for showcases with no content.
+* Improvement: In the Free edition, Pro-only options and greyed Pro fields now open the Pro upgrade window instead of doing nothing.
+* New (Pro): Ticker Mode shows a live hint under Transition Speed and a "Recommended Ticker speed" dialog when the speed is outside 2000 to 6000 ms.
+* Developers: new filter logosliderwp_preview_keep_plugin_output to keep chosen plugins active in the live preview.
 
 = 6.1.0 =
 * New: WooCommerce Brands as a second content source (Free). Show your store's brand logos, sorted by name, order added or at random. Each logo links to its brand page when the link option is on.

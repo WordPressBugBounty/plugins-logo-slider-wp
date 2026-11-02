@@ -105,12 +105,12 @@ if ( ! function_exists( 'lgx_ls_describe_source' ) ) {
 			return array(
 				'id'        => '',
 				/* translators: %s: the stored source value, cut to 40 characters. */
-				'label'     => sprintf( __( 'Unknown source: %s', 'logo-slider-wp' ), __( '(not text)', 'logo-slider-wp' ) ),
+				'label'     => sprintf( __( 'Unknown source: %s', 'logo-slider-wp' ), __( '(not a text value)', 'logo-slider-wp' ) ),
 				'icon'      => $warning,
 				'available' => false,
 				'known'     => false,
 				/* translators: shown in place of a stored source value that is not text (for example a number). */
-				'shown'     => __( '(not text)', 'logo-slider-wp' ),
+				'shown'     => __( '(not a text value)', 'logo-slider-wp' ),
 			);
 		}
 		$registry = lgx_ls_get_registered_sources();
@@ -187,11 +187,11 @@ if ( ! function_exists( 'lgx_ls_get_empty_state' ) ) {
 			$hint = '';
 			if ( true === $for_editor ) {
 				/* translators: %s: the unknown source value, cut to 40 characters. */
-				$hint = sprintf( __( 'This showcase uses a source this version does not know ("%s"). Choose a source in the builder.', 'logo-slider-wp' ), $described['shown'] );
+				$hint = is_string( $stored_value ) ? sprintf( __( 'This showcase uses a source this version does not know ("%s"). Choose a source in the builder.', 'logo-slider-wp' ), $described['shown'] ) : __( 'This showcase has a stored source that is not a name (for example a number). Choose a source in the builder.', 'logo-slider-wp' );
 			}
 			return array(
 				'state'   => 'unknown_source',
-				'visitor' => __( 'This content is not available right now.', 'logo-slider-wp' ),
+				'visitor' => __( 'This showcase has no content to show right now.', 'logo-slider-wp' ),
 				'hint'    => $hint,
 			);
 		}
@@ -237,7 +237,7 @@ if ( ! function_exists( 'lgx_ls_get_empty_state' ) ) {
 
 		return array(
 			'state'   => 'generic',
-			'visitor' => __( 'This content is not available right now.', 'logo-slider-wp' ),
+			'visitor' => __( 'This showcase has no content to show right now.', 'logo-slider-wp' ),
 			'hint'    => '',
 		);
 	}

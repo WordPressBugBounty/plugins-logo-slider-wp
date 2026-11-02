@@ -715,6 +715,9 @@ class Logo_Slider_WP_Public {
             add_filter( 'get_post_metadata', array( $this, 'filter_preview_meta_override' ), 10, 4 );
         }
 
+        // T-283 (B207): keep other plugins' output out of this preview request (front end untouched).
+        $this->restrict_preview_output();
+
         // Register + enqueue before wp_head() runs (see docblock above).
         $this->enqueue_styles();
         $this->enqueue_scripts();
@@ -722,6 +725,143 @@ class Logo_Slider_WP_Public {
 
         include plugin_dir_path( __FILE__ ) . 'partials/preview-template.php';
         exit;
+    }
+
+    /**
+     * T-283 (B207) — keeps the output of other plugins out of the Live Preview.
+     *
+     * Called only from maybe_render_preview(), after its nonce and post-type checks and before
+     * wp_head()/wp_footer() run, so a visitor's front end is never touched. It removes every
+     * callback hooked to wp_enqueue_scripts, wp_head, wp_footer, wp_print_scripts,
+     * wp_print_footer_scripts and wp_body_open whose source file is not in WordPress core, the
+     * active theme (or its parent) or this plugin, and registers two small actions that dequeue
+     * the style/script handles of other plugins just before WordPress prints them. A callback
+     * whose source file cannot be determined is kept.
+     *
+     * Filter logosliderwp_preview_keep_plugin_output: returns an array of plugin folder names
+     * (for example 'my-fonts') whose callbacks and handles stay in the preview, for a site that
+     * needs one of its plugins there. It is applied once per preview request.
+     *
+     * @since 6.1.1
+     */
+    private function restrict_preview_output() {
+
+        static $done = false;
+        if ( $done ) {
+            return;
+        }
+        $done = true;
+
+        // Plugin folders that must stay (escape hatch). Folder names only; anything else is ignored.
+        $keep_slugs = apply_filters( 'logosliderwp_preview_keep_plugin_output', array() );
+        $keep_slugs = is_array( $keep_slugs ) ? $keep_slugs : array();
+
+        $plugin_dir = trailingslashit( wp_normalize_path( WP_PLUGIN_DIR ) );
+        $plugin_url = preg_replace( '#^https?:#i', '', trailingslashit( WP_PLUGIN_URL ) );
+        $mu_url     = preg_replace( '#^https?:#i', '', trailingslashit( WPMU_PLUGIN_URL ) );
+        $own_url    = preg_replace( '#^https?:#i', '', trailingslashit( dirname( untrailingslashit( plugin_dir_url( __FILE__ ) ) ) ) );
+
+        // Source folders whose callbacks stay: core, the active theme and its parent, this plugin.
+        $keep_dirs = array(
+            trailingslashit( wp_normalize_path( ABSPATH . WPINC ) ),
+            trailingslashit( wp_normalize_path( ABSPATH . 'wp-admin' ) ),
+            trailingslashit( wp_normalize_path( get_stylesheet_directory() ) ),
+            trailingslashit( wp_normalize_path( get_template_directory() ) ),
+            trailingslashit( wp_normalize_path( dirname( plugin_dir_path( __FILE__ ) ) ) ),
+        );
+        $keep_urls = array();
+        foreach ( $keep_slugs as $keep_slug ) {
+            if ( is_string( $keep_slug ) && preg_match( '/^[A-Za-z0-9._-]+$/', $keep_slug ) && '.' !== $keep_slug && '..' !== $keep_slug ) {
+                $keep_dirs[] = $plugin_dir . $keep_slug . '/';
+                $keep_urls[] = $plugin_url . $keep_slug . '/';
+            }
+        }
+
+        // Source file of a callback ('' when it cannot be determined).
+        $file_of = function ( $callback ) {
+            try {
+                if ( $callback instanceof Closure ) {
+                    $reflection = new ReflectionFunction( $callback );
+                } elseif ( is_string( $callback ) && false !== strpos( $callback, '::' ) ) {
+                    $parts      = explode( '::', $callback, 2 );
+                    $reflection = new ReflectionMethod( $parts[0], $parts[1] );
+                } elseif ( is_string( $callback ) ) {
+                    $reflection = new ReflectionFunction( $callback );
+                } elseif ( is_array( $callback ) && isset( $callback[0], $callback[1] ) ) {
+                    $reflection = new ReflectionMethod( $callback[0], $callback[1] );
+                } elseif ( is_object( $callback ) && method_exists( $callback, '__invoke' ) ) {
+                    $reflection = new ReflectionMethod( $callback, '__invoke' );
+                } else {
+                    return '';
+                }
+                $file = $reflection->getFileName();
+            } catch ( Throwable $e ) {
+                return '';
+            }
+            return is_string( $file ) ? wp_normalize_path( $file ) : '';
+        };
+
+        // True when a callback stays: unknown source file (fail open) or a kept folder.
+        $is_kept = function ( $file ) use ( $keep_dirs ) {
+            if ( '' === $file ) {
+                return true;
+            }
+            foreach ( $keep_dirs as $keep_dir ) {
+                if ( 0 === stripos( $file, $keep_dir ) ) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        // Remove the other callbacks. Works on a copy of each hook's callbacks array.
+        global $wp_filter;
+        $hooks = array( 'wp_enqueue_scripts', 'wp_head', 'wp_footer', 'wp_print_scripts', 'wp_print_footer_scripts', 'wp_body_open' );
+        foreach ( $hooks as $hook ) {
+            if ( empty( $wp_filter[ $hook ] ) || ! isset( $wp_filter[ $hook ]->callbacks ) ) {
+                continue;
+            }
+            $callbacks = $wp_filter[ $hook ]->callbacks;
+            foreach ( $callbacks as $priority => $entries ) {
+                foreach ( $entries as $entry ) {
+                    if ( ! isset( $entry['function'] ) || $is_kept( $file_of( $entry['function'] ) ) ) {
+                        continue;
+                    }
+                    remove_action( $hook, $entry['function'], $priority );
+                }
+            }
+        }
+
+        // Safety net for handles queued by other plugins: dequeue them just before WordPress prints them.
+        $dequeue_other_plugin_handles = function () use ( $plugin_url, $mu_url, $own_url, $keep_urls ) {
+            $lists = array(
+                array( wp_styles(), 'wp_dequeue_style' ),
+                array( wp_scripts(), 'wp_dequeue_script' ),
+            );
+            foreach ( $lists as $list ) {
+                $deps = $list[0];
+                foreach ( (array) $deps->queue as $handle ) {
+                    if ( empty( $deps->registered[ $handle ] ) || ! is_string( $deps->registered[ $handle ]->src ) ) {
+                        continue;
+                    }
+                    $src = preg_replace( '#^https?:#i', '', $deps->registered[ $handle ]->src );
+                    if ( 0 !== strpos( $src, $plugin_url ) && 0 !== strpos( $src, $mu_url ) ) {
+                        continue; // Core, theme and handles without a plugin source are not touched.
+                    }
+                    if ( 0 === strpos( $src, $own_url ) ) {
+                        continue;
+                    }
+                    foreach ( $keep_urls as $keep_url ) {
+                        if ( 0 === strpos( $src, $keep_url ) ) {
+                            continue 2;
+                        }
+                    }
+                    call_user_func( $list[1], $handle );
+                }
+            }
+        };
+        add_action( 'wp_head', $dequeue_other_plugin_handles, 7 );
+        add_action( 'wp_footer', $dequeue_other_plugin_handles, 19 );
     }
 
     /**

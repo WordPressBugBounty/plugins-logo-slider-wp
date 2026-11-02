@@ -306,7 +306,7 @@ function lgxDescribeSource( value ) {
     }
 
     if ( typeof value !== 'string' ) {
-        return { id: '', label: unknownLabel( lgxText( 'notText', '(not text)' ) ), icon: warning, available: false, known: false };
+        return { id: '', label: unknownLabel( lgxText( 'notText', '(not a text value)' ) ), icon: warning, available: false, known: false };
     }
 
     if ( Object.prototype.hasOwnProperty.call( sources, value ) ) {
@@ -1454,9 +1454,19 @@ function initLivePreviewAutoUpdate() {
 
     let debounceTimer = null;
 
+    // T-290 (B206): a new, unsaved showcase shows the "Loading preview..." placeholder (with its own
+    // spinner) inside the iframe; the overlay spinner stays hidden while that placeholder is showing.
+    function previewShowsPlaceholder() {
+        try {
+            return !!(iframe.contentDocument && iframe.contentDocument.querySelector('.lgx-preview-spinner'));
+        } catch (e) {
+            return false;
+        }
+    }
+
     function setLoading(isLoading) {
         if (overlay) {
-            overlay.hidden = !isLoading;
+            overlay.hidden = !isLoading || previewShowsPlaceholder();
         }
         // Mirrors initLivePreview()'s own button handling, so the button stays
         // disabled during an automatic update too — not just a manual click.
@@ -1502,6 +1512,10 @@ function initLivePreviewAutoUpdate() {
     }
 
     function onFieldChanged(e) {
+        // T-287 (B213): Content Source cards refresh the preview through lgx:status-update (single refresh).
+        if (e.target && e.target.matches && e.target.matches('input[name="lgx_source_picker"]')) {
+            return;
+        }
         const isSlider = e.target.matches && e.target.matches('input[type="range"]');
         // .lgx_color_picker is this codebase's actual color-picker input
         // class (admin/js/logo-slider-wp-admin.js calls $('.lgx_color_picker').wpColorPicker())
@@ -2299,6 +2313,7 @@ if (document.readyState === 'loading') {
         initProUpgradeModal();
         initUsageModal();
         initTickerContextNote();
+        initTickerSpeedModal();
         initFieldDependencyEngine();
         initConfiguredDotIndicators();
         initCheckboxListSync();
@@ -2327,6 +2342,7 @@ if (document.readyState === 'loading') {
     initProUpgradeModal();
     initUsageModal();
     initTickerContextNote();
+    initTickerSpeedModal();
     initFieldDependencyEngine();
     initConfiguredDotIndicators();
     initCheckboxListSync();
@@ -2339,7 +2355,33 @@ if (document.readyState === 'loading') {
  * Intercepts click/keydown to prevent edits and trigger the upgrade flow.
  */
 function initProFieldLocking() {
+    const LOCKED_OPTION = 'option[data-pro-locked-option="true"]';
+
+    function requireProUpgrade(trigger) {
+        document.dispatchEvent(new CustomEvent('lgx:require-pro-upgrade', {
+            detail: { trigger: trigger },
+            bubbles: true
+        }));
+    }
+
     function handleLockedInteraction(e) {
+        // B210: a select with Pro-only options that is also greyed by its parent
+        // switch cannot be opened, but a click on it still opens the Pro window.
+        const gatedSelect = e.target.closest('select');
+        if (gatedSelect && gatedSelect.querySelector(LOCKED_OPTION)) {
+            const depRow = gatedSelect.closest('.lgx-dep-locked-field');
+            if (depRow && !depRow.classList.contains('lgx-dep-locked-field--force')) {
+                if (e.type === 'mousedown' || e.type === 'click') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (e.type === 'click') {
+                        requireProUpgrade(gatedSelect);
+                    }
+                }
+                return;
+            }
+        }
+
         const lockedWrapper = e.target.closest('.lgx-pro-locked-field');
         if (!lockedWrapper) return;
 
@@ -2373,11 +2415,7 @@ function initProFieldLocking() {
             }
             
             if (e.type !== 'mousedown') {
-                const event = new CustomEvent('lgx:require-pro-upgrade', { 
-                    detail: { trigger: e.target },
-                    bubbles: true
-                });
-                document.dispatchEvent(event);
+                requireProUpgrade(e.target);
             }
         }
     }
@@ -2426,6 +2464,61 @@ function initProFieldLocking() {
             }
         });
     });
+
+    // B210: Pro-only options are selectable (not `disabled`), so a choice can
+    // happen. Choosing one puts the select back on its previous value and opens
+    // the Pro window, and nothing else reacts: the pick is stopped here, in the
+    // capture phase, before any form-level input/change listener (preview
+    // refresh, dependency engine, dot indicators) can see it.
+    container.querySelectorAll('select').forEach(select => {
+        if (!select.querySelector(LOCKED_OPTION)) return;
+        select.dataset.previousValue = select.value;
+        const row = select.closest('.lgx-field');
+        if (row) row.classList.add('lgx-pro-gated-row');
+    });
+
+    function rememberSelectValue(e) {
+        const select = e.target;
+        if (select && select.tagName === 'SELECT' && select.querySelector(LOCKED_OPTION)) {
+            select.dataset.previousValue = select.value;
+        }
+    }
+    container.addEventListener('focusin', rememberSelectValue, true);
+    container.addEventListener('mousedown', rememberSelectValue, true);
+    container.addEventListener('keydown', rememberSelectValue, true);
+
+    function handleLockedOptionPick(e) {
+        const select = e.target;
+        if (!select || select.tagName !== 'SELECT' || !select.querySelector(LOCKED_OPTION)) return;
+
+        // A select fires `input` and then `change`; the second one belongs to the
+        // pick that was already reverted, so it is swallowed too.
+        if (e.type === 'change' && select.dataset.lgxProReverted === '1') {
+            delete select.dataset.lgxProReverted;
+            e.stopImmediatePropagation();
+            return;
+        }
+
+        const picked = select.options[select.selectedIndex];
+        if (picked && picked.dataset.proLockedOption === 'true') {
+            e.stopImmediatePropagation();
+            let prev = select.dataset.previousValue;
+            if (prev === undefined) {
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].dataset.proLockedOption !== 'true') {
+                        prev = select.options[i].value;
+                        break;
+                    }
+                }
+            }
+            select.value = prev;
+            select.dataset.lgxProReverted = '1';
+            setTimeout(() => { delete select.dataset.lgxProReverted; }, 0);
+            requireProUpgrade(select);
+        }
+    }
+    container.addEventListener('input', handleLockedOptionPick, true);
+    container.addEventListener('change', handleLockedOptionPick, true);
 }
 
 /**
@@ -2707,38 +2800,246 @@ function initUsageModal() {
 }
 
 /**
+ * T-280 (B205): classifies a Transition Speed value for Ticker Mode. One helper, so the note
+ * under the field and the recommendation dialog always agree.
+ *
+ * A valid value is a whole number above 0 written with digits only (empty, 0, a negative
+ * number, a decimal or text are all "invalid"). Valid values are "ok" from 2000 to 6000,
+ * "low" below 2000 and "high" above 6000.
+ *
+ * @param {*} raw The field value.
+ * @return {{state: string, value: (number|null)}} state is ok, low, high or invalid.
+ */
+function lgxClassifyTickerSpeed(raw) {
+    const text = String(raw === undefined || raw === null ? '' : raw).trim();
+    if (!/^[0-9]+$/.test(text)) {
+        return { state: 'invalid', value: null };
+    }
+    const value = parseInt(text, 10);
+    if (value < 1) {
+        return { state: 'invalid', value: null };
+    }
+    if (value < 2000) {
+        return { state: 'low', value: value };
+    }
+    if (value > 6000) {
+        return { state: 'high', value: value };
+    }
+    return { state: 'ok', value: value };
+}
+
+/**
  * Handle dynamic notes for Ticker Mode in the Carousel tab.
+ *
+ * T-280 (B205): the note has a live colour state (green inside 2000-6000, amber outside,
+ * red for an invalid value). The icon is never the only signal: the text differs too.
  */
 function initTickerContextNote() {
     const tickerToggle = document.getElementById('lgx_carousel_ticker_en');
     const speedInput = document.getElementById('lgx_carousel_transition_speed');
     if (!tickerToggle || !speedInput) return;
 
+    const STATES = {
+        ok: {
+            cls: 'is-ok',
+            icon: 'dashicons-yes-alt',
+            text: lgxText('tickerNoteOk', 'Smooth ticker speed. A higher value scrolls slower.')
+        },
+        low: {
+            cls: 'is-warn',
+            icon: 'dashicons-warning',
+            text: lgxText('tickerNoteLow', 'Fast: the logos may scroll too quickly. For a smooth ticker try 2000 to 6000 ms.')
+        },
+        high: {
+            cls: 'is-warn',
+            icon: 'dashicons-warning',
+            text: lgxText('tickerNoteHigh', 'Very slow scroll. For a smooth ticker try 2000 to 6000 ms.')
+        },
+        invalid: {
+            cls: 'is-error',
+            icon: 'dashicons-warning',
+            text: lgxText('tickerNoteInvalid', 'Enter a value above 0. Recommended: 2000 to 6000 ms.')
+        }
+    };
+
     const note = document.createElement('div');
     note.className = 'lgx-ticker-mode-note';
-    note.innerHTML =
-        '<span class="dashicons dashicons-info lgx-builder-help-icon" ' +
-        'style="color:#007cba;margin-top:-3px;margin-right:4px;' +
-        'font-size:16px;width:16px;height:16px;" aria-hidden="true"></span>' +
-        ' Controls scroll duration in Ticker Mode &mdash; ' +
-        '2000-6000 all scroll smoothly in testing; lower values scroll faster, ' +
-        'higher values scroll slower.';
-    note.style.marginTop = '8px';
-    note.style.color = '#646970';
-    note.style.fontSize = '12px';
-    note.style.fontStyle = 'italic';
-    note.style.display = 'none';
-    note.style.alignItems = 'center';
+    note.hidden = true;
+
+    const icon = document.createElement('span');
+    icon.className = 'dashicons lgx-ticker-mode-note__icon';
+    icon.setAttribute('aria-hidden', 'true');
+    const text = document.createElement('span');
+    text.className = 'lgx-ticker-mode-note__text';
+    note.appendChild(icon);
+    note.appendChild(text);
 
     const wrapper = speedInput.closest('.lgx-field__control') || speedInput.parentNode;
     if (wrapper) wrapper.appendChild(note);
 
     function update() {
-        note.style.display = tickerToggle.checked ? 'flex' : 'none';
+        note.hidden = !tickerToggle.checked;
+        const state = STATES[lgxClassifyTickerSpeed(speedInput.value).state];
+        note.classList.remove('is-ok', 'is-warn', 'is-error');
+        note.classList.add(state.cls);
+        icon.className = 'dashicons lgx-ticker-mode-note__icon ' + state.icon;
+        text.textContent = state.text;
     }
 
     tickerToggle.addEventListener('change', update);
+    speedInput.addEventListener('input', update);
+    speedInput.addEventListener('change', update);
     update();
+}
+
+/**
+ * T-280 (B205): "Recommended Ticker speed" dialog (Pro edition only: the markup is rendered
+ * only in Pro, so this returns silently when the dialog is absent).
+ *
+ * Opens only when the user switches Ticker Mode ON with a real click or key press
+ * (event.isTrusted) and the Transition Speed is not a whole number from 2000 to 6000. It
+ * never opens at page load, for a script-made change, or while typing in the speed field,
+ * and it opens once per switch-on (it reacts to the off to on transition only).
+ * "Update value" writes the number into the speed field and dispatches a bubbling input
+ * event, the same way initLogoDimensionTypeFollowsValue() does, so the live preview and
+ * the tab dots follow. Nothing is saved until the user saves the showcase.
+ */
+function initTickerSpeedModal() {
+    const modal       = document.getElementById('lgx-ticker-modal');
+    const overlay     = document.getElementById('lgx-ticker-modal-overlay');
+    const closeBtn    = document.getElementById('lgx-ticker-modal-close');
+    const laterBtn    = document.getElementById('lgx-ticker-modal-later');
+    const updateBtn   = document.getElementById('lgx-ticker-modal-update');
+    const currentEl   = document.getElementById('lgx-ticker-modal-current');
+    const customInput = document.getElementById('lgx-ticker-modal-custom');
+    const softEl      = document.getElementById('lgx-ticker-modal-soft');
+    const errorEl     = document.getElementById('lgx-ticker-modal-error');
+    const tickerToggle = document.getElementById('lgx_carousel_ticker_en');
+    const speedInput   = document.getElementById('lgx_carousel_transition_speed');
+
+    if (!modal || !overlay || !closeBtn || !laterBtn || !updateBtn || !currentEl ||
+        !customInput || !softEl || !errorEl || !tickerToggle || !speedInput) {
+        return;
+    }
+
+    // Move to body so position:fixed works regardless of parent overflow (same as the Pro and Usage windows).
+    if (modal.parentNode !== document.body) document.body.appendChild(modal);
+    if (overlay.parentNode !== document.body) document.body.appendChild(overlay);
+
+    const radios = Array.from(modal.querySelectorAll('input[type="radio"][name="lgx_ticker_modal_choice"]'));
+    const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    let isOpen = false;
+    let tickerWasOn = tickerToggle.checked;
+
+    function getFocusable() {
+        return Array.from(modal.querySelectorAll(FOCUSABLE_SELECTOR)).filter(function (el) {
+            return el.offsetParent !== null;
+        });
+    }
+
+    function trapKeydown(e) {
+        if (e.key !== 'Tab') return;
+        const focusable = getFocusable();
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last  = focusable[focusable.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+        }
+    }
+
+    function refreshCustom() {
+        const result = lgxClassifyTickerSpeed(customInput.value);
+        const invalid = result.state === 'invalid';
+        errorEl.hidden = !invalid;
+        softEl.hidden = !(result.state === 'low' || result.state === 'high');
+        updateBtn.disabled = invalid;
+        updateBtn.setAttribute('aria-disabled', invalid ? 'true' : 'false');
+        return result;
+    }
+
+    function openModal() {
+        const raw = String(speedInput.value).trim();
+        currentEl.textContent = raw === '' ? '—' : raw + ' ms';
+
+        // Every opening starts from the recommended choice.
+        radios.forEach(function (radio) {
+            radio.checked = (radio.value === '3000');
+        });
+        customInput.value = '3000';
+        refreshCustom();
+
+        modal.classList.add('lgx-gallery-open');
+        overlay.classList.add('lgx-gallery-open');
+        isOpen = true;
+        document.addEventListener('keydown', trapKeydown);
+
+        const checked = radios.find(function (radio) { return radio.checked; });
+        (checked || customInput).focus();
+    }
+
+    function closeModal() {
+        modal.classList.remove('lgx-gallery-open');
+        overlay.classList.remove('lgx-gallery-open');
+        isOpen = false;
+        document.removeEventListener('keydown', trapKeydown);
+        tickerToggle.focus();
+        if (document.activeElement !== tickerToggle) {
+            // The switch checkbox itself is display:none (custom switch), so it cannot take focus:
+            // give the focus to its visible label instead (programmatic focus only, tabindex -1).
+            const switchLabel = tickerToggle.closest('label.lgx_switch');
+            if (switchLabel) {
+                switchLabel.setAttribute('tabindex', '-1');
+                switchLabel.focus();
+            }
+        }
+    }
+
+    tickerToggle.addEventListener('change', function (e) {
+        const isOn = tickerToggle.checked;
+        const switchedOn = isOn && !tickerWasOn;
+        tickerWasOn = isOn;
+        if (!switchedOn || !e.isTrusted) return;
+        if (lgxClassifyTickerSpeed(speedInput.value).state === 'ok') return;
+        openModal();
+    });
+
+    radios.forEach(function (radio) {
+        radio.addEventListener('change', function () {
+            if (!radio.checked) return;
+            customInput.value = radio.value;
+            refreshCustom();
+        });
+    });
+
+    customInput.addEventListener('input', function () {
+        radios.forEach(function (radio) { radio.checked = false; });
+        refreshCustom();
+    });
+
+    updateBtn.addEventListener('click', function () {
+        const result = refreshCustom();
+        if (result.state === 'invalid') return;
+        speedInput.value = String(result.value);
+        speedInput.dispatchEvent(new Event('input', { bubbles: true })); // live preview and dots pick it up
+        closeModal();
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+    laterBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', closeModal);
+
+    // Escape key (only while this dialog is open)
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && isOpen) {
+            closeModal();
+        }
+    });
 }
 
 /**

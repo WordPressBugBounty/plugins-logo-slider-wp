@@ -379,9 +379,9 @@ if (!class_exists('Lgx_Meta_Form')) {
                     $unknown_text  = sprintf(__('Unknown (%s)', 'logo-slider-wp'), $unknown_shown);
                 } else {
                     /* translators: shown in place of a stored value that is not text (for example a number). */
-                    $unknown_shown = __('(not text)', 'logo-slider-wp');
+                    $unknown_shown = __('(not a text value)', 'logo-slider-wp');
                     $unknown_value = '';
-                    $unknown_text  = __('Unknown (not text)', 'logo-slider-wp');
+                    $unknown_text  = __('Unknown (not a text value)', 'logo-slider-wp');
                 }
                 $keep_unknown_safe      = '<option value="' . $unknown_value . '" selected="selected" disabled="disabled">' . esc_html($unknown_text) . '</option>';
                 /* translators: %s: the stored value, cut to 40 characters. */
@@ -403,7 +403,8 @@ if (!class_exists('Lgx_Meta_Form')) {
                 ? Lgx_Pro_Locking::is_option_locked($args['id'], $option_value, $status, $exempt_value, false, $args['free_options'] ?? array())
                 : false;
 
-            $disabled_attr = $is_option_pro ? 'disabled="disabled" data-pro-locked-option="true"' : '';
+            // B210: a Pro-only option stays selectable so a click on it can open the Pro upgrade window (the builder JS reverts the choice); it is not `disabled`.
+            $disabled_attr = $is_option_pro ? 'data-pro-locked-option="true" aria-disabled="true"' : '';
             $label = esc_html($option_text);
             $options_safe .= '<option value="' . esc_attr($option_value) . '" ' . $selected . ' ' . $disabled_attr . '>' . $label . '</option>';
         }
@@ -715,7 +716,7 @@ if (!class_exists('Lgx_Meta_Form')) {
                     $args['free_options'] ?? array()
                 );
                 if ($is_option_pro) {
-                    $disabled_attr = 'disabled="disabled" data-pro-locked-option="true"';
+                    $disabled_attr = 'data-pro-locked-option="true" aria-disabled="true"';
                 }
             }
 

@@ -2,35 +2,35 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: Logo Slider WP 6.1.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/logo-slider-wp-pro\n"
+"Project-Id-Version: Logo Slider WP 6.1.1\n"
+"Report-Msgid-Bugs-To: https://logichunt.com/support/\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-30T13:04:29+00:00\n"
+"POT-Creation-Date: 2026-11-01T17:24:59+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: logo-slider-wp\n"
 
 #. Plugin URI of the plugin
-#: logo-slider-wp-pro.php
+#: logo-slider-wp.php
 msgid "https://logichunt.com/product/wordpress-logo-slider/"
 msgstr ""
 
 #. Description of the plugin
-#: logo-slider-wp-pro.php
+#: logo-slider-wp.php
 msgid "Ultimate & Most Popular Responsive Logo Showcase Slider. Display Unlimited Client, Supporter, Partner, Sponsor, or Brand Logo with Infinite Slides Loop."
 msgstr ""
 
 #. Author of the plugin
-#: logo-slider-wp-pro.php
+#: logo-slider-wp.php
 msgid "LogicHunt"
 msgstr ""
 
 #. Author URI of the plugin
-#: logo-slider-wp-pro.php
+#: logo-slider-wp.php
 msgid "http://logichunt.com"
 msgstr ""
 
@@ -229,7 +229,7 @@ msgid "Docs"
 msgstr ""
 
 #: admin/class-logo-slider-wp-admin.php:673
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:295
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:300
 #: admin/partials/shortcode_meta_display/__meta_fields_lsp_shortcodes_header.php:11
 msgid "Support"
 msgstr ""
@@ -393,7 +393,7 @@ msgstr ""
 
 #: admin/class-logo-slider-wp-admin.php:2044
 #: admin/class-logo-slider-wp-admin.php:2082
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:671
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:676
 #: admin/partials/shortcode_meta_display/__meta_fields_lsp_shortcodes_help_block.php:5
 msgid "Shortcode"
 msgstr ""
@@ -414,23 +414,23 @@ msgid "Date"
 msgstr ""
 
 #: admin/class-logo-slider-wp-admin.php:2057
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:165
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:191
-#: includes/class-logo-slider-wp-meta-form.php:1033
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:170
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:196
+#: includes/class-logo-slider-wp-meta-form.php:1034
 msgid "Carousel"
 msgstr ""
 
 #: admin/class-logo-slider-wp-admin.php:2058
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:169
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:196
-#: includes/class-logo-slider-wp-meta-form.php:1034
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:174
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:201
+#: includes/class-logo-slider-wp-meta-form.php:1035
 msgid "Grid"
 msgstr ""
 
 #: admin/class-logo-slider-wp-admin.php:2059
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:173
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:201
-#: includes/class-logo-slider-wp-meta-form.php:1035
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:178
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:206
+#: includes/class-logo-slider-wp-meta-form.php:1036
 msgid "Flexbox"
 msgstr ""
 
@@ -440,9 +440,9 @@ msgstr ""
 
 #: admin/class-logo-slider-wp-admin.php:2083
 #: admin/class-logo-slider-wp-admin.php:2108
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:685
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:709
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:734
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:690
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:714
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:739
 #: admin/partials/shortcode_meta_display/__meta_fields_lsp_shortcodes_help_block.php:10
 #: admin/partials/shortcode_meta_display/__meta_fields_lsp_shortcodes_help_block.php:23
 msgid "Copy"
@@ -594,7 +594,7 @@ msgstr ""
 #: admin/modules/dashboard/class-logo-slider-wp-dashboard.php:353
 #: admin/modules/dashboard/class-logo-slider-wp-dashboard.php:381
 #: admin/modules/demo-content/class-logo-slider-wp-demo-content.php:643
-#: public/class-logo-slider-wp-public.php:788
+#: public/class-logo-slider-wp-public.php:928
 msgid "Security check failed."
 msgstr ""
 
@@ -942,7 +942,7 @@ msgid "Pro settings will be available in a future update."
 msgstr ""
 
 #: admin/modules/showcase-builder/class-logo-slider-wp-showcase-builder.php:61
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:254
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:259
 msgid "Showcase Builder"
 msgstr ""
 
@@ -1616,8 +1616,8 @@ msgstr ""
 
 #: admin/modules/showcase-builder/config/config.php:734
 #: admin/partials/shortcode_meta_display/_meta_tab_carousel.php:582
-#: includes/class-logo-slider-wp-meta-form.php:576
-#: includes/class-logo-slider-wp-meta-form.php:601
+#: includes/class-logo-slider-wp-meta-form.php:577
+#: includes/class-logo-slider-wp-meta-form.php:602
 msgid "Select Icon"
 msgstr ""
 
@@ -2468,7 +2468,7 @@ msgid "Select hover animation for showcase logo image."
 msgstr ""
 
 #: admin/modules/showcase-builder/config/config.php:1662
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:349
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:354
 #: admin/partials/shortcode_meta_display/_meta_tab_style.php:48
 msgid "Default"
 msgstr ""
@@ -3323,7 +3323,7 @@ msgid "Showcase saved"
 msgstr ""
 
 #: admin/modules/showcase-builder/templates/builder-wrapper.php:128
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:684
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:689
 msgid "Shortcode copied"
 msgstr ""
 
@@ -3340,7 +3340,7 @@ msgid "Preview update failed — showing the last successful preview."
 msgstr ""
 
 #: admin/modules/showcase-builder/templates/builder-wrapper.php:132
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:848
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:853
 msgid "Pro Feature"
 msgstr ""
 
@@ -3351,12 +3351,12 @@ msgstr ""
 #: includes/class-logo-slider-wp-meta-form.php:188
 #: includes/class-logo-slider-wp-meta-form.php:246
 #: includes/class-logo-slider-wp-meta-form.php:306
-#: includes/class-logo-slider-wp-meta-form.php:418
-#: includes/class-logo-slider-wp-meta-form.php:489
-#: includes/class-logo-slider-wp-meta-form.php:571
-#: includes/class-logo-slider-wp-meta-form.php:673
-#: includes/class-logo-slider-wp-meta-form.php:951
-#: includes/class-logo-slider-wp-meta-form.php:1104
+#: includes/class-logo-slider-wp-meta-form.php:419
+#: includes/class-logo-slider-wp-meta-form.php:490
+#: includes/class-logo-slider-wp-meta-form.php:572
+#: includes/class-logo-slider-wp-meta-form.php:674
+#: includes/class-logo-slider-wp-meta-form.php:952
+#: includes/class-logo-slider-wp-meta-form.php:1105
 msgid "More information"
 msgstr ""
 
@@ -3371,7 +3371,7 @@ msgstr ""
 #: includes/class-logo-slider-wp-meta-form.php:382
 #: includes/lgx-ls-sources.php:108
 #: includes/lgx-ls-sources.php:113
-msgid "(not text)"
+msgid "(not a text value)"
 msgstr ""
 
 #. translators: %s: the name of the setting that must be switched on first. Keep the <strong> tag.
@@ -3380,242 +3380,318 @@ msgstr ""
 msgid "Enable <strong>%s</strong> to use this setting."
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:193
-msgid "Scrolling carousel with navigation and autoplay."
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:140
+msgid "Smooth ticker speed. A higher value scrolls slower."
+msgstr ""
+
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:141
+msgid "Fast: the logos may scroll too quickly. For a smooth ticker try 2000 to 6000 ms."
+msgstr ""
+
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:142
+msgid "Very slow scroll. For a smooth ticker try 2000 to 6000 ms."
+msgstr ""
+
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:143
+msgid "Enter a value above 0. Recommended: 2000 to 6000 ms."
 msgstr ""
 
 #: admin/modules/showcase-builder/templates/builder-wrapper.php:198
-msgid "Static grid with configurable columns and gap."
+msgid "Scrolling carousel with navigation and autoplay."
 msgstr ""
 
 #: admin/modules/showcase-builder/templates/builder-wrapper.php:203
+msgid "Static grid with configurable columns and gap."
+msgstr ""
+
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:208
 msgid "Flexible row layout with wrap and alignment controls."
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:276
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:640
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:281
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:645
 msgid "Usage"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:282
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:287
 msgid "Demo"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:301
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:306
 msgid "Get Pro!"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:309
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:314
 msgid "Configure Showcase:"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:316
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:321
 msgid "View Content Source Settings"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:318
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:323
 msgid "Change Source:"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:327
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:332
 msgid "Change Showcase Layout"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:329
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:334
 msgid "Change Layout:"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:346
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:351
 msgid "Template"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:348
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:353
 msgid "Template:"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:359
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:361
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:364
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:366
 msgid "Copy Shortcode"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:378
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:383
 msgid "Save"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:389
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:394
 msgid "Builder Navigation"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:391
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:396
 msgid "Select Settings Section"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:436
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:441
 msgid "Configured"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:468
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:473
 #: admin/partials/admin-help-resources.php:288
 msgid "Unlock More Features"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:469
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:474
 #: admin/partials/admin-help-resources.php:291
 msgid "Get advanced layouts, tooltips, and premium styles with Pro."
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:471
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:476
 #: admin/partials/admin-help-resources.php:294
 msgid "Upgrade to Pro"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:481
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:486
 msgid "Settings Panel"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:498
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:503
 #, php-format
 msgid "Error: Template %s not found."
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:524
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:597
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:607
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:529
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:602
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:612
 msgid "Live Preview"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:554
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:559
 msgid "Focus Mode is active &mdash; settings are hidden."
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:557
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:562
 msgid "Show settings"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:560
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:565
 msgid "Dismiss notice"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:566
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:571
 msgid "Preview device width"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:567
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:572
 msgid "Desktop"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:570
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:575
 msgid "Tablet"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:573
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:578
 msgid "Mobile"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:582
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:587
 msgid "Toggle Focus Mode (Full Canvas)"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:584
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:589
 msgid "Focus Mode"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:588
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:593
 msgid "Refresh Preview"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:608
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:613
 msgid "Save the showcase to see a preview."
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:646
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:651
 msgid "Close Usage Dialog"
 msgstr ""
 
 #. translators: %d: showcase post ID
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:656
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:661
 #, php-format
 msgid "Showcase ID: %d"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:664
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:669
 msgid "Save this showcase first to get a working shortcode."
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:691
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:696
 msgid "Paste into any post, page, or widget area."
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:695
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:700
 msgid "Gutenberg Block"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:708
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:713
 msgid "Block name copied"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:715
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:720
 msgid "In the Block Editor, search for \"Logo Slider WP\" and insert the block."
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:720
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:725
 msgid "PHP / Template"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:733
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:738
 msgid "PHP snippet copied"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:740
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:745
 msgid "For use in theme template files."
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:744
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:749
 msgid "Page Builders"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:746
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:751
 msgid "Add it with any page builder's Shortcode widget or element."
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:764
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:769
 msgid "Need more help? Read the documentation"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:800
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:805
 msgid "Choose a Layout"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:806
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:811
 msgid "Close Layout Gallery"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:854
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:859
 msgid "Close Modal"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:861
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:866
 msgid "Unlock advanced configuration options and premium features."
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:865
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:870
 msgid "Your existing showcases keep working"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:866
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:871
 msgid "Your settings and data stay intact"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:867
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:872
 msgid "Just install and activate — nothing to migrate"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:872
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:877
 msgid "Get Logo Slider Pro"
 msgstr ""
 
-#: admin/modules/showcase-builder/templates/builder-wrapper.php:875
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:880
 msgid "Maybe Later"
+msgstr ""
+
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:905
+msgid "Recommended Ticker speed"
+msgstr ""
+
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:911
+msgid "Close"
+msgstr ""
+
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:917
+msgid "For a smooth ticker we recommend a Transition Speed between 2000 and 6000 ms. A higher value scrolls slower."
+msgstr ""
+
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:920
+msgid "Your current value:"
+msgstr ""
+
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:924
+msgid "Quick choices"
+msgstr ""
+
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:927
+msgid "Fast - 2000 ms"
+msgstr ""
+
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:931
+msgid "Balanced - 3000 ms"
+msgstr ""
+
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:932
+msgid "Recommended"
+msgstr ""
+
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:936
+msgid "Slow - 4500 ms"
+msgstr ""
+
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:940
+msgid "Very slow - 6000 ms"
+msgstr ""
+
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:945
+msgid "Custom value (ms)"
+msgstr ""
+
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:947
+msgid "This value is outside the recommended range. You can still use it."
+msgstr ""
+
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:948
+msgid "Enter a whole number above 0."
+msgstr ""
+
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:952
+msgid "Update value"
+msgstr ""
+
+#: admin/modules/showcase-builder/templates/builder-wrapper.php:953
+msgid "Later"
 msgstr ""
 
 #: admin/modules/showcase-builder/templates/tab-source_settings.php:58
@@ -3725,11 +3801,11 @@ msgstr ""
 #: includes/class-logo-slider-wp-meta-form.php:228
 #: includes/class-logo-slider-wp-meta-form.php:288
 #: includes/class-logo-slider-wp-meta-form.php:354
-#: includes/class-logo-slider-wp-meta-form.php:468
-#: includes/class-logo-slider-wp-meta-form.php:551
-#: includes/class-logo-slider-wp-meta-form.php:640
-#: includes/class-logo-slider-wp-meta-form.php:931
-#: includes/class-logo-slider-wp-meta-form.php:1073
+#: includes/class-logo-slider-wp-meta-form.php:469
+#: includes/class-logo-slider-wp-meta-form.php:552
+#: includes/class-logo-slider-wp-meta-form.php:641
+#: includes/class-logo-slider-wp-meta-form.php:932
+#: includes/class-logo-slider-wp-meta-form.php:1074
 msgid "Available in Logo Slider Pro"
 msgstr ""
 
@@ -4382,7 +4458,7 @@ msgid "Unknown (%s)"
 msgstr ""
 
 #: includes/class-logo-slider-wp-meta-form.php:384
-msgid "Unknown (not text)"
+msgid "Unknown (not a text value)"
 msgstr ""
 
 #. translators: %s: the stored value, cut to 40 characters.
@@ -4391,24 +4467,24 @@ msgstr ""
 msgid "The stored value \"%s\" is not a known option. It is kept unless you pick one of the options."
 msgstr ""
 
-#: includes/class-logo-slider-wp-meta-form.php:458
+#: includes/class-logo-slider-wp-meta-form.php:459
 msgid "ON"
 msgstr ""
 
-#: includes/class-logo-slider-wp-meta-form.php:459
+#: includes/class-logo-slider-wp-meta-form.php:460
 msgid "OFF"
 msgstr ""
 
-#: includes/class-logo-slider-wp-meta-form.php:588
+#: includes/class-logo-slider-wp-meta-form.php:589
 msgid "Remove image"
 msgstr ""
 
-#: includes/class-logo-slider-wp-meta-form.php:603
+#: includes/class-logo-slider-wp-meta-form.php:604
 msgid "Remove Icon"
 msgstr ""
 
-#: includes/class-logo-slider-wp-meta-form.php:780
-#: includes/class-logo-slider-wp-meta-form.php:837
+#: includes/class-logo-slider-wp-meta-form.php:781
+#: includes/class-logo-slider-wp-meta-form.php:838
 msgid "Upgrade To Pro"
 msgstr ""
 
@@ -4430,9 +4506,14 @@ msgstr ""
 msgid "This showcase uses a source this version does not know (\"%s\"). Choose a source in the builder."
 msgstr ""
 
+#. translators: %s: the unknown source value, cut to 40 characters.
+#: includes/lgx-ls-sources.php:190
+msgid "This showcase has a stored source that is not a name (for example a number). Choose a source in the builder."
+msgstr ""
+
 #: includes/lgx-ls-sources.php:194
 #: includes/lgx-ls-sources.php:240
-msgid "This content is not available right now."
+msgid "This showcase has no content to show right now."
 msgstr ""
 
 #: includes/lgx-ls-sources.php:202
@@ -4460,11 +4541,11 @@ msgstr ""
 msgid "Every brand is hidden by this showcase's settings (brands without a logo or without products). Change \"Brands without a logo\" or \"Brands without products\" to show them."
 msgstr ""
 
-#: logo-slider-wp-pro.php:211
+#: logo-slider-wp.php:212
 msgid "Logo Slider Pro has been activated. The Free edition has been automatically deactivated because only one edition can be active at a time."
 msgstr ""
 
-#: logo-slider-wp-pro.php:214
+#: logo-slider-wp.php:215
 msgid "Logo Slider Pro is already active. To switch to the Free edition, first deactivate Logo Slider Pro, then activate Logo Slider Free."
 msgstr ""
 
@@ -4490,11 +4571,11 @@ msgid "Invalid or expired preview link."
 msgstr ""
 
 #: public/class-logo-slider-wp-public.php:692
-#: public/class-logo-slider-wp-public.php:794
+#: public/class-logo-slider-wp-public.php:934
 msgid "Invalid preview target."
 msgstr ""
 
-#: public/class-logo-slider-wp-public.php:798
+#: public/class-logo-slider-wp-public.php:938
 msgid "Insufficient permissions."
 msgstr ""
 

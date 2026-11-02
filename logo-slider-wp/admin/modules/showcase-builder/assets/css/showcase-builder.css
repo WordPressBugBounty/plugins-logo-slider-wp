@@ -2746,6 +2746,20 @@ body.post-type-lgx_lsp_shortcodes #side-sortables .postbox .postbox-header h2 {
     cursor: not-allowed;  /* mirrors task011d's .lgx-ticker-locked-field .lgx_switch */
 }
 
+/* B210 (Free edition): a Pro-only field, or a select with Pro-only options,
+   that is also greyed by its parent switch must still take the click, so the
+   Pro upgrade window can open. Fields greyed by a parent switch that are NOT
+   Pro-only keep ignoring clicks. */
+.lgx-dep-locked-field.lgx-pro-locked-field,
+.lgx-dep-locked-field.lgx-pro-gated-row {
+    pointer-events: auto;
+}
+
+/* B210: Pro-only options are no longer `disabled`, so keep their muted look. */
+option[data-pro-locked-option="true"] {
+    color: #8c8f94;
+}
+
 /* Mode B note styling — same base as Mode A. The "+--required" modifier
    class is reserved; no rule today, available for future differentiation. */
 .lgx-dep-lock-note--required {
@@ -3077,6 +3091,144 @@ body.post-type-lgx_lsp_shortcodes #side-sortables .postbox .postbox-header h2 {
 #lgx-pro-modal .lgx-btn-secondary:focus-visible {
     border-color: #2e672b;
     color: #2e672b;
+}
+
+/* T-280 (B205): note under Transition Speed in Ticker Mode, with a live colour state.
+   Text colours on white are checked at 4.5:1 or more (T-280 contrast.js). */
+.lgx-ticker-mode-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    margin-top: 8px;
+    font-size: 12px;
+    font-style: italic;
+    color: var(--lgx-text-muted, #646970);
+}
+.lgx-ticker-mode-note[hidden] {
+    display: none;
+}
+.lgx-ticker-mode-note__icon {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+}
+.lgx-ticker-mode-note.is-ok {
+    color: #2e672b;
+}
+.lgx-ticker-mode-note.is-warn {
+    color: #8a4b00;
+}
+.lgx-ticker-mode-note.is-error {
+    color: #d63638;
+}
+/* Focus returns to the switch label after the dialog closes (the checkbox itself is display:none). */
+.lgx-builder .lgx_switch[tabindex="-1"]:focus {
+    outline: none;
+}
+.lgx-builder .lgx_switch[tabindex="-1"]:focus .lgx_switch_slider {
+    box-shadow: var(--lgx-focus-shadow);
+}
+
+/* T-280 (B205): "Recommended Ticker speed" dialog. Shares the .lgx-layout-gallery shell;
+   only the size, the choice layout and the button colours (same values as #lgx-pro-modal above). */
+#lgx-ticker-modal {
+    width: 480px;
+    max-width: calc(100vw - 40px);
+}
+.lgx-ticker-modal__body {
+    padding: 20px 24px;
+}
+.lgx-ticker-modal__text,
+.lgx-ticker-modal__current {
+    margin: 0 0 12px;
+    font-size: 14px;
+    color: var(--lgx-text, #1d2327);
+}
+.lgx-ticker-modal__choices {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+.lgx-ticker-modal__choice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 1px solid var(--lgx-border-color-control, #c3c4c7);
+    border-radius: var(--lgx-control-radius, 4px);
+    font-size: 14px;
+    cursor: pointer;
+}
+.lgx-ticker-modal__choice:hover,
+.lgx-ticker-modal__choice:focus-within {
+    border-color: #3b8437;
+}
+.lgx-ticker-modal__choice input[type="radio"] {
+    margin: 0;
+}
+.lgx-ticker-modal__badge {
+    margin-left: auto;
+    padding: 1px 8px;
+    border-radius: 10px;
+    background: #2e672b;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+}
+.lgx-ticker-modal__custom label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 13px;
+    font-weight: 600;
+}
+.lgx-ticker-modal__custom .lgx-input {
+    width: 100%;
+    max-width: 200px;
+}
+.lgx-ticker-modal__soft,
+.lgx-ticker-modal__error {
+    margin: 6px 0 0;
+    font-size: 12px;
+}
+.lgx-ticker-modal__soft {
+    color: #8a4b00;
+}
+.lgx-ticker-modal__error {
+    color: #d63638;
+}
+.lgx-ticker-modal__actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+#lgx-ticker-modal .lgx-btn-primary {
+    background: #3b8437;
+    border-color: #3b8437;
+}
+#lgx-ticker-modal .lgx-btn-primary:hover,
+#lgx-ticker-modal .lgx-btn-primary:focus-visible {
+    background: #2e672b;
+    border-color: #2e672b;
+}
+#lgx-ticker-modal .lgx-btn-secondary {
+    border-color: #3b8437;
+    color: #3b8437;
+}
+#lgx-ticker-modal .lgx-btn-secondary:hover,
+#lgx-ticker-modal .lgx-btn-secondary:focus-visible {
+    border-color: #2e672b;
+    color: #2e672b;
+}
+#lgx-ticker-modal .lgx-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+#lgx-ticker-modal .lgx-btn-primary:disabled:hover {
+    background: #3b8437;
+    border-color: #3b8437;
 }
 
 /* Task (.lgx-usage-modal-copy-btn specificity fix): these 3 buttons carry
