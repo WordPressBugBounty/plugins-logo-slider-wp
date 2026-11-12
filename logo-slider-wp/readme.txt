@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=vaspa
 Tags: logo slider, logo carousel, logo showcase, logo gallery, client logos
 Requires at least: 5.8
 Tested up to: 7.1
-Stable tag: 6.2.1
+Stable tag: 6.2.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -360,6 +360,9 @@ Both Free and Pro users get direct help at the [LogicHunt Support Center](https:
 
 == Upgrade Notice ==
 
+= 6.2.2 =
+Security release. A showcase on a page now shows to visitors only when it is published. If a showcase stopped showing, publish it in Logo Slider > Showcases. Please update.
+
 = 6.2.1 =
 Security release: adds permission checks to the bulk actions in the Logo list. Please update.
 
@@ -383,6 +386,12 @@ Security: Fixed stored XSS vulnerability. Fixed dynamic CSS not rendering for ca
 
 
 == Changelog ==
+
+= 6.2.2 =
+* Security: A showcase is now shown to visitors only when it is published and has no password. Draft, pending, private and password-protected showcases no longer appear on a page for visitors. Users who can edit the showcase still see it.
+* Security: Logos that have a password are no longer shown in showcases or in the legacy logo list.
+* Security: The Showcase Builder live preview now checks that the user can edit the showcase.
+* Reported by Respect.
 
 = 6.2.1 =
 * Security: The Publish, Set to Draft, Duplicate and Assign Category bulk actions in the Logo list now check that you are allowed to edit (and, for Publish, to publish) each logo, and only act on logos. Reported by the WordPress.org plugin security review.

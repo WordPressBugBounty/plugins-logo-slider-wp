@@ -28,6 +28,7 @@ class Logo_Slider_WP_Source_Logo_Library implements Logo_Slider_WP_Source_Provid
         $lgx_logo_slider_args = array(
             'post_type'         => array( 'logosliderwp' ),
             'post_status'       => array( 'publish' ),
+            'has_password'      => false,
             'order'             => $lgx_item_sort_order,
             'orderby'           => $lgx_item_sort_order_by,
             'posts_per_page'    => $lgx_logo_limit

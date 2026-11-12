@@ -359,6 +359,7 @@ class Logo_Slider_WP_Public {
         $logo_args = array(
             'post_type'         => array( 'logosliderwp' ),
             'post_status'       => array( 'publish' ),
+            'has_password'      => false,
             'order'             => $order,
             'orderby'           => $orderby,
             'posts_per_page'    => $limit
@@ -590,6 +591,18 @@ class Logo_Slider_WP_Public {
         if ( ! isset( $atts['id'] ) ) {
             return '<p style="color: red;">Error: The showcase ID is missing. Please add a Showcase ID.</p>';
         } else {
+            // T-364: a showcase is shown only when it is published and has no password,
+            // or to a user who can edit it. A missing ID or a wrong post type keeps the
+            // error text below; a refused showcase returns nothing (no HTML, no assets).
+            $lgx_showcase_id   = absint( $atts['id'] );
+            $lgx_showcase_post = $lgx_showcase_id ? get_post( $lgx_showcase_id ) : null;
+            if ( ! $lgx_showcase_post || 'lgx_lsp_shortcodes' !== $lgx_showcase_post->post_type ) {
+                return '<p style="color: red;">Error: The showcase ID is not valid. Please add a valid Showcase ID.</p>';
+            }
+            if ( ! $this->can_render_showcase( $lgx_showcase_post->ID ) ) {
+                return '';
+            }
+
             $lgx_shortcodes_meta = get_post_meta( $atts['id'], '_lgx_lsp_shortcodes_meta', true );
 
             if(empty($lgx_shortcodes_meta)) {
@@ -611,6 +624,32 @@ class Logo_Slider_WP_Public {
             include('partials/view-controller.php');
             return ob_get_clean();
         }
+    }
+
+    /**
+     * T-364: may this showcase be shown to the current viewer?
+     *
+     * A published showcase without a password is shown to everyone. A draft, pending,
+     * private or future showcase, or one with a password, is shown only to a user who can
+     * edit it; a published showcase with a password is also shown to a viewer who passes
+     * core's post_password_required() check. No request variable is used as an exemption.
+     *
+     * @since 6.2.2
+     * @param int $showcase_id Showcase post ID.
+     * @return bool
+     */
+    private function can_render_showcase( $showcase_id ) {
+        $post = get_post( $showcase_id );
+        if ( ! $post || 'lgx_lsp_shortcodes' !== $post->post_type ) {
+            return false;
+        }
+        if ( 'publish' === $post->post_status && '' === $post->post_password ) {
+            return true;
+        }
+        if ( current_user_can( 'edit_post', $post->ID ) ) {
+            return true;
+        }
+        return ( 'publish' === $post->post_status && ! post_password_required( $post ) );
     }
 
     /**
@@ -690,6 +729,11 @@ class Logo_Slider_WP_Public {
 
         if ( 'lgx_lsp_shortcodes' !== get_post_type( $post_id ) ) {
             wp_die( esc_html__( 'Invalid preview target.', 'logo-slider-wp' ), '', array( 'response' => 404 ) );
+        }
+
+        // T-364: the nonce alone is not enough; the user must be able to edit the showcase.
+        if ( ! current_user_can( 'edit_post', $post_id ) ) {
+            wp_die( esc_html__( 'Invalid or expired preview link.', 'logo-slider-wp' ), '', array( 'response' => 403 ) );
         }
 
         // Cache-bypass: WP core's standard helper for exactly this purpose
