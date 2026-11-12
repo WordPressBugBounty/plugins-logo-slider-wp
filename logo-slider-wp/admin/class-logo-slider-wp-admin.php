@@ -73,6 +73,15 @@ class Logo_Slider_WP_Admin {
     private $onboarding;
 
     /**
+     * The bulk upload module controller.
+     *
+     * @since    6.2.0
+     * @access   private
+     * @var      Logo_Slider_WP_Bulk_Upload   $bulk_upload
+     */
+    private $bulk_upload;
+
+    /**
      * @var Lgx_Carousel_Settings_API
      */
     private $settings_api;
@@ -152,6 +161,10 @@ class Logo_Slider_WP_Admin {
         // Onboarding Module
         require_once plugin_dir_path( __FILE__ ) . 'onboarding/class-logo-slider-wp-onboarding.php';
         $this->onboarding = new Logo_Slider_WP_Onboarding( $this, $this->plugin_name, $this->version );
+
+        // Bulk Upload Module
+        require_once plugin_dir_path( __FILE__ ) . 'modules/bulk-upload/class-logo-slider-wp-bulk-upload.php';
+        $this->bulk_upload = new Logo_Slider_WP_Bulk_Upload( $this, $this->plugin_name, $this->version );
     }
 
     /**
@@ -170,6 +183,15 @@ class Logo_Slider_WP_Admin {
      */
     public function get_settings() {
         return $this->settings;
+    }
+
+    /**
+     * Get the bulk upload module controller.
+     *
+     * @return Logo_Slider_WP_Bulk_Upload
+     */
+    public function get_bulk_upload() {
+        return $this->bulk_upload;
     }
 
 
@@ -377,6 +399,17 @@ class Logo_Slider_WP_Admin {
                 }
                 if ( isset( $postData['company_desc'] ) ) {
                     $savable_Data['company_desc']  = sanitize_textarea_field( $postData['company_desc'] );
+                }
+
+                // Pro field locking & grandfathering enforcement (ADR-023).
+                if ( ! class_exists( 'Lgx_Logo_Field_Lock' ) ) {
+                    if ( ! lgx_ls_is_pro() ) {
+                        error_log( 'Logo Slider WP: Lgx_Logo_Field_Lock is unavailable during save_post_metadata_of_logosliderwp() — refusing to save rather than write Pro/Free values with no enforcement. Check that includes/class-logo-slider-wp-logo-field-lock.php is loaded.' );
+                        return;
+                    }
+                } else {
+                    $existing_meta_array = is_array( $existing_meta ) ? $existing_meta : array();
+                    $savable_Data        = Lgx_Logo_Field_Lock::enforce( $savable_Data, $existing_meta_array, $postData, lgx_ls_is_pro() );
                 }
 
                 update_post_meta( $post_id, '_logosliderwpmeta', $savable_Data );
@@ -900,19 +933,31 @@ class Logo_Slider_WP_Admin {
             return;
         }
 
+        $is_pro = function_exists( 'lgx_ls_is_pro' ) && lgx_ls_is_pro();
+
         // Output our required custom nonce so the native save_post hook passes validation
         wp_nonce_field( 'metaboxlogosliderwp', 'metaboxlogosliderwp[nonce]' );
         ?>
 <fieldset class="inline-edit-col-right">
     <div class="inline-edit-col">
-        <div class="inline-edit-group wp-clearfix">
+        <div class="inline-edit-group wp-clearfix lgx-quick-edit-company-group">
             <label class="alignleft">
                 <span class="title"><?php esc_html_e( 'Custom Brand Name', 'logo-slider-wp' ); ?></span>
                 <span class="input-text-wrap">
                     <input type="text" name="metaboxlogosliderwp[company_name]" class="lgx-quick-edit-company-name"
-                        value="" autocomplete="off" />
+                        value="" autocomplete="off" data-unlocked-placeholder="" data-locked-placeholder="<?php echo esc_attr( $is_pro ? '' : __( 'Uses the Brand Name', 'logo-slider-wp' ) ); ?>" />
+                    <?php if ( ! $is_pro ) : ?>
+                    <span class="lgx-pro-locked-indicator dashicons dashicons-lock lgx-quick-edit-lock-icon" aria-hidden="true" title="<?php esc_attr_e( 'Available in Logo Slider Pro', 'logo-slider-wp' ); ?>" style="display:none;"></span>
+                    <span id="lgx_qe_company_name_pro_desc" class="screen-reader-text"><?php esc_html_e( 'Pro feature. Uses the Brand Name.', 'logo-slider-wp' ); ?></span>
+                    <?php endif; ?>
                 </span>
             </label>
+            <?php if ( ! $is_pro ) : ?>
+            <p class="lgx-quick-edit-pro-note description" style="display:none; clear:both; margin:4px 0 0 0;">
+                <?php esc_html_e( 'Custom Brand Name is a Pro feature.', 'logo-slider-wp' ); ?>
+                <a href="<?php echo esc_url( 'https://logichunt.com/product/wordpress-logo-slider/' ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Get Logo Slider Pro', 'logo-slider-wp' ); ?></a>
+            </p>
+            <?php endif; ?>
         </div>
         <div class="inline-edit-group wp-clearfix">
             <label class="alignleft">
@@ -963,9 +1008,11 @@ class Logo_Slider_WP_Admin {
                 $metavalues = get_post_meta( $post_id, '_logosliderwpmeta', true );
                 $url = isset( $metavalues['company_url'] ) ? $metavalues['company_url'] : '';
                 $brand_name = isset( $metavalues['company_name'] ) ? $metavalues['company_name'] : '';
+                $is_pro_row = function_exists( 'lgx_ls_is_pro' ) && lgx_ls_is_pro();
+                $company_locked_row = class_exists( 'Lgx_Logo_Field_Lock' ) ? Lgx_Logo_Field_Lock::is_locked( $is_pro_row, isset( $metavalues['company_name'] ) ? $metavalues['company_name'] : null ) : false;
 
                 // Hidden div for Quick Edit JS
-                echo '<div class="hidden" id="lgx_ls_brand_inline_' . esc_attr( $post_id ) . '">' . esc_html( $brand_name ) . '</div>';
+                echo '<div class="hidden" id="lgx_ls_brand_inline_' . esc_attr( $post_id ) . '" data-pro-locked="' . ( $company_locked_row ? 'true' : 'false' ) . '">' . esc_html( $brand_name ) . '</div>';
 
                 // Hidden div for Quick Edit JS
                 echo '<div class="hidden" id="lgx_ls_url_inline_' . esc_attr( $post_id ) . '">' . esc_attr( $url ) . '</div>';
@@ -1039,7 +1086,7 @@ class Logo_Slider_WP_Admin {
             } else {
                 foreach ( $post_data['post'] as $menu_order => $post_id ) {
                     $post_id = (int) $post_id;
-                    if ( ! current_user_can( 'edit_post', $post_id ) ) {
+                    if ( ! current_user_can( 'edit_post', $post_id ) || 'logosliderwp' !== get_post_type( $post_id ) ) {
                         continue;
                     }
                     $wpdb->update( $wpdb->posts, array( 'menu_order' => (int)$menu_order ), array( 'ID' => (int)$post_id ) );
@@ -1174,9 +1221,23 @@ class Logo_Slider_WP_Admin {
             $translation_array = array(
                 //'add_leftimg_title'  => __('Add Previous Arrow Image', 'logo-slider-wp'),
                 //'add_rightimg_title' => __('Add Next Arrow Image', 'logo-slider-wp'),
-                'ajax_url' => admin_url('admin-ajax.php'),
-                'check_nonce' => wp_create_nonce('save_logosliderwp_nonce'),
+                'ajax_url'                  => admin_url('admin-ajax.php'),
+                'check_nonce'               => wp_create_nonce('save_logosliderwp_nonce'),
                 'save_and_add_another_text' => $save_and_add_another_text,
+                'pro_field_strings'         => array(
+                    'tooltip_text' => array(
+                        'title' => __( 'Custom Tooltip is a Pro Feature', 'logo-slider-wp' ),
+                        'text'  => __( 'Your logo already uses the Brand Name as its tooltip. With Pro, you can write your own text for each logo.', 'logo-slider-wp' ),
+                    ),
+                    'alt_text'     => array(
+                        'title' => __( 'Custom Alt Text is a Pro Feature', 'logo-slider-wp' ),
+                        'text'  => __( 'Your logo already uses the Brand Name as its alt text. With Pro, you can write your own alt text for each logo.', 'logo-slider-wp' ),
+                    ),
+                    'company_name' => array(
+                        'title' => __( 'Custom Brand Name is a Pro Feature', 'logo-slider-wp' ),
+                        'text'  => __( 'Your logo already shows its Brand Name. With Pro, you can show a different name without renaming the logo.', 'logo-slider-wp' ),
+                    ),
+                ),
             );
 
 
@@ -2265,7 +2326,7 @@ return;
             wp_send_json_error( array( 'message' => 'Security check failed.' ) );
         }
 
-        if ( ! current_user_can( 'edit_post', $post_id ) ) {
+        if ( ! current_user_can( 'edit_post', $post_id ) || 'logosliderwp' !== get_post_type( $post_id ) ) {
             wp_send_json_error( array( 'message' => 'Permission denied.' ) );
         }
 
@@ -2292,6 +2353,9 @@ return;
         }
 
         if ( $adjacent_post ) {
+            if ( ! current_user_can( 'edit_post', $adjacent_post->ID ) ) {
+                wp_send_json_error( array( 'message' => 'Permission denied.' ), 403 );
+            }
             $adjacent_order = (int) $adjacent_post->menu_order;
             if ( $current_order === $adjacent_order ) {
                 if ( 'up' === $direction ) {
@@ -2314,52 +2378,119 @@ return;
      * Phase F: Bulk Actions (MP-4)
      */
     public function register_bulk_actions( $bulk_actions ) {
-        $bulk_actions['lgx_bulk_duplicate'] = __( 'Duplicate', 'logo-slider-wp' );
-        $bulk_actions['lgx_bulk_publish'] = __( 'Publish', 'logo-slider-wp' );
-        $bulk_actions['lgx_bulk_draft'] = __( 'Set to Draft', 'logo-slider-wp' );
-        $bulk_actions['lgx_bulk_assign_category'] = __( 'Assign Category', 'logo-slider-wp' );
+        $post_type_object = get_post_type_object( 'logosliderwp' );
+        if ( ! $post_type_object ) {
+            return $bulk_actions;
+        }
+        if ( current_user_can( $post_type_object->cap->edit_posts ) ) {
+            $bulk_actions['lgx_bulk_duplicate'] = __( 'Duplicate', 'logo-slider-wp' );
+        }
+        if ( current_user_can( $post_type_object->cap->publish_posts ) ) {
+            $bulk_actions['lgx_bulk_publish'] = __( 'Publish', 'logo-slider-wp' );
+        }
+        if ( current_user_can( $post_type_object->cap->edit_posts ) ) {
+            $bulk_actions['lgx_bulk_draft'] = __( 'Set to Draft', 'logo-slider-wp' );
+            $bulk_actions['lgx_bulk_assign_category'] = __( 'Assign Category', 'logo-slider-wp' );
+        }
         return $bulk_actions;
     }
 
+    /**
+     * Keep only the IDs the current user may act on: real Logo posts that the
+     * user can edit (and publish, when $need_publish is true).
+     *
+     * @param mixed $post_ids     IDs from the request.
+     * @param bool  $need_publish Also require the publish_post capability.
+     * @return int[]
+     */
+    private function lgx_filter_bulk_logo_ids( $post_ids, $need_publish = false ) {
+        $allowed = array();
+        foreach ( (array) $post_ids as $id ) {
+            if ( ! is_scalar( $id ) ) {
+                continue;
+            }
+            $id = absint( $id );
+            if ( $id < 1 || 'logosliderwp' !== get_post_type( $id ) ) {
+                continue;
+            }
+            if ( ! current_user_can( 'edit_post', $id ) ) {
+                continue;
+            }
+            if ( $need_publish && ! current_user_can( 'publish_post', $id ) ) {
+                continue;
+            }
+            $allowed[ $id ] = $id;
+        }
+        return array_values( $allowed );
+    }
+
     public function handle_bulk_actions( $redirect_to, $doaction, $post_ids ) {
+        $our_actions = array( 'lgx_bulk_publish', 'lgx_bulk_draft', 'lgx_bulk_duplicate', 'lgx_bulk_assign_category' );
+        if ( ! in_array( $doaction, $our_actions, true ) ) {
+            return $redirect_to;
+        }
+
         if ( empty( $post_ids ) ) {
             return $redirect_to;
         }
 
+        $post_type_object = get_post_type_object( 'logosliderwp' );
+        if ( ! $post_type_object || ! current_user_can( $post_type_object->cap->edit_posts ) ) {
+            return $redirect_to;
+        }
+
+        $requested = count( (array) $post_ids );
+        $changed   = 0;
+
         if ( 'lgx_bulk_publish' === $doaction ) {
-            foreach ( $post_ids as $post_id ) {
-                wp_update_post( array(
+            $ids = $this->lgx_filter_bulk_logo_ids( $post_ids, true );
+            foreach ( $ids as $post_id ) {
+                $result = wp_update_post( array(
                     'ID' => $post_id,
                     'post_status' => 'publish'
                 ) );
+                if ( $result && ! is_wp_error( $result ) ) {
+                    $changed++;
+                }
             }
-            $redirect_to = add_query_arg( 'lgx_bulk_published', count( $post_ids ), $redirect_to );
+            $redirect_to = add_query_arg( 'lgx_bulk_published', $changed, $redirect_to );
         } elseif ( 'lgx_bulk_draft' === $doaction ) {
-            foreach ( $post_ids as $post_id ) {
-                wp_update_post( array(
+            $ids = $this->lgx_filter_bulk_logo_ids( $post_ids );
+            foreach ( $ids as $post_id ) {
+                $result = wp_update_post( array(
                     'ID' => $post_id,
                     'post_status' => 'draft'
                 ) );
+                if ( $result && ! is_wp_error( $result ) ) {
+                    $changed++;
+                }
             }
-            $redirect_to = add_query_arg( 'lgx_bulk_drafted', count( $post_ids ), $redirect_to );
+            $redirect_to = add_query_arg( 'lgx_bulk_drafted', $changed, $redirect_to );
         } elseif ( 'lgx_bulk_duplicate' === $doaction ) {
-            $duplicated = 0;
-            foreach ( $post_ids as $post_id ) {
+            $ids = $this->lgx_filter_bulk_logo_ids( $post_ids );
+            foreach ( $ids as $post_id ) {
                 if ( $this->duplicate_post_internal( $post_id ) ) {
-                    $duplicated++;
+                    $changed++;
                 }
             }
-            $redirect_to = add_query_arg( 'lgx_bulk_duplicated', $duplicated, $redirect_to );
+            $redirect_to = add_query_arg( 'lgx_bulk_duplicated', $changed, $redirect_to );
         } elseif ( 'lgx_bulk_assign_category' === $doaction ) {
-            if ( isset( $_REQUEST['lgx_bulk_cat'] ) && ! empty( $_REQUEST['lgx_bulk_cat'] ) ) {
-                $term_id = intval( $_REQUEST['lgx_bulk_cat'] );
-                if ( $term_id > 0 ) {
-                    foreach ( $post_ids as $post_id ) {
-                        wp_set_object_terms( $post_id, array( $term_id ), 'logosliderwpcat', true ); // true appends
+            $term_id  = isset( $_REQUEST['lgx_bulk_cat'] ) ? absint( wp_unslash( $_REQUEST['lgx_bulk_cat'] ) ) : 0;
+            $taxonomy = get_taxonomy( 'logosliderwpcat' );
+            if ( $term_id > 0 && $taxonomy && current_user_can( $taxonomy->cap->assign_terms ) && term_exists( $term_id, 'logosliderwpcat' ) ) {
+                $ids = $this->lgx_filter_bulk_logo_ids( $post_ids );
+                foreach ( $ids as $post_id ) {
+                    $result = wp_set_object_terms( $post_id, array( $term_id ), 'logosliderwpcat', true ); // true appends
+                    if ( ! is_wp_error( $result ) ) {
+                        $changed++;
                     }
-                    $redirect_to = add_query_arg( 'lgx_bulk_cat_assigned', count( $post_ids ), $redirect_to );
                 }
+                $redirect_to = add_query_arg( 'lgx_bulk_cat_assigned', $changed, $redirect_to );
             }
+        }
+
+        if ( $requested > $changed ) {
+            $redirect_to = add_query_arg( 'lgx_bulk_skipped', $requested - $changed, $redirect_to );
         }
 
         return $redirect_to;

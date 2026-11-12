@@ -362,6 +362,15 @@ if ( window.jQuery ) {
 			var isUsingTitleDefault_tooltip = $tooltipInput.length && $tooltipInput.val().trim() === '';
 			var isUsingTitleDefault_altText = $altTextInput.length && $altTextInput.val().trim() === '';
 
+			function updateSmartCue() {
+				if ( $tooltipInput.length && $tooltipInput.attr('data-pro-locked-input') !== 'true' ) {
+					$tooltipInput.toggleClass( 'lgx-field__control--auto lgx-field__control--synced', Boolean( isUsingTitleDefault_tooltip ) );
+				}
+				if ( $altTextInput.length && $altTextInput.attr('data-pro-locked-input') !== 'true' ) {
+					$altTextInput.toggleClass( 'lgx-field__control--auto lgx-field__control--synced', Boolean( isUsingTitleDefault_altText ) );
+				}
+			}
+
 			function updateSmartValues() {
 				var titleVal = $titleInput.val().trim();
 				
@@ -374,6 +383,7 @@ if ( window.jQuery ) {
 					var customBrandVal = $customBrandInput.length ? $customBrandInput.val().trim() : '';
 					$altTextInput.val(customBrandVal !== '' ? customBrandVal : titleVal);
 				}
+				updateSmartCue();
 			}
 
 			if ( $titleInput.length ) {
@@ -381,11 +391,13 @@ if ( window.jQuery ) {
 				if ( $tooltipInput.length ) {
 					$tooltipInput.on('input', function() {
 						isUsingTitleDefault_tooltip = false;
+						updateSmartCue();
 					});
 				}
 				if ( $altTextInput.length ) {
 					$altTextInput.on('input', function() {
 						isUsingTitleDefault_altText = false;
+						updateSmartCue();
 					});
 				}
 				
@@ -401,14 +413,210 @@ if ( window.jQuery ) {
 				// CRITICAL ARCHITECTURE RULE: 
 				// Clear auto-populated fields right before form submission so they don't save to the DB!
 				// This preserves ADR-001 (no data duplication) while giving the user Option C UX.
+				// Locked Tooltip and Alt Text are always cleared on submit.
 				$('#post').on('submit', function() {
-					if ( isUsingTitleDefault_tooltip && $tooltipInput.length ) {
+					if ( $tooltipInput.length && ( isUsingTitleDefault_tooltip || $tooltipInput.attr('data-pro-locked-input') === 'true' ) ) {
 						$tooltipInput.val('');
 					}
-					if ( isUsingTitleDefault_altText && $altTextInput.length ) {
+					if ( $altTextInput.length && ( isUsingTitleDefault_altText || $altTextInput.attr('data-pro-locked-input') === 'true' ) ) {
 						$altTextInput.val('');
 					}
 				});
+			}
+
+			// --- Pro Locked Fields & Upgrade Dialog (ADR-023, T-338) ---
+			var $proModal = $('#lgx-logo-pro-modal');
+			var $proModalOverlay = $('#lgx-logo-pro-modal-overlay');
+			var $proModalTitleText = $('#lgx-logo-pro-modal-title-text');
+			var $proModalText = $('#lgx-logo-pro-modal-text');
+			var $proModalClose = $('#lgx-logo-pro-modal-close');
+			var $proModalUpgrade = $('#lgx-logo-pro-modal-upgrade');
+
+			if ( $proModal.length ) {
+				var lastFocusedElement = null;
+
+				var defaultStrings = {
+					tooltip_text: {
+						title: 'Custom Tooltip is a Pro Feature',
+						text: 'Your logo already uses the Brand Name as its tooltip. With Pro, you can write your own text for each logo.'
+					},
+					alt_text: {
+						title: 'Custom Alt Text is a Pro Feature',
+						text: 'Your logo already uses the Brand Name as its alt text. With Pro, you can write your own alt text for each logo.'
+					},
+					company_name: {
+						title: 'Custom Brand Name is a Pro Feature',
+						text: 'Your logo already shows its Brand Name. With Pro, you can show a different name without renaming the logo.'
+					}
+				};
+
+				function openProModal( fieldKey, triggerElement ) {
+					lastFocusedElement = triggerElement;
+
+					var strings = defaultStrings[fieldKey] || {};
+					if ( typeof wpnpaddon !== 'undefined' && wpnpaddon.pro_field_strings && wpnpaddon.pro_field_strings[fieldKey] ) {
+						strings = wpnpaddon.pro_field_strings[fieldKey];
+					}
+
+					$proModalTitleText.text( strings.title || '' );
+					$proModalText.text( strings.text || '' );
+
+					$proModalOverlay.show().attr('aria-hidden', 'false');
+					$proModal.show().attr('aria-hidden', 'false');
+
+					// Move focus into the dialog on open
+					if ( $proModalUpgrade.length ) {
+						$proModalUpgrade.trigger('focus');
+					}
+				}
+
+				function closeProModal() {
+					$proModal.hide().attr('aria-hidden', 'true');
+					$proModalOverlay.hide().attr('aria-hidden', 'true');
+
+					if ( lastFocusedElement && typeof lastFocusedElement.focus === 'function' ) {
+						lastFocusedElement.focus();
+					}
+					lastFocusedElement = null;
+				}
+
+				// Close on 'Maybe later' button
+				$proModalClose.on('click', function( e ) {
+					e.preventDefault();
+					closeProModal();
+				});
+
+				// Close on backdrop click
+				$proModalOverlay.on('click', function( e ) {
+					e.preventDefault();
+					closeProModal();
+				});
+
+				// Close on Escape & trap Tab key
+				$(document).on('keydown', function( e ) {
+					if ( $proModal.css('display') === 'none' ) {
+						return;
+					}
+
+					if ( e.key === 'Escape' || e.keyCode === 27 ) {
+						e.preventDefault();
+						closeProModal();
+						return;
+					}
+
+					if ( e.key === 'Tab' || e.keyCode === 9 ) {
+						var focusable = $proModal.find('a[href], button:not([disabled])').filter(function() {
+							return $(this).css('display') !== 'none';
+						});
+						if ( ! focusable.length ) {
+							return;
+						}
+						var first = focusable.first()[0];
+						var last = focusable.last()[0];
+
+						if ( e.shiftKey ) {
+							if ( document.activeElement === first ) {
+								e.preventDefault();
+								last.focus();
+							}
+						} else {
+							if ( document.activeElement === last ) {
+								e.preventDefault();
+								first.focus();
+							}
+						}
+					}
+				});
+
+				// Wire up locked fields
+				var lockedFieldConfigs = [
+					{ selector: '#lgx_tooltip_text', key: 'tooltip_text' },
+					{ selector: '#lgx_alt_text', key: 'alt_text' },
+					{ selector: '#lgx_custom_brand_name', key: 'company_name' }
+				];
+
+				$.each( lockedFieldConfigs, function( idx, cfg ) {
+					var $input = $( cfg.selector );
+					if ( ! $input.length || $input.attr('data-pro-locked-input') !== 'true' ) {
+						return;
+					}
+
+					var $wrapper = $input.closest('.lgx-pro-locked-field');
+					var $indicator = $wrapper.find('.lgx-pro-locked-indicator');
+
+					// Click on input opens dialog
+					$input.on('click', function( e ) {
+						e.preventDefault();
+						openProModal( cfg.key, this );
+					});
+
+					// Mousedown on input opens dialog
+					$input.on('mousedown', function( e ) {
+						e.preventDefault();
+						openProModal( cfg.key, this );
+					});
+
+					// Enter or Space keydown opens dialog
+					$input.on('keydown', function( e ) {
+						if ( e.key === 'Enter' || e.key === ' ' || e.keyCode === 13 || e.keyCode === 32 ) {
+							e.preventDefault();
+							openProModal( cfg.key, this );
+						}
+					});
+
+					if ( $indicator.length ) {
+						$indicator.on('click', function( e ) {
+							e.preventDefault();
+							openProModal( cfg.key, $input[0] );
+						});
+					}
+				});
+			}
+
+			// T-339: Accessible "i" info disclosure notes for Additional Details
+			var $logoMetaWrapper = $( '.lgx_meta_boxes_fields_logo_item' );
+			if ( $logoMetaWrapper.length ) {
+				function toggleFieldInfoNote( btn ) {
+					var $btn = $( btn );
+					var noteId = $btn.attr( 'aria-controls' );
+					if ( ! noteId ) {
+						return;
+					}
+					var $note = $( '#' + noteId );
+					if ( ! $note.length ) {
+						return;
+					}
+					var isOpen = $btn.attr( 'aria-expanded' ) === 'true';
+					$btn.attr( 'aria-expanded', isOpen ? 'false' : 'true' );
+					if ( isOpen ) {
+						$note.attr( 'hidden', '' ).prop( 'hidden', true );
+					} else {
+						$note.removeAttr( 'hidden' ).prop( 'hidden', false );
+					}
+				}
+
+				$logoMetaWrapper.on( 'click', '.lgx-field__info', function() {
+					toggleFieldInfoNote( this );
+				} );
+
+				$logoMetaWrapper.on( 'keydown', function( e ) {
+					if ( e.key === 'Escape' || e.keyCode === 27 ) {
+						var $row = $( e.target ).closest( '.lgx-field-row' );
+						if ( ! $row.length ) {
+							return;
+						}
+						var $btn = $row.find( '.lgx-field__info' );
+						if ( $btn.length && $btn.attr( 'aria-expanded' ) === 'true' ) {
+							e.preventDefault();
+							var noteId = $btn.attr( 'aria-controls' );
+							$btn.attr( 'aria-expanded', 'false' );
+							if ( noteId ) {
+								$( '#' + noteId ).attr( 'hidden', '' ).prop( 'hidden', true );
+							}
+							$btn.trigger( 'focus' );
+						}
+					}
+				} );
 			}
 
 
@@ -537,15 +745,59 @@ if ( window.jQuery ) {
 				if ( post_id > 0 ) {
 					// Get the edit row and the data from the hidden divs
 					var $edit_row = $( '#edit-' + post_id );
+					var $brand_inline = $( '#lgx_ls_brand_inline_' + post_id );
 					
-					var brand_name = $( '#lgx_ls_brand_inline_' + post_id ).text();
+					var brand_name = $brand_inline.text();
 					var brand_url  = $( '#lgx_ls_url_inline_' + post_id ).text();
+					var is_locked  = $brand_inline.attr( 'data-pro-locked' ) === 'true';
 
-					// Populate the inputs
-					$edit_row.find( '.lgx-quick-edit-company-name' ).val( brand_name );
+					var $company_input = $edit_row.find( '.lgx-quick-edit-company-name' );
+					var $company_group = $edit_row.find( '.lgx-quick-edit-company-group' );
+					var $lock_icon     = $edit_row.find( '.lgx-quick-edit-lock-icon' );
+					var $pro_note      = $edit_row.find( '.lgx-quick-edit-pro-note' );
+
+					// Always hide the inline Pro note when opening a Quick Edit row
+					$pro_note.hide();
+
+					if ( is_locked ) {
+						var locked_ph = $company_input.attr( 'data-locked-placeholder' ) || 'Uses the Brand Name';
+						$company_input
+							.val( '' )
+							.attr( 'readonly', 'readonly' )
+							.attr( 'data-pro-locked-input', 'true' )
+							.attr( 'placeholder', locked_ph )
+							.attr( 'aria-describedby', 'lgx_qe_company_name_pro_desc' );
+						$company_group.addClass( 'lgx-pro-locked-field' );
+						$lock_icon.show();
+					} else {
+						var unlocked_ph = $company_input.attr( 'data-unlocked-placeholder' ) || '';
+						$company_input
+							.val( brand_name )
+							.removeAttr( 'readonly' )
+							.removeAttr( 'data-pro-locked-input' )
+							.attr( 'placeholder', unlocked_ph )
+							.removeAttr( 'aria-describedby' );
+						$company_group.removeClass( 'lgx-pro-locked-field' );
+						$lock_icon.hide();
+					}
+
+					// Populate Website URL (always Free)
 					$edit_row.find( '.lgx-quick-edit-company-url' ).val( brand_url );
 				}
 			};
+
+			// Show inline Pro note when clicking or pressing Enter/Space on locked Quick Edit input or lock icon
+			$( document ).on( 'click', '.lgx-quick-edit-company-name[data-pro-locked-input="true"], .lgx-quick-edit-lock-icon', function( e ) {
+				e.preventDefault();
+				$( this ).closest( '.lgx-quick-edit-company-group' ).find( '.lgx-quick-edit-pro-note' ).show();
+			} );
+
+			$( document ).on( 'keydown', '.lgx-quick-edit-company-name[data-pro-locked-input="true"]', function( e ) {
+				if ( e.key === 'Enter' || e.key === ' ' || e.keyCode === 13 || e.keyCode === 32 ) {
+					e.preventDefault();
+					$( this ).closest( '.lgx-quick-edit-company-group' ).find( '.lgx-quick-edit-pro-note' ).show();
+				}
+			} );
 		}
 
 		// Phase E: Task 4.1 - Shortcode Copy UX

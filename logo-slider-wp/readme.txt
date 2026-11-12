@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=vaspa
 Tags: logo slider, logo carousel, logo showcase, logo gallery, client logos
 Requires at least: 5.8
 Tested up to: 7.1
-Stable tag: 6.1.1
+Stable tag: 6.2.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -14,12 +14,13 @@ Show client logos and WooCommerce brand logos in a responsive logo slider, carou
 
 👉 [Live Demo](https://demo.logichunt.com/logo-slider-wp/) | [Documentation](https://docs.logichunt.com/logo-slider-wp/) | [Support](https://logichunt.com/support/) | [Get Pro](https://logichunt.com/product/wordpress-logo-slider/)
 
-**Logo Slider WP** shows logos on your WordPress site: the client, sponsor and partner logos you upload, and — new in 6.1.0 — the brand logos of your WooCommerce store. Display them as a responsive logo slider, logo carousel, grid or flexbox showcase with a native Gutenberg block, a shortcode or PHP. No page builder and no coding needed. Unlimited logos, three layout types, and a full visual Showcase Builder are free, not a trial.
+**Logo Slider WP** shows logos on your WordPress site: the client, sponsor and partner logos you upload, and the brand logos of your WooCommerce store. Display them as a responsive logo slider, logo carousel, grid or flexbox showcase with a native Gutenberg block, a shortcode or PHP. No page builder and no coding needed. Unlimited logos, Bulk Upload, three layout types, and a full visual Showcase Builder are free, not a trial.
 
-The Free edition includes both logo sources, the Gutenberg block, the shortcode and the Showcase Builder with live preview. Pro adds more styling options, hover effects, Ticker mode and brand selection.
+The Free edition includes both logo sources, Bulk Upload, the Gutenberg block, the shortcode and the Showcase Builder with live preview. Pro adds more styling options, hover effects, Ticker mode, brand selection, and custom Tooltip, Alt Text and Brand Name for each logo.
 
 * Two logo sources in one plugin: your own Logo Library or your WooCommerce Brands
 * Unlimited logos, unlimited showcases — no artificial caps on the Free edition
+* Bulk Upload — add many logos at once from the Media Library, no limit
 * Native Gutenberg block, plus shortcode and PHP function support for any theme or builder
 * A real visual Showcase Builder — Carousel, Grid, and Flexbox layouts, live preview as you configure
 * Category filtering, drag-and-drop ordering, and per-logo links — all Free
@@ -28,7 +29,7 @@ The Free edition includes both logo sources, the Gutenberg block, the shortcode 
 
 Every showcase starts with one choice in the **Content Source** panel: where do the logos come from?
 
-**Logo Library — your own logos.** Upload client, partner, sponsor or team logos, give each one a name, link, tooltip and category, and order them by drag and drop. Works on every WordPress site.
+**Logo Library — your own logos.** Upload client, partner, sponsor or team logos one by one or many at once with Bulk Upload, give each one a name, link and category, and order them by drag and drop. Works on every WordPress site.
 
 **WooCommerce Brands — the brands you sell.** Show the brands from **Products → Brands** without uploading anything twice. Each brand shows its own logo (the brand thumbnail) and can link to its brand page. The showcase reads your brands directly from WooCommerce.
 
@@ -48,14 +49,15 @@ Turn your store's brands into a brand logo slider, carousel or grid in three ste
 
 This source needs WooCommerce with its Brands feature active (Products → Brands). Brands is part of WooCommerce and is on by default from version 9.6. If WooCommerce is turned off, the showcase keeps its settings and shows no logos until it is active again.
 
-= What's new in 6.1.0 =
+= What's new in version 6 =
 
-* New **Content Source** panel: choose the Logo Library or WooCommerce Brands for each showcase.
-* The brand source is Free, with Pro controls for brand selection and display.
-* Safer brand settings: a stored brand setting the builder does not recognise is shown as "Unknown" and kept, never changed silently.
-* The texts shown by the Showcase Builder script can now be translated.
-* Your existing logos, showcases and shortcodes are not changed by this update.
-* Requires WordPress 5.8 or later and PHP 7.4 or later.
+**6.2.0 — Bulk Upload.** Add many logos at once: select the images in the Media Library, check the names and the order, choose categories and Draft or Publish, then create them all in one go. Free, with no limit. Pro adds details per logo (Website URL, Tooltip, Alt Text and more) while you upload. Every logo gets its tooltip and alt text from its Brand Name automatically, and values you already saved on a logo keep working.
+
+**6.1.0 — WooCommerce Brands.** A second logo source, chosen in a new Content Source panel. Show your store's brand logos for free; Pro adds brand selection.
+
+**6.0.0 — New Showcase Builder.** One page with a live preview for every setting. Category filtering became Free.
+
+Your existing logos, showcases and shortcodes are kept when you update. Requires WordPress 5.8 or later and PHP 7.4 or later.
 
 = Showcase types =
 
@@ -104,6 +106,7 @@ All users — Free and Pro — get direct support at the [LogicHunt Support Cent
 * Category-based filtering
 * Drag-and-drop logo ordering
 * Per-logo link URL
+* Bulk Upload: add many logos at once, no limit
 * Brand source: show every brand with a logo and at least one product; sort by name, order added or random
 * Brand name show/hide
 * Logo height & width control (Max Width unlocked)
@@ -150,6 +153,8 @@ All users — Free and Pro — get direct support at the [LogicHunt Support Cent
 * Link target (new tab) & nofollow attribute
 * Brand source: choose or exclude specific brands, show brands without a logo as text, show brands without products
 * Brand/item description field
+* Custom Tooltip, Alt Text and Brand Name for each logo
+* Bulk Upload details: fill in Website URL, Custom Brand Name, Tooltip, Alt Text and Description for each logo while uploading
 * Logo width sizing modes beyond Max Width (Width, Min Width)
 
 **Carousel Controls**
@@ -188,11 +193,14 @@ WooCommerce Brands uses each store brand's name, thumbnail and brand page. Each 
 
 * Brand Name and Logo Image (the two required fields)
 * Website URL (leave empty for a logo that is not clickable)
-* Tooltip (uses the Brand Name until you change it)
-* Alt Text (uses the Brand Name until you change it)
-* Custom Brand Name (show a different name without renaming the logo)
 * Description (shown with Pro, in layouts that support descriptions)
 * Categories (used for category filtering)
+* Tooltip and Alt Text — filled in automatically from the Brand Name (write your own for each logo with Pro)
+* Custom Brand Name — show a different name without renaming the logo (Pro)
+
+Tooltip and Alt Text come from the Brand Name, so every logo has both without any extra work. A Tooltip, Alt Text or Custom Brand Name you saved on a logo before 6.2.0 keeps working and stays editable.
+
+To add many logos at once, use **Bulk Upload**: choose the images, check the names and the order, then create them all. Website URL and Description can be added to each logo after it is created; with Pro you can fill in every field during the upload.
 
 
 = Embedding methods =
@@ -234,7 +242,7 @@ After activation, **Logo Slider** appears in your admin sidebar.
 
 = Quick start =
 
-1. **Add logos** — go to **Logo Slider → Logos**, then click **Add New Logo**. Upload your image, set the brand name, URL, and category.
+1. **Add logos** — go to **Logo Slider → Logos**, then click **Add New Logo**. Upload your image, set the brand name, URL, and category. To add many logos at once, use **Bulk Upload** from the same screen.
 2. **Create a showcase** — go to **Logo Slider → Showcases**, then click **Create Showcase**. Choose Carousel, Grid, or Flexbox and configure your settings.
 3. **Embed via Gutenberg** — add the **Logo Slider WP** block to your page and select your showcase from the dropdown. See a live preview instantly!
 4. **Embed via Shortcode (Alternative)** — paste the generated shortcode (e.g. `[lgxlogoslider id="39"]`) into Elementor, Divi, or any page builder.
@@ -264,6 +272,14 @@ No. It is needed only for the brand source. The Logo Library works on any WordPr
 = What happens to a brand showcase if WooCommerce is turned off? =
 
 Its settings are kept and stay editable, and it shows no logos until WooCommerce is active again. You can also switch the showcase back to the Logo Library at any time.
+
+= Can I add many logos at once? =
+
+Yes. Since version 6.2.0, **Bulk Upload** creates many logos in one go. Select the images in the Media Library, check each Brand Name and the order, pick categories and Draft or Publish, then click Create. Images already used by another logo are skipped unless you tick **Create anyway**. Bulk Upload is Free with no limit; Pro lets you fill in Website URL, Custom Brand Name, Tooltip, Alt Text and Description for each logo during the upload.
+
+= How do Tooltip and Alt Text work for each logo? =
+
+Every logo gets a tooltip and an image alt text from its Brand Name automatically, so nothing extra is needed. With Pro you can write your own Tooltip, Alt Text and Custom Brand Name for each logo. A value you saved on a logo before 6.2.0 keeps working and stays editable. Website URL and Description are available in Free.
 
 = Can I switch between shortcode and block? =
 
@@ -303,7 +319,7 @@ Yes. Each showcase has a unique wrapper class. Add CSS via **Appearance → Cust
 
 = What is the difference between free and Pro? =
 
-Free covers all three layout types, unlimited logo display, the native Gutenberg Block, category filtering, WooCommerce Brands as a content source, responsive control, RTL direction, preloader, and full shortcode compatibility. Pro adds brand selection, hover effects (grayscale, box shadow and overlays), hover animations, Coverflow 3D, full typography control, background images, branded preloader, ticker mode, and priority developer support.
+Free covers all three layout types, unlimited logo display, Bulk Upload, the native Gutenberg Block, category filtering, WooCommerce Brands as a content source, responsive control, RTL direction, preloader, and full shortcode compatibility. Pro adds custom Tooltip, Alt Text and Brand Name for each logo, details during Bulk Upload, brand selection, hover effects (grayscale, box shadow and overlays), hover animations, Coverflow 3D, full typography control, background images, branded preloader, ticker mode, and priority developer support.
 
 = Is there a live demo? =
 
@@ -344,6 +360,12 @@ Both Free and Pro users get direct help at the [LogicHunt Support Center](https:
 
 == Upgrade Notice ==
 
+= 6.2.1 =
+Security release: adds permission checks to the bulk actions in the Logo list. Please update.
+
+= 6.2.0 =
+Adds Bulk Upload (Free, no limit). Tooltip and Alt Text now come from each logo's Brand Name automatically. Values you already saved keep working and stay editable. Front-end output does not change.
+
 = 6.1.1 =
 Bug-fix release: a cleaner live preview, a PHP 8 fix for the Flexbox layout and clearer Pro prompts in the Free edition. Your showcases and settings are not changed.
 
@@ -361,6 +383,21 @@ Security: Fixed stored XSS vulnerability. Fixed dynamic CSS not rendering for ca
 
 
 == Changelog ==
+
+= 6.2.1 =
+* Security: The Publish, Set to Draft, Duplicate and Assign Category bulk actions in the Logo list now check that you are allowed to edit (and, for Publish, to publish) each logo, and only act on logos. Reported by the WordPress.org plugin security review.
+* Security: Moving and reordering logos checks permissions on every logo it changes.
+* Tested: WordPress 7.1
+
+= 6.2.0 =
+* New: Bulk Upload (Free, no limit). Select many images in the Media Library, check the Brand Names and the order, choose categories and Draft or Publish, then create all logos in one go.
+* New: Bulk Upload shows how many images are ready, already used by another logo, or not usable. Already used images are skipped unless you choose Create anyway; unusable files are always skipped.
+* New: The Creating screen follows the progress and can be stopped; logos already created are kept.
+* New (Pro): Fill in Website URL, Custom Brand Name, Tooltip, Alt Text and Description for each logo during Bulk Upload.
+* Change: Tooltip and Alt Text default to the Brand Name on every logo; custom values per logo are available with Pro. Values already saved on a logo keep working and stay editable. Website URL and Description stay Free.
+* Improvement: Bulk Upload follows the WordPress admin colour scheme and works on narrow screens.
+* Improvement: Accessibility of the Bulk Upload screens: keyboard use, focus, colour contrast, headings and screen reader text.
+* Tested: WordPress 7.1
 
 = 6.1.1 =
 * Fix: The live preview no longer loads scripts and styles from other plugins, so it stays clean and fast.

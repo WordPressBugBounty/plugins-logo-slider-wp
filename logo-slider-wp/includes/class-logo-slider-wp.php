@@ -146,6 +146,11 @@ class Logo_Slider_WP {
 		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-logo-slider-wp-pro-locking.php';
 
 		/**
+		 * The class responsible for logo-field Pro locking, grandfathering, and server-side enforcement (ADR-023).
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-logo-slider-wp-logo-field-lock.php';
+
+		/**
 		 * The internal source provider contract.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-logo-slider-wp-source-provider.php';
@@ -369,6 +374,17 @@ class Logo_Slider_WP {
         //     $this->loader->add_action( 'in_admin_header', $plugin_admin->get_settings(), 'suppress_admin_notices' );
         // }
         
+        // Bulk Upload Module Hooks (WP2).
+        if ( method_exists( $plugin_admin, 'get_bulk_upload' ) ) {
+            $this->loader->add_action( 'admin_menu', $plugin_admin->get_bulk_upload(), 'register_bulk_upload_page' );
+            $this->loader->add_action( 'admin_head', $plugin_admin->get_bulk_upload(), 'hide_bulk_upload_submenu' );
+            $this->loader->add_filter( 'submenu_file', $plugin_admin->get_bulk_upload(), 'filter_submenu_file' );
+            $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin->get_bulk_upload(), 'enqueue_bulk_upload_assets' );
+            $this->loader->add_action( 'edit_form_after_title', $plugin_admin->get_bulk_upload(), 'render_add_new_link' );
+            $this->loader->add_action( 'wp_ajax_lgx_ls_bulk_check', $plugin_admin->get_bulk_upload(), 'handle_bulk_check_ajax' );
+            $this->loader->add_action( 'wp_ajax_lgx_ls_bulk_create', $plugin_admin->get_bulk_upload(), 'handle_bulk_create_ajax' );
+        }
+
         // UI Improvements: List Screen Enhancements
         $this->loader->add_action( 'restrict_manage_posts', $plugin_admin, 'render_category_filter' );
         $this->loader->add_action( 'manage_posts_extra_tablenav', $plugin_admin, 'render_empty_state_ux' );

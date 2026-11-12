@@ -1,0 +1,108 @@
+/**
+ * Bulk Upload module styles.
+ *
+ * @package Logo_Slider_WP
+ */
+
+.lgx-bulk-upload__wrap {
+	max-width: 1200px;
+}
+
+.lgx-bulk-upload__intro {
+	margin-top: 8px;
+}
+
+/*
+ * Exception E1 & E2 styles (Plan v2 Section 5.1, O16).
+ * Rendered on core All Logos (edit-logosliderwp) and Add New Logo screens
+ * outside .lgx-bulk-upload__wrap; every selector uses the module prefix
+ * .lgx-bulk-upload__ with no global selectors.
+ */
+.lgx-bulk-upload__action.lgx-bulk-upload__action {
+	display: inline-block;
+	box-sizing: border-box;
+	margin-top: 0;
+	margin-right: 8px;
+	margin-bottom: 6px;
+	padding: 6px 14px;
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.5;
+	border-radius: 3px;
+	text-decoration: none;
+	vertical-align: middle;
+	box-shadow: none;
+}
+
+.lgx-bulk-upload__action.lgx-bulk-upload__action--primary,
+.lgx-bulk-upload__action.lgx-bulk-upload__action.lgx-bulk-upload__action--primary {
+	margin-left: 4px;
+	background: var(--wp-admin-theme-color, #2271b1);
+	border: 1px solid var(--wp-admin-theme-color, #2271b1);
+	color: #ffffff;
+}
+
+.lgx-bulk-upload__action.lgx-bulk-upload__action--primary:hover,
+.lgx-bulk-upload__action.lgx-bulk-upload__action--primary:focus,
+.lgx-bulk-upload__action.lgx-bulk-upload__action--primary:active,
+.lgx-bulk-upload__action.lgx-bulk-upload__action.lgx-bulk-upload__action--primary:hover,
+.lgx-bulk-upload__action.lgx-bulk-upload__action.lgx-bulk-upload__action--primary:focus,
+.lgx-bulk-upload__action.lgx-bulk-upload__action.lgx-bulk-upload__action--primary:active {
+	background: var(--wp-admin-theme-color-darker-10, #135e96);
+	border-color: var(--wp-admin-theme-color-darker-10, #135e96);
+	color: #ffffff;
+}
+
+.lgx-bulk-upload__action.lgx-bulk-upload__action--secondary {
+	margin-left: 0;
+	background-color: #ffffff;
+	border: 1px solid var(--wp-admin-theme-color, #2271b1);
+	color: var(--wp-admin-theme-color-darker-10, #135e96);
+}
+
+.lgx-bulk-upload__action.lgx-bulk-upload__action--secondary:hover,
+.lgx-bulk-upload__action.lgx-bulk-upload__action--secondary:focus,
+.lgx-bulk-upload__action.lgx-bulk-upload__action--secondary:active {
+	background-color: #f0f6fc;
+	background-color: color-mix(in srgb, var(--wp-admin-theme-color, #2271b1) 7%, #fff);
+	border-color: var(--wp-admin-theme-color-darker-10, #135e96);
+	color: var(--wp-admin-theme-color-darker-10, #135e96);
+}
+
+.lgx-bulk-upload__action.lgx-bulk-upload__action--primary:focus,
+.lgx-bulk-upload__action.lgx-bulk-upload__action--secondary:focus {
+	outline: 2px solid var(--wp-admin-theme-color-darker-10, #135e96);
+	outline-offset: 2px;
+	box-shadow: none;
+}
+
+.lgx-bulk-upload__add-new-hint {
+	margin: 10px 0 12px;
+	padding: 10px 14px;
+	background-color: #f0f6fc;
+	border-left: 4px solid #2271b1;
+	border-radius: 2px;
+	color: #1d2327;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.lgx-bulk-upload__add-new-link {
+	margin-left: 4px;
+	color: var(--wp-admin-theme-color-darker-10, #135e96);
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.lgx-bulk-upload__add-new-link:hover,
+.lgx-bulk-upload__add-new-link:focus {
+	color: #135e96;
+	text-decoration: underline;
+}
+
+.lgx-bulk-upload__add-new-link:focus {
+	outline: 2px solid #2271b1;
+	outline-offset: 2px;
+	box-shadow: none;
+}
+
