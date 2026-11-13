@@ -26,5 +26,6 @@
       "full"
     ]
   },
+  "editorScript": "logo-slider-wp-pro-gutenberg-block",
   "editorStyle": "file:./index.css"
 }

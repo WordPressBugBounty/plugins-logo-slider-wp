@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=vaspa
 Tags: logo slider, logo carousel, logo showcase, logo gallery, client logos
 Requires at least: 5.8
 Tested up to: 7.1
-Stable tag: 6.2.2
+Stable tag: 6.2.3
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -360,6 +360,9 @@ Both Free and Pro users get direct help at the [LogicHunt Support Center](https:
 
 == Upgrade Notice ==
 
+= 6.2.3 =
+Small maintenance release for the Gutenberg block metadata. No change to your showcases.
+
 = 6.2.2 =
 Security release. A showcase on a page now shows to visitors only when it is published. If a showcase stopped showing, publish it in Logo Slider > Showcases. Please update.
 
@@ -386,6 +389,9 @@ Security: Fixed stored XSS vulnerability. Fixed dynamic CSS not rendering for ca
 
 
 == Changelog ==
+
+= 6.2.3 =
+* Improvement: The Logo Slider WP block metadata (block.json) now names its editor script. No change to how the block or your showcases work.
 
 = 6.2.2 =
 * Security: A showcase is now shown to visitors only when it is published and has no password. Draft, pending, private and password-protected showcases no longer appear on a page for visitors. Users who can edit the showcase still see it.
