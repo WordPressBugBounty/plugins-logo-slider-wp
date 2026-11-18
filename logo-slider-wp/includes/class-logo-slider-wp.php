@@ -445,7 +445,7 @@ class Logo_Slider_WP {
         $this->loader->add_action( 'init', $plugin_public, 'register_lgx_logo_slider_shortcode', 0);
 
 		//Add  Short Code
-        add_shortcode('logo-slider-wp', array($plugin_public, 'logo_slider_wp_shortcode_function_dep' ));
+        add_shortcode('logo-slider-wp', array($plugin_public, 'logo_slider_wp_shortcode_function_legacy' ));
 
         // Live Preview endpoint (Task 010 / ADR-009 Decision 5)
         $this->loader->add_filter( 'query_vars', $plugin_public, 'register_preview_query_vars' );

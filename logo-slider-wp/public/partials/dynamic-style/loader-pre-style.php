@@ -4,7 +4,7 @@ if (!defined('WPINC')) {
 }
 ?>
 <style type="text/css">
-    #lgx_lsw_preloader_<?php echo esc_attr($lgx_app_id);?> {
+    #lgx_lsw_preloader_<?php echo esc_attr( lgx_ls_css_value( $lgx_app_id ) );?> {
         display: flex;
         align-items: center;
         justify-content: center;

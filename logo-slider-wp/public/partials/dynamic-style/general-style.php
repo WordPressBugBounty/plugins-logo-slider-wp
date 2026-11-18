@@ -15,69 +15,69 @@ wp_enqueue_script( 'logo-slider-wp-public');
 
 
 
-//Section Background Settings
-$lgx_section_width              = $lgx_shortcodes_meta['lgx_section_width'];
+$lgx_app_id                     = lgx_ls_css_value( $lgx_app_id );
+$lgx_section_width              = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_section_width'] );
 $lgx_section_container          = $lgx_shortcodes_meta['lgx_section_container'];
 $lgx_section_bg_img_en          = $lgx_shortcodes_meta['lgx_section_bg_img_en'];
-$lgx_section_bg_img             = $lgx_shortcodes_meta['lgx_section_bg_img'];
-$lgx_section_bg_img_attachment  = $lgx_shortcodes_meta['lgx_section_bg_img_attachment'];
-$lgx_section_bg_img_size        = $lgx_shortcodes_meta['lgx_section_bg_img_size'];
+$lgx_section_bg_img             = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_section_bg_img'] );
+$lgx_section_bg_img_attachment  = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_section_bg_img_attachment'] );
+$lgx_section_bg_img_size        = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_section_bg_img_size'] );
 $lgx_section_bg_color_en        = $lgx_shortcodes_meta['lgx_section_bg_color_en'];
 $lgx_section_bg_color           = lgx_ls_sanitize_css_color($lgx_shortcodes_meta['lgx_section_bg_color']);
-$lgx_section_top_margin         = $lgx_shortcodes_meta['lgx_section_top_margin'];
-$lgx_section_bottom_margin      = $lgx_shortcodes_meta['lgx_section_bottom_margin'];
-$lgx_section_top_padding        = $lgx_shortcodes_meta['lgx_section_top_padding'];
-$lgx_section_bottom_padding     = $lgx_shortcodes_meta['lgx_section_bottom_padding'];
+$lgx_section_top_margin         = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_section_top_margin'] );
+$lgx_section_bottom_margin      = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_section_bottom_margin'] );
+$lgx_section_top_padding        = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_section_top_padding'] );
+$lgx_section_bottom_padding     = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_section_bottom_padding'] );
 
 //Header Settings
-$lgx_header_title_font_size         = $lgx_shortcodes_meta['lgx_header_title_font_size'];
+$lgx_header_title_font_size         = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_header_title_font_size'] );
 $lgx_header_title_color             = lgx_ls_sanitize_css_color($lgx_shortcodes_meta['lgx_header_title_color']);
-$lgx_header_title_font_weight       = $lgx_shortcodes_meta['lgx_header_title_font_weight'];
-$lgx_header_title_bottom_margin     = $lgx_shortcodes_meta['lgx_header_title_bottom_margin'];
-$lgx_header_subtitle_font_size      = $lgx_shortcodes_meta['lgx_header_subtitle_font_size'];
+$lgx_header_title_font_weight       = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_header_title_font_weight'] );
+$lgx_header_title_bottom_margin     = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_header_title_bottom_margin'] );
+$lgx_header_subtitle_font_size      = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_header_subtitle_font_size'] );
 $lgx_header_subtitle_color          = lgx_ls_sanitize_css_color($lgx_shortcodes_meta['lgx_header_subtitle_color']);
-$lgx_header_subtitle_font_weight    = $lgx_shortcodes_meta['lgx_header_subtitle_font_weight'];
-$lgx_header_subtitle_bottom_margin  = $lgx_shortcodes_meta['lgx_header_subtitle_bottom_margin'];
+$lgx_header_subtitle_font_weight    = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_header_subtitle_font_weight'] );
+$lgx_header_subtitle_bottom_margin  = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_header_subtitle_bottom_margin'] );
 
 
 
 // Style
 
 $lgx_item_brand_name_color          = lgx_ls_sanitize_css_color($lgx_shortcodes_meta['lgx_item_brand_name_color']);
-$lgx_item_brand_name_font_size      = $lgx_shortcodes_meta['lgx_item_brand_name_font_size'];
-$lgx_item_brand_name_font_weight    = $lgx_shortcodes_meta['lgx_item_brand_name_font_weight'];
+$lgx_item_brand_name_font_size      = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_item_brand_name_font_size'] );
+$lgx_item_brand_name_font_weight    = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_item_brand_name_font_weight'] );
 
-$lgx_item_desc_font_size            = $lgx_shortcodes_meta['lgx_item_desc_font_size'];
+$lgx_item_desc_font_size            = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_item_desc_font_size'] );
 $lgx_item_desc_color                = lgx_ls_sanitize_css_color($lgx_shortcodes_meta['lgx_item_desc_color']);
-$lgx_item_desc_font_weight          = $lgx_shortcodes_meta['lgx_item_desc_font_weight'];
+$lgx_item_desc_font_weight          = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_item_desc_font_weight'] );
 
 $lgx_img_border_color_en            = $lgx_shortcodes_meta['lgx_img_border_color_en'];
 $lgx_img_border_color               = lgx_ls_sanitize_css_color($lgx_shortcodes_meta['lgx_img_border_color']);
 $lgx_img_border_color_hover         = lgx_ls_sanitize_css_color($lgx_shortcodes_meta['lgx_img_border_color_hover']);
-$lgx_img_border_width               = $lgx_shortcodes_meta['lgx_img_border_width'];
-$lgx_img_border_radius              = $lgx_shortcodes_meta['lgx_img_border_radius'];
+$lgx_img_border_width               = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_img_border_width'] );
+$lgx_img_border_radius              = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_img_border_radius'] );
 
 
 $lgx_border_color_en                = $lgx_shortcodes_meta['lgx_border_color_en'];
 $lgx_item_border_color              = lgx_ls_sanitize_css_color($lgx_shortcodes_meta['lgx_item_border_color']);
 $lgx_item_border_color_hover        = lgx_ls_sanitize_css_color($lgx_shortcodes_meta['lgx_item_border_color_hover']);
-$lgx_item_border_width              = $lgx_shortcodes_meta['lgx_item_border_width'];
-$lgx_item_border_radius             = $lgx_shortcodes_meta['lgx_item_border_radius'];
+$lgx_item_border_width              = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_item_border_width'] );
+$lgx_item_border_radius             = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_item_border_radius'] );
 
 $lgx_item_bg_color_en               = $lgx_shortcodes_meta['lgx_item_bg_color_en'];
 $lgx_item_bg_color                  = lgx_ls_sanitize_css_color($lgx_shortcodes_meta['lgx_item_bg_color']);
 $lgx_item_bg_color_hover            = lgx_ls_sanitize_css_color($lgx_shortcodes_meta['lgx_item_bg_color_hover']);
 
-$lgx_item_padding                   = $lgx_shortcodes_meta['lgx_item_padding'];
-$lgx_item_margin                    = $lgx_shortcodes_meta['lgx_item_margin'];
+$lgx_item_padding                   = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_item_padding'] );
+$lgx_item_margin                    = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_item_margin'] );
 
 
-$lgx_item_top_margin_title          = (isset($lgx_shortcodes_meta['lgx_item_top_margin_title']) ? $lgx_shortcodes_meta['lgx_item_top_margin_title'] : '5px');
-$lgx_item_bottom_margin_title       = $lgx_shortcodes_meta['lgx_item_bottom_margin_title'];
+$lgx_item_top_margin_title          = lgx_ls_css_value( isset($lgx_shortcodes_meta['lgx_item_top_margin_title']) ? $lgx_shortcodes_meta['lgx_item_top_margin_title'] : '5px' );
+$lgx_item_bottom_margin_title       = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_item_bottom_margin_title'] );
 
 
-$lgx_item_top_margin_desc           = (isset($lgx_shortcodes_meta['lgx_item_top_margin_desc']) ? $lgx_shortcodes_meta['lgx_item_top_margin_desc'] : '0px');
-$lgx_item_bottom_margin_desc        = $lgx_shortcodes_meta['lgx_item_bottom_margin_desc'];
+$lgx_item_top_margin_desc           = lgx_ls_css_value( isset($lgx_shortcodes_meta['lgx_item_top_margin_desc']) ? $lgx_shortcodes_meta['lgx_item_top_margin_desc'] : '0px' );
+$lgx_item_bottom_margin_desc        = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_item_bottom_margin_desc'] );
 
 
 //Carousel
@@ -93,12 +93,12 @@ $lgx_carousel_nav_bg_color_hover            = lgx_ls_sanitize_css_color($lgx_sho
 $lgx_carousel_nav_border_en                 = ( isset( $lgx_shortcodes_meta['lgx_carousel_nav_border_en'] ) ? $lgx_shortcodes_meta['lgx_carousel_nav_border_en'] : 'no' );
 $lgx_carousel_nav_border_color              = lgx_ls_sanitize_css_color($lgx_shortcodes_meta['lgx_carousel_nav_border_color']);
 $lgx_carousel_nav_border_color_hover        = lgx_ls_sanitize_css_color($lgx_shortcodes_meta['lgx_carousel_nav_border_color_hover']);
-$lgx_carousel_nav_border_width              = $lgx_shortcodes_meta['lgx_carousel_nav_border_width'];
-$lgx_carousel_nav_border_radius             = $lgx_shortcodes_meta['lgx_carousel_nav_border_radius'];
+$lgx_carousel_nav_border_width              = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_carousel_nav_border_width'] );
+$lgx_carousel_nav_border_radius             = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_carousel_nav_border_radius'] );
 
-$lgx_carousel_nav_btn_margin         = (isset($lgx_shortcodes_meta['lgx_carousel_nav_btn_margin']) ? $lgx_shortcodes_meta['lgx_carousel_nav_btn_margin'] : '5px 0px');
-$lgx_carousel_nav_ver_pos_bottom     = (isset($lgx_shortcodes_meta['lgx_carousel_nav_ver_pos_bottom']) ? $lgx_shortcodes_meta['lgx_carousel_nav_ver_pos_bottom'] : '50%');
-$lgx_carousel_nav_ver_pos_left_right = (isset($lgx_shortcodes_meta['lgx_carousel_nav_ver_pos_left_right']) ? $lgx_shortcodes_meta['lgx_carousel_nav_ver_pos_left_right'] : '-55px');
+$lgx_carousel_nav_btn_margin         = lgx_ls_css_value( isset($lgx_shortcodes_meta['lgx_carousel_nav_btn_margin']) ? $lgx_shortcodes_meta['lgx_carousel_nav_btn_margin'] : '5px 0px' );
+$lgx_carousel_nav_ver_pos_bottom     = lgx_ls_css_value( isset($lgx_shortcodes_meta['lgx_carousel_nav_ver_pos_bottom']) ? $lgx_shortcodes_meta['lgx_carousel_nav_ver_pos_bottom'] : '50%' );
+$lgx_carousel_nav_ver_pos_left_right = lgx_ls_css_value( isset($lgx_shortcodes_meta['lgx_carousel_nav_ver_pos_left_right']) ? $lgx_shortcodes_meta['lgx_carousel_nav_ver_pos_left_right'] : '-55px' );
 
 // Logo Height/Width: moved here from pro-style.php so these 4 real fields'
 // CSS renders in both editions (previously Pro-only via pro-style.php's
@@ -108,10 +108,10 @@ $lgx_carousel_nav_ver_pos_left_right = (isset($lgx_shortcodes_meta['lgx_carousel
 // invariants.md #6 and the Height/Width task's ADR entry). isset()-guarded
 // fallbacks unchanged from pro-style.php's own (see BACKLOG.md B105 for the
 // pre-existing 'auto' vs corrected 'none' staleness, out of scope here).
-$lgx_logo_height = isset( $lgx_shortcodes_meta['lgx_logo_height'] ) ? $lgx_shortcodes_meta['lgx_logo_height'] : 'auto';
-$lgx_logo_width  = isset( $lgx_shortcodes_meta['lgx_logo_width'] ) ? $lgx_shortcodes_meta['lgx_logo_width'] : '100%';
-$lgx_logo_height_property = (isset($lgx_shortcodes_meta['lgx_logo_height_property']) ? $lgx_shortcodes_meta['lgx_logo_height_property'] : 'max-height');
-$lgx_logo_width_property = (isset($lgx_shortcodes_meta['lgx_logo_width_property']) ? $lgx_shortcodes_meta['lgx_logo_width_property'] : 'max-width');
+$lgx_logo_height = lgx_ls_css_value( isset( $lgx_shortcodes_meta['lgx_logo_height'] ) ? $lgx_shortcodes_meta['lgx_logo_height'] : 'auto' );
+$lgx_logo_width  = lgx_ls_css_value( isset( $lgx_shortcodes_meta['lgx_logo_width'] ) ? $lgx_shortcodes_meta['lgx_logo_width'] : '100%' );
+$lgx_logo_height_property = lgx_ls_css_value( isset($lgx_shortcodes_meta['lgx_logo_height_property']) ? $lgx_shortcodes_meta['lgx_logo_height_property'] : 'max-height' );
+$lgx_logo_width_property = lgx_ls_css_value( isset($lgx_shortcodes_meta['lgx_logo_width_property']) ? $lgx_shortcodes_meta['lgx_logo_width_property'] : 'max-width' );
 
 // Downgrade-safe: 'width'/'min-width' are Pro-only options (Model A -- Max
 // Width stays Free; see config.php's free_options on lgx_logo_width_property
@@ -229,12 +229,12 @@ $lgx_lsw_dynamic_style_general .= '#lgx_logo_slider_app_'. $lgx_app_id.' .lgx_ap
 $lgx_lsw_dynamic_style_general .= '#lgx_logo_slider_app_'. $lgx_app_id.' .lgx_app_layout_carousel  .lgx_lsw_nav_button{
         '. lgx_ls_css_decl('color', $lgx_carousel_nav_color) .'
         '. lgx_ls_css_decl('background-color', $lgx_carousel_nav_bg_color) .'
-        font-size: '. $lgx_shortcodes_meta['lgx_carousel_nav_btn_font_size'].';
-        width: '. $lgx_shortcodes_meta['lgx_carousel_nav_btn_width'].';
-        height: '. $lgx_shortcodes_meta['lgx_carousel_nav_btn_height'].';
-        padding: '. $lgx_shortcodes_meta['lgx_carousel_nav_btn_padding'].';
-    '.(('yes' === $lgx_carousel_nav_border_en) ? lgx_ls_css_decl('border', $lgx_shortcodes_meta['lgx_carousel_nav_border_width'].' '.$lgx_shortcodes_meta['lgx_carousel_nav_border_style'].' '.$lgx_carousel_nav_border_color, $lgx_carousel_nav_border_color) : '').'
-        border-radius: '. $lgx_shortcodes_meta['lgx_carousel_nav_border_radius'].';
+        font-size: '. lgx_ls_css_value( $lgx_shortcodes_meta['lgx_carousel_nav_btn_font_size'] ).';
+        width: '. lgx_ls_css_value( $lgx_shortcodes_meta['lgx_carousel_nav_btn_width'] ).';
+        height: '. lgx_ls_css_value( $lgx_shortcodes_meta['lgx_carousel_nav_btn_height'] ).';
+        padding: '. lgx_ls_css_value( $lgx_shortcodes_meta['lgx_carousel_nav_btn_padding'] ).';
+    '.(('yes' === $lgx_carousel_nav_border_en) ? lgx_ls_css_decl('border', lgx_ls_css_value( $lgx_shortcodes_meta['lgx_carousel_nav_border_width'] ).' '.lgx_ls_css_value( $lgx_shortcodes_meta['lgx_carousel_nav_border_style'] ).' '.$lgx_carousel_nav_border_color, $lgx_carousel_nav_border_color) : '').'
+        border-radius: '. lgx_ls_css_value( $lgx_shortcodes_meta['lgx_carousel_nav_border_radius'] ).';
     }
     ';
     // Nav hover-color (B104): moved here from pro-style.php so these 3 real

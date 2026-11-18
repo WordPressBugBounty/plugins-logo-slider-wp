@@ -13,8 +13,8 @@ $lgx_tooltip_border_color                  = lgx_ls_sanitize_css_color($lgx_shor
 $lgx_tooltip_text_color                    = lgx_ls_sanitize_css_color($lgx_shortcodes_meta['lgx_tooltip_text_color']);
 
 
-// Image Align
-$lgx_grid_image_vertical_align = (isset($lgx_shortcodes_meta['lgx_grid_image_vertical_align']) ? $lgx_shortcodes_meta['lgx_grid_image_vertical_align'] : 'start');
+$lgx_app_id                    = lgx_ls_css_value( $lgx_app_id );
+$lgx_grid_image_vertical_align = lgx_ls_css_value( isset($lgx_shortcodes_meta['lgx_grid_image_vertical_align']) ? $lgx_shortcodes_meta['lgx_grid_image_vertical_align'] : 'start' );
 
 // Logo Height/Width: moved to general-style.php (which always renders, in
 // both editions) so these 4 real fields' CSS is genuinely edition-agnostic --
@@ -48,14 +48,14 @@ $lgx_lsw_dynamic_style_pro .= (($lgx_shortcodes_meta['lgx_carousel_nav_mobile_en
 
 $lgx_lsw_dynamic_style_pro .= '.tooltipster-sidetip.lgx_lsw_tooltipster_'. $lgx_app_id.' .tooltipster-box {
         '. lgx_ls_css_decl('background', $lgx_tooltip_bg_color) .'
-        '. lgx_ls_css_decl('border', $lgx_shortcodes_meta['lgx_tooltip_border_width'].' solid '.$lgx_tooltip_border_color, $lgx_tooltip_border_color) .'
-        border-radius: '. $lgx_shortcodes_meta['lgx_tooltip_border_radius'].';
+        '. lgx_ls_css_decl('border', lgx_ls_css_value( $lgx_shortcodes_meta['lgx_tooltip_border_width'] ).' solid '.$lgx_tooltip_border_color, $lgx_tooltip_border_color) .'
+        border-radius: '. lgx_ls_css_value( $lgx_shortcodes_meta['lgx_tooltip_border_radius'] ).';
         box-shadow: 5px 5px 2px 0 rgba(0,0,0,0.4);
     }';
 
 $lgx_lsw_dynamic_style_pro .= '.tooltipster-sidetip.lgx_lsw_tooltipster_'. $lgx_app_id.' .tooltipster-content {
         '. lgx_ls_css_decl('color', $lgx_tooltip_text_color) .'
-        padding: '. $lgx_shortcodes_meta['lgx_tooltip_padding'].';
+        padding: '. lgx_ls_css_value( $lgx_shortcodes_meta['lgx_tooltip_padding'] ).';
     }';
 
 $lgx_lsw_dynamic_style_pro .= ' .tooltipster-sidetip.lgx_lsw_tooltipster_'. $lgx_app_id.'.tooltipster-bottom .tooltipster-arrow-border {

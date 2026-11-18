@@ -4,13 +4,13 @@ if (!defined('WPINC')) {
 }
 
 // Flex Value
-
-$lgx_flexbox_column_gap         = (isset($lgx_shortcodes_meta['lgx_flexbox_column_gap']) ? $lgx_shortcodes_meta['lgx_flexbox_column_gap'] : '15px');
-$lgx_flexbox_row_gap            = (isset($lgx_shortcodes_meta['lgx_flexbox_row_gap']) ? $lgx_shortcodes_meta['lgx_flexbox_row_gap'] : '15px');
-$lgx_flexbox_align_items        = (isset($lgx_shortcodes_meta['lgx_flexbox_align_items']) ? $lgx_shortcodes_meta['lgx_flexbox_align_items'] : 'flex-start');
-$lgx_flexbox_justify_content    = (isset($lgx_shortcodes_meta['lgx_flexbox_justify_content']) ? $lgx_shortcodes_meta['lgx_flexbox_justify_content'] : 'flex-start');
-$lgx_flexbox_wrap               = (isset($lgx_shortcodes_meta['lgx_flexbox_wrap']) ? $lgx_shortcodes_meta['lgx_flexbox_wrap'] : 'wrap');
-$lgx_flexbox_direction          = (isset($lgx_shortcodes_meta['lgx_flexbox_direction']) ? $lgx_shortcodes_meta['lgx_flexbox_direction'] : 'row');
+$lgx_app_id                     = lgx_ls_css_value( $lgx_app_id );
+$lgx_flexbox_column_gap         = lgx_ls_css_value( isset($lgx_shortcodes_meta['lgx_flexbox_column_gap']) ? $lgx_shortcodes_meta['lgx_flexbox_column_gap'] : '15px' );
+$lgx_flexbox_row_gap            = lgx_ls_css_value( isset($lgx_shortcodes_meta['lgx_flexbox_row_gap']) ? $lgx_shortcodes_meta['lgx_flexbox_row_gap'] : '15px' );
+$lgx_flexbox_align_items        = lgx_ls_css_value( isset($lgx_shortcodes_meta['lgx_flexbox_align_items']) ? $lgx_shortcodes_meta['lgx_flexbox_align_items'] : 'flex-start' );
+$lgx_flexbox_justify_content    = lgx_ls_css_value( isset($lgx_shortcodes_meta['lgx_flexbox_justify_content']) ? $lgx_shortcodes_meta['lgx_flexbox_justify_content'] : 'flex-start' );
+$lgx_flexbox_wrap               = lgx_ls_css_value( isset($lgx_shortcodes_meta['lgx_flexbox_wrap']) ? $lgx_shortcodes_meta['lgx_flexbox_wrap'] : 'wrap' );
+$lgx_flexbox_direction          = lgx_ls_css_value( isset($lgx_shortcodes_meta['lgx_flexbox_direction']) ? $lgx_shortcodes_meta['lgx_flexbox_direction'] : 'row' );
 
 
 // Value

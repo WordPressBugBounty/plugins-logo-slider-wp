@@ -10,7 +10,7 @@
  * Plugin Name:       Logo Slider WP
  * Plugin URI:        https://logichunt.com/product/wordpress-logo-slider/
  * Description:       Ultimate & Most Popular Responsive Logo Showcase Slider. Display Unlimited Client, Supporter, Partner, Sponsor, or Brand Logo with Infinite Slides Loop.
- * Version:           6.2.3
+ * Version:           6.2.4
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            LogicHunt
@@ -38,7 +38,7 @@ logo-slider-wp is free version slug not needed now
 
 
 //plugin definition specific constants
-defined( 'LGX_LS_PLUGIN_VERSION' )        or define( 'LGX_LS_PLUGIN_VERSION', '6.2.3' );
+defined( 'LGX_LS_PLUGIN_VERSION' )        or define( 'LGX_LS_PLUGIN_VERSION', '6.2.4' );
 defined( 'LGX_LS_PLUGIN_BASE' )           or define( 'LGX_LS_PLUGIN_BASE', plugin_basename( __FILE__ ) );
 defined( 'LGX_LS_PLUGIN_ROOT_PATH' )      or define( 'LGX_LS_PLUGIN_ROOT_PATH', plugin_dir_path( __FILE__ ) );
 defined( 'LGX_LS_PLUGIN_ROOT_URL' )       or define( 'LGX_LS_PLUGIN_ROOT_URL', plugin_dir_url( __FILE__ ) );
@@ -66,7 +66,7 @@ if ( ! function_exists( 'lgx_ls_is_pro' ) ) {
      * @return bool True for Pro, false for Free.
      */
     function lgx_ls_is_pro(): bool {
-        return LGX_LS_IS_PRO;
+        return false;
     }
 }
 
@@ -89,7 +89,7 @@ defined( 'LGX_LS_VIDEOS_READY' ) || define( 'LGX_LS_VIDEOS_READY', false );
  */
 defined( 'LGX_LS_PLUGIN_META_FIELD_PRO' ) || define(
     'LGX_LS_PLUGIN_META_FIELD_PRO',
-    LGX_LS_IS_PRO ? 'enabled' : 'disabled'
+    lgx_ls_is_pro() ? 'enabled' : 'disabled'
 );
 
 

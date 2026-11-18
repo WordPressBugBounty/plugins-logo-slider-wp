@@ -95,6 +95,15 @@ if ( ! function_exists( 'lgx_ls_css_decl' ) ) {
     }
 }
 
+if ( ! function_exists( 'lgx_ls_css_value' ) ) {
+    function lgx_ls_css_value( $value ) {
+        if ( ! is_string( $value ) ) {
+            return $value;
+        }
+        return str_replace( array( ';', '{', '}', '<', '>' ), '', $value );
+    }
+}
+
 /**
  * The public-facing functionality of the plugin.
  *

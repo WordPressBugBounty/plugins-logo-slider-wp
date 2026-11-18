@@ -1071,25 +1071,30 @@ class Logo_Slider_WP_Admin {
             'message' => 'Action required.',
         );
 
-        if ( empty( $_REQUEST['nonce'] ) || ! wp_verify_nonce( wp_unslash( $_REQUEST['nonce'] ), 'save_logosliderwp_nonce' ) ) {
+        $nonce = isset( $_REQUEST['nonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ) : '';
+        if ( '' === $nonce || ! wp_verify_nonce( $nonce, 'save_logosliderwp_nonce' ) ) {
             $result['type'] = 'error';
             $result['message'] = 'WP nonce verification failed.';
             wp_send_json( $result );
         }
 
         try {
-            parse_str( wp_unslash( $_POST['post_id_serialize'] ), $post_data );
+            $raw_serialize = isset( $_POST['post_id_serialize'] ) ? wp_unslash( $_POST['post_id_serialize'] ) : '';
+            $post_data     = array();
+            if ( is_string( $raw_serialize ) && '' !== $raw_serialize ) {
+                parse_str( $raw_serialize, $post_data );
+            }
             //$wpdb->queries( 'START TRANSACTION' );
 
-            if ( ! is_array( $post_data ) || count( $post_data ) < 1 ) {
+            if ( ! is_array( $post_data ) || empty( $post_data['post'] ) || ! is_array( $post_data['post'] ) ) {
                 $result['message'] = 'Available data not found.';
             } else {
-                foreach ( $post_data['post'] as $menu_order => $post_id ) {
-                    $post_id = (int) $post_id;
-                    if ( ! current_user_can( 'edit_post', $post_id ) || 'logosliderwp' !== get_post_type( $post_id ) ) {
+                $post_ids = array_map( 'absint', $post_data['post'] );
+                foreach ( $post_ids as $menu_order => $post_id ) {
+                    if ( ! $post_id || ! current_user_can( 'edit_post', $post_id ) || 'logosliderwp' !== get_post_type( $post_id ) ) {
                         continue;
                     }
-                    $wpdb->update( $wpdb->posts, array( 'menu_order' => (int)$menu_order ), array( 'ID' => (int)$post_id ) );
+                    $wpdb->update( $wpdb->posts, array( 'menu_order' => (int) $menu_order ), array( 'ID' => $post_id ) );
                 }
             }
 
@@ -2314,15 +2319,17 @@ return;
     }
 
     public function move_row_ajax_handler() {
-        if ( empty( $_POST['post_id'] ) || empty( $_POST['direction'] ) || empty( $_POST['nonce'] ) ) {
+        $post_id   = isset( $_POST['post_id'] ) ? absint( wp_unslash( $_POST['post_id'] ) ) : 0;
+        $direction = isset( $_POST['direction'] ) ? sanitize_key( wp_unslash( $_POST['direction'] ) ) : '';
+        $nonce     = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+
+        if ( ! $post_id || '' === $direction || '' === $nonce ) {
             wp_send_json_error( array( 'message' => 'Missing parameters.' ) );
         }
 
-        $post_id = absint( $_POST['post_id'] );
-        $direction = sanitize_text_field( $_POST['direction'] );
         $nonce_action = 'lgx_move_' . $direction . '_' . $post_id;
 
-        if ( ! wp_verify_nonce( $_POST['nonce'], $nonce_action ) ) {
+        if ( ! wp_verify_nonce( $nonce, $nonce_action ) ) {
             wp_send_json_error( array( 'message' => 'Security check failed.' ) );
         }
 

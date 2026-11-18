@@ -3,16 +3,16 @@ if (!defined('WPINC')) {
     die;
 }
 
-// Value
-$lgx_grid_column_gap     = $lgx_shortcodes_meta['lgx_grid_column_gap'];
-$lgx_grid_row_gap        = $lgx_shortcodes_meta['lgx_grid_row_gap'];
+$lgx_app_id              = lgx_ls_css_value( $lgx_app_id );
+$lgx_grid_column_gap     = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_grid_column_gap'] );
+$lgx_grid_row_gap        = lgx_ls_css_value( $lgx_shortcodes_meta['lgx_grid_row_gap'] );
 
 $lgx_lsw_dynamic_style_grid = '';
-$lgx_lsw_dynamic_style_grid .= '#lgx_logo_slider_app_'. $lgx_app_id.' .lgx_app_layout_grid .lgx_app_item{'.(($lgx_shortcodes_meta['lgx_grid_item_min_height'] != 0 ) ? 'min-height:'.trim( $lgx_shortcodes_meta['lgx_grid_item_min_height']).'; ' : '' ).' }';
+$lgx_lsw_dynamic_style_grid .= '#lgx_logo_slider_app_'. $lgx_app_id.' .lgx_app_layout_grid .lgx_app_item{'.(($lgx_shortcodes_meta['lgx_grid_item_min_height'] != 0 ) ? 'min-height:'.trim( lgx_ls_css_value( $lgx_shortcodes_meta['lgx_grid_item_min_height'] ) ).'; ' : '' ).' }';
 $lgx_lsw_dynamic_style_grid .= '#lgx_logo_slider_app_'. $lgx_app_id.' .lgx_app_layout_grid .lgx_app_item_row{
         grid-column-gap: '. $lgx_grid_column_gap.';
         grid-row-gap: '. $lgx_grid_row_gap.';
-        grid-template-columns: repeat('. $lgx_large_desktop_item.', 1fr);
+        grid-template-columns: repeat('. lgx_ls_css_value( $lgx_large_desktop_item ).', 1fr);
     }';
 
     $lgx_lsw_dynamic_style_grid .= '#lgx_logo_slider_app_'. $lgx_app_id.' .lgx_app_layout_grid .lgx_grid_style_inner_outline .lgx_app_item_row,#lgx_logo_slider_app_'. $lgx_app_id.' .lgx_app_layout_grid .lgx_grid_style_inner_outline .lgx_app_item:after, #lgx_logo_slider_app_'. $lgx_app_id.' .lgx_app_layout_grid .lgx_grid_style_inner_outline .lgx_app_item:before {
@@ -24,22 +24,22 @@ $lgx_lsw_dynamic_style_grid .= '#lgx_logo_slider_app_'. $lgx_app_id.' .lgx_app_l
 
 $lgx_lsw_dynamic_style_grid .= '@media (max-width: 767px) {
         #lgx_logo_slider_app_'. $lgx_app_id.' .lgx_app_layout_grid .lgx_app_item_row{
-            grid-template-columns: repeat('. $lgx_mobile_item.', 1fr);
+            grid-template-columns: repeat('. lgx_ls_css_value( $lgx_mobile_item ).', 1fr);
         }
     }';
 $lgx_lsw_dynamic_style_grid .= '@media (min-width: 768px) {
         #lgx_logo_slider_app_'. $lgx_app_id.' .lgx_app_layout_grid .lgx_app_item_row{
-            grid-template-columns: repeat('. $lgx_tablet_item.', 1fr);
+            grid-template-columns: repeat('. lgx_ls_css_value( $lgx_tablet_item ).', 1fr);
         }
     }';
 $lgx_lsw_dynamic_style_grid .= '@media (min-width: 992px) {
         #lgx_logo_slider_app_'. $lgx_app_id.' .lgx_app_layout_grid .lgx_app_item_row{
-            grid-template-columns: repeat('. $lgx_desktop_item.', 1fr);
+            grid-template-columns: repeat('. lgx_ls_css_value( $lgx_desktop_item ).', 1fr);
         }
     }';
 $lgx_lsw_dynamic_style_grid .= '@media (min-width: 1200px) {
         #lgx_logo_slider_app_'. $lgx_app_id.' .lgx_app_layout_grid .lgx_app_item_row{
-            grid-template-columns: repeat('. $lgx_large_desktop_item.', 1fr);
+            grid-template-columns: repeat('. lgx_ls_css_value( $lgx_large_desktop_item ).', 1fr);
         }
     }';
 
