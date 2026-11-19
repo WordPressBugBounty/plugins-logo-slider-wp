@@ -448,7 +448,7 @@ class Logo_Slider_WP_Admin {
      * Phase E: Task 2.2 - Add Duplicate Logo row action immediately after Edit
      */
     public function add_duplicate_row_action( $actions, $post ) {
-        if ( ! in_array( $post->post_type, array( 'logosliderwp', 'lgx_lsp_shortcodes' ), true ) ) {
+        if ( 'logosliderwp' !== $post->post_type ) {
             return $actions;
         }
 
@@ -1129,13 +1129,7 @@ class Logo_Slider_WP_Admin {
          */
 
         $currentScreen = get_current_screen();
-        $is_plugin_screen = (
-            $currentScreen->post_type === 'logosliderwp' ||
-            $currentScreen->post_type === 'lgx_lsp_shortcodes' ||
-            strpos( $currentScreen->id, 'logo-slider' ) !== false ||
-            strpos( $currentScreen->id, 'logoslider' ) !== false ||
-            strpos( $currentScreen->id, 'lgx_lsp_shortcodes' ) !== false
-        );
+        $is_plugin_screen = lgx_ls_is_plugin_screen( $currentScreen );
 
         // The lgxicon @font-face plus the top-level admin-menu icon override
         // load on every admin screen, so the custom Logo Slider menu icon is
@@ -1280,23 +1274,6 @@ class Logo_Slider_WP_Admin {
     }
 
 
-    /**
-     * @param $plugin_array
-     * @return mixed
-     */
-
-
-    public function lgx_owl_register_tinymce_plugin($plugin_array) {
-        $plugin_array['lgx_logo_button'] = plugin_dir_url( __FILE__ ) . 'assets/js/logo-slider-wp-tinymce.js';
-        return $plugin_array;
-    }
-
-    public function lgx_owl_add_tinymce_button($buttons) {
-        $buttons[] = "lgx_logo_button";
-        return $buttons;
-    }
-
-
 
     /*************************************************************************
      *
@@ -1394,45 +1371,6 @@ class Logo_Slider_WP_Admin {
             $columns[ $screen_id ] = 1;
         }
         return $columns;
-    }
-
-
-
-    /**
-     * Add meta box for custom post type
-     *
-     * @since    1.0.0
-     */
-    public function adding_meta_boxes_for_lgx_lsp_shortcodes() {
-        add_meta_box(
-            'lgx_lsp_shortcodes_meta_box_panel',
-            __( 'Logo Slider Shortcode Meta Field Panel', 'logo-slider-wp'),
-            array(
-                $this,
-                'meta_fields_display_for_lgx_lsp_shortcodes' //Pattern --> meta_box_panel_display_for_{post_type}
-            ),
-            'lgx_lsp_shortcodes',
-            'normal',
-            'high'
-        );
-    }
-
-
-
-    /**
-     * Render Meta Box under logosliderwp
-     *
-     * logosliderwp meta field
-     *
-     * @param $post
-     *
-     * @since 1.0
-     *
-     */
-    public function meta_fields_display_for_lgx_lsp_shortcodes( $post ) {
-
-        require_once plugin_dir_path( __FILE__ ) . 'partials/shortcode_meta_display/meta_fields_display_for_lgx_lsp_shortcodes.php';
-
     }
 
 
@@ -2482,17 +2420,40 @@ return;
             }
             $redirect_to = add_query_arg( 'lgx_bulk_duplicated', $changed, $redirect_to );
         } elseif ( 'lgx_bulk_assign_category' === $doaction ) {
-            $term_id  = isset( $_REQUEST['lgx_bulk_cat'] ) ? absint( wp_unslash( $_REQUEST['lgx_bulk_cat'] ) ) : 0;
+            $raw_cats = isset( $_REQUEST['lgx_bulk_cat'] ) ? (array) wp_unslash( $_REQUEST['lgx_bulk_cat'] ) : array();
             $taxonomy = get_taxonomy( 'logosliderwpcat' );
-            if ( $term_id > 0 && $taxonomy && current_user_can( $taxonomy->cap->assign_terms ) && term_exists( $term_id, 'logosliderwpcat' ) ) {
-                $ids = $this->lgx_filter_bulk_logo_ids( $post_ids );
-                foreach ( $ids as $post_id ) {
-                    $result = wp_set_object_terms( $post_id, array( $term_id ), 'logosliderwpcat', true ); // true appends
-                    if ( ! is_wp_error( $result ) ) {
-                        $changed++;
+            if ( $taxonomy && current_user_can( $taxonomy->cap->assign_terms ) ) {
+                $term_ids = array();
+                foreach ( $raw_cats as $raw_cat ) {
+                    if ( ! is_scalar( $raw_cat ) ) {
+                        continue;
+                    }
+                    $raw_cat = trim( (string) $raw_cat );
+                    if ( '' === $raw_cat ) {
+                        continue;
+                    }
+                    $slug = sanitize_title( $raw_cat );
+                    $term = ( '' !== $slug ) ? get_term_by( 'slug', $slug, 'logosliderwpcat' ) : false;
+                    if ( $term && ! is_wp_error( $term ) ) {
+                        $term_ids[] = (int) $term->term_id;
+                    } elseif ( preg_match( '/^\d+$/', $raw_cat ) ) {
+                        $maybe_id = (int) $raw_cat;
+                        if ( $maybe_id > 0 && term_exists( $maybe_id, 'logosliderwpcat' ) ) {
+                            $term_ids[] = $maybe_id;
+                        }
                     }
                 }
-                $redirect_to = add_query_arg( 'lgx_bulk_cat_assigned', $changed, $redirect_to );
+                $term_ids = array_values( array_unique( $term_ids ) );
+                if ( ! empty( $term_ids ) ) {
+                    $ids = $this->lgx_filter_bulk_logo_ids( $post_ids );
+                    foreach ( $ids as $post_id ) {
+                        $result = wp_set_object_terms( $post_id, $term_ids, 'logosliderwpcat', true ); // true appends
+                        if ( ! is_wp_error( $result ) ) {
+                            $changed++;
+                        }
+                    }
+                    $redirect_to = add_query_arg( 'lgx_bulk_cat_assigned', $changed, $redirect_to );
+                }
             }
         }
 
@@ -2593,6 +2554,15 @@ return;
             'logosliderwp',
             $post->ID
         ) );
+
+        $shifted_ids = $wpdb->get_col( $wpdb->prepare(
+            "SELECT ID FROM {$wpdb->posts} WHERE post_type = %s AND ID != %d",
+            'logosliderwp',
+            $post->ID
+        ) );
+        foreach ( (array) $shifted_ids as $shifted_id ) {
+            clean_post_cache( (int) $shifted_id );
+        }
 
         // Ensure this new post is strictly at 0.
         if ( 0 !== (int) $post->menu_order ) {

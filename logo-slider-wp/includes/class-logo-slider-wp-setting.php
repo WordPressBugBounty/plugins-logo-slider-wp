@@ -9,6 +9,30 @@
  * @link http://tareq.weDevs.com Tareq's Planet
  * @example src/settings-api.php How to use the class
  */
+if ( ! function_exists( 'lgx_ls_is_plugin_screen' ) ) {
+    /**
+     * Determine whether the given (or current) admin screen belongs to Logo Slider WP.
+     *
+     * @param WP_Screen|null $current_screen Optional screen object.
+     * @return bool
+     */
+    function lgx_ls_is_plugin_screen( $current_screen = null ) {
+        if ( null === $current_screen && function_exists( 'get_current_screen' ) ) {
+            $current_screen = get_current_screen();
+        }
+        if ( ! is_object( $current_screen ) ) {
+            return false;
+        }
+        return (
+            $current_screen->post_type === 'logosliderwp' ||
+            $current_screen->post_type === 'lgx_lsp_shortcodes' ||
+            strpos( $current_screen->id, 'logo-slider' ) !== false ||
+            strpos( $current_screen->id, 'logoslider' ) !== false ||
+            strpos( $current_screen->id, 'lgx_lsp_shortcodes' ) !== false
+        );
+    }
+}
+
 if ( !class_exists( 'Lgx_Carousel_Settings_API' ) ):
 class Lgx_Carousel_Settings_API {
 
@@ -34,6 +58,11 @@ class Lgx_Carousel_Settings_API {
      * Enqueue scripts and styles
      */
     function admin_enqueue_scripts() {
+        $current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+        if ( ! lgx_ls_is_plugin_screen( $current_screen ) || 'edit' === $current_screen->base ) {
+            return;
+        }
+
         wp_enqueue_style( 'wp-color-picker' );
 
         wp_enqueue_media();

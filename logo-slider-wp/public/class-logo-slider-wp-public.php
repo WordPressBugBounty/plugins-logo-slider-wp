@@ -464,7 +464,7 @@ class Logo_Slider_WP_Public {
 
         } // Check post exist
         else {
-            _e('There are no logo item. Please add some logo Item', 'logo-slider-wp');
+            return __('There are no logo item. Please add some logo Item', 'logo-slider-wp');
         }
 
 

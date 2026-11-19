@@ -361,18 +361,6 @@ class Logo_Slider_WP {
 
         // Dashboard "Remove Demo Content" action.
         $this->loader->add_action( 'wp_ajax_lgx_ls_remove_demo_content', $demo_content, 'handle_remove_demo_content_ajax' );
-
-        // Settings Module Hooks — menu entry intentionally not registered
-        // for 6.0.0 (BACKLOG B63). The module itself (class, templates,
-        // assets) is left fully intact under admin/modules/settings/ —
-        // re-enable by restoring the three add_action() calls below.
-        // if ( method_exists( $plugin_admin, 'get_settings' ) ) {
-        //     $this->loader->add_action( 'admin_menu', $plugin_admin->get_settings(), 'register_settings_page' );
-        //     $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin->get_settings(), 'enqueue_settings_assets' );
-        //     // Suppress third-party admin notices on the Settings screen only
-        //     // (see the matching Dashboard hook above for the full rationale).
-        //     $this->loader->add_action( 'in_admin_header', $plugin_admin->get_settings(), 'suppress_admin_notices' );
-        // }
         
         // Bulk Upload Module Hooks (WP2).
         if ( method_exists( $plugin_admin, 'get_bulk_upload' ) ) {

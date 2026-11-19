@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=vaspa
 Tags: logo slider, logo carousel, logo showcase, logo gallery, client logos
 Requires at least: 5.8
 Tested up to: 7.1
-Stable tag: 6.2.4
+Stable tag: 6.3.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -360,6 +360,9 @@ Both Free and Pro users get direct help at the [LogicHunt Support Center](https:
 
 == Upgrade Notice ==
 
+= 6.3.0 =
+Faster admin screens, four small fixes and a smaller package. Recommended for all users.
+
 = 6.2.4 =
 Security and stability update. Recommended for all users.
 
@@ -392,6 +395,14 @@ Security: Fixed stored XSS vulnerability. Fixed dynamic CSS not rendering for ca
 
 
 == Changelog ==
+
+= 6.3.0 =
+* Performance: The plugin no longer loads the media library and colour picker on admin screens that are not its own (about 600 KB less on the WordPress Dashboard).
+* Fix: Bulk "Assign Category" on the Logos list now assigns the chosen category.
+* Fix: The "Duplicate" link no longer shows on the Showcases list, where it did not work.
+* Fix: The old [logo-slider] shortcode shows its "no logos" message in the right place.
+* Fix: The logo order stays correct on sites with a persistent object cache after a new logo is added.
+* Cleanup: Removed unused files; the plugin package is about 60 KB smaller.
 
 = 6.2.4 =
 * Security: CSS values from showcase settings are cleaned before they are printed, so a stored value cannot break out of its style rule.
