@@ -220,6 +220,11 @@ if ( 'grid' == $lgx_showcase_type ) {
 
 include 'dynamic-style/general-style.php';
 
-if ( lgx_ls_is_pro() ) {
-    include 'dynamic-style/pro-style.php';
-}
+/**
+ * Fires right after shared dynamic styles are output so Pro execution code
+ * can emit Pro-only dynamic styles in the exact same position.
+ *
+ * @param int|string $lgx_app_id          Showcase post ID.
+ * @param array      $lgx_shortcodes_meta Showcase metadata array.
+ */
+do_action( 'lgx_ls_after_dynamic_style', $lgx_app_id, $lgx_shortcodes_meta );

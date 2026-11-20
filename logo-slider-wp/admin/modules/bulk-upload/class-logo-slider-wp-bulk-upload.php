@@ -10,8 +10,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-lgx-bulk-upload-details.php';
-
 if ( ! class_exists( 'Logo_Slider_WP_Bulk_Upload' ) ) {
 class Logo_Slider_WP_Bulk_Upload {
 
@@ -103,7 +101,7 @@ class Logo_Slider_WP_Bulk_Upload {
 		$publish_capability = isset( $config['publish_capability'] ) ? $config['publish_capability'] : 'publish_posts';
 		$check_action       = isset( $config['check_action'] ) ? $config['check_action'] : 'lgx_ls_bulk_check';
 		$create_action      = isset( $config['create_action'] ) ? $config['create_action'] : 'lgx_ls_bulk_create';
-		$is_pro             = function_exists( 'lgx_ls_is_pro' ) && lgx_ls_is_pro();
+		$is_pro             = class_exists( 'Lgx_Pro_Locking' ) && Lgx_Pro_Locking::is_pro_ready();
 
 		return array(
 			'ajax_url'             => admin_url( 'admin-ajax.php' ),
@@ -699,7 +697,7 @@ class Logo_Slider_WP_Bulk_Upload {
 		$item_terms_warning_msg     = isset( $config['item_terms_warning'] ) ? $config['item_terms_warning'] : __( 'Logo created, but categories could not be assigned.', 'logo-slider-wp' );
 		$item_created_msg           = isset( $config['item_created'] ) ? $config['item_created'] : __( 'Logo created.', 'logo-slider-wp' );
 
-		$is_pro  = (bool) ( function_exists( 'lgx_ls_is_pro' ) && lgx_ls_is_pro() );
+		$is_pro  = (bool) ( class_exists( 'Lgx_Pro_Locking' ) && Lgx_Pro_Locking::is_pro_ready() );
 		$results = array();
 
 		foreach ( $raw_items as $entry ) {
@@ -833,7 +831,19 @@ class Logo_Slider_WP_Bulk_Upload {
 				// 6. Save optional per-logo details in Pro when at least one detail is non-empty (ADR-023 Decision 6).
 				$warning       = '';
 				$raw_details   = ( isset( $entry['details'] ) && is_array( $entry['details'] ) ) ? wp_unslash( $entry['details'] ) : null;
-				$clean_details = Lgx_Bulk_Upload_Details::normalize( $raw_details, $is_pro );
+				$clean_details = apply_filters( 'lgx_ls_bulk_upload_normalize_details', null, $raw_details );
+				if ( ! Lgx_Pro_Locking::is_pro_ready() ) {
+					$clean_details = null;
+				} elseif ( is_array( $clean_details ) ) {
+					$allowed_detail_keys = array( 'company_url', 'company_name', 'tooltip_text', 'alt_text', 'company_desc' );
+					$filtered_details    = array();
+					foreach ( $allowed_detail_keys as $detail_key ) {
+						if ( array_key_exists( $detail_key, $clean_details ) && is_scalar( $clean_details[ $detail_key ] ) ) {
+							$filtered_details[ $detail_key ] = $clean_details[ $detail_key ];
+						}
+					}
+					$clean_details = ! empty( $filtered_details ) ? $filtered_details : null;
+				}
 				if ( is_array( $clean_details ) ) {
 					$meta_saved = update_post_meta( $post_id, '_logosliderwpmeta', wp_slash( $clean_details ) );
 					if ( false === $meta_saved ) {

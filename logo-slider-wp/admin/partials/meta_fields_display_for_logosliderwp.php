@@ -14,7 +14,7 @@ if (!defined('WPINC')) {
     die;
 }
 
-$is_pro = function_exists( 'lgx_ls_is_pro' ) && lgx_ls_is_pro();
+$is_pro = class_exists( 'Lgx_Pro_Locking' ) && Lgx_Pro_Locking::is_pro_ready();
 
 $fieldValues = get_post_meta( $post->ID, '_logosliderwpmeta', true );
 

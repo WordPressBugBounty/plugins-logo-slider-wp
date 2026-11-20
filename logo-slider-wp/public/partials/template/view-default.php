@@ -6,13 +6,22 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Create date : 29.06.2026, By : @VibeLogic
  * Security hardening: added ABSPATH guard, output escaping, wp_kses_post, esc_html_e
  */
+
+/**
+ * Filter the wrapper edition slug (`'free'` or `'pro'`).
+ *
+ * Pro (`logicex/loader.php`) filters this to `'pro'`.
+ *
+ * @param string $edition_slug Default `'free'`.
+ */
+$lgx_edition_slug = apply_filters( 'lgx_ls_edition_slug', 'free' );
 ?>
 
 <div id="lgx_logo_slider_app_<?php echo esc_attr($lgx_app_id);?>" class="lgx_logo_slider_app">
 
     <?php  echo(('yes'==$lgx_shortcodes_meta['lgx_preloader_en']) ? '<div id="lgx_lsw_preloader_'.esc_attr($lgx_app_id).'" class="lgx_lsw_preloader"> <img src="'.esc_url((!empty($lgx_shortcodes_meta['lgx_preloader_icon'])) ? $lgx_shortcodes_meta['lgx_preloader_icon']: $lgx_lsw_loading_icon).'" /></div>' : ''); ?>
 
-    <div class="lgx_logo_slider lgx_logo_slider_<?php echo lgx_ls_is_pro() ? 'pro' : 'free'; ?>">
+    <div class="lgx_logo_slider lgx_logo_slider_<?php echo esc_attr( $lgx_edition_slug ); ?>">
         <div class="lgx_app_inner lgx_app_layout_<?php echo esc_attr($lgx_showcase_type);?> ">
             <div class="lgx_app_<?php echo esc_attr($lgx_shortcodes_meta['lgx_section_container']);?> <?php echo (('grid' == $lgx_showcase_type) ? 'lgx_grid_style_'.esc_attr($lgx_grid_style) : '' );?>">
 

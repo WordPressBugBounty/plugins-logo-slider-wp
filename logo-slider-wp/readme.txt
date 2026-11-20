@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=vaspa
 Tags: logo slider, logo carousel, logo showcase, logo gallery, client logos
 Requires at least: 5.8
 Tested up to: 7.1
-Stable tag: 6.3.0
+Stable tag: 6.5.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -360,6 +360,15 @@ Both Free and Pro users get direct help at the [LogicHunt Support Center](https:
 
 == Upgrade Notice ==
 
+= 6.5.1 =
+Includes the new slider library from 6.5.0 and fixes activation of the Pro edition while the Free edition is active. Recommended for all users.
+
+= 6.5.0 =
+New slider library (Swiper 14.4.0) and a working slider in the block editor preview. Recommended for all users.
+
+= 6.4.0 =
+Internal restructuring of the Pro code with no visible change. Recommended for all users.
+
 = 6.3.0 =
 Faster admin screens, four small fixes and a smaller package. Recommended for all users.
 
@@ -395,6 +404,21 @@ Security: Fixed stored XSS vulnerability. Fixed dynamic CSS not rendering for ca
 
 
 == Changelog ==
+
+= 6.5.1 =
+* Fix: Activating the Pro edition while the Free edition is active no longer causes a fatal error. The Free edition is switched off and a notice is shown.
+* Fix: The Logo Slider block works in the block editor on WordPress 5.8 to 6.2.
+
+= 6.5.0 =
+* Update: The slider library (Swiper) is updated to version 14.4.0. It is smaller and faster.
+* Fix: The slider now moves in the block editor preview.
+* Compatibility: The slider works next to themes and plugins that load a different Swiper version.
+* Tweak: If a browser cannot run the slider, the logos are shown as a simple grid.
+
+= 6.4.0 =
+* Internal: Pro-only code now lives in its own folder, so the free version ships only free code. Your showcases look and work the same.
+* Security: The Free/Pro edition check can no longer be changed by other plugins or settings.
+* Developer: New hooks lgx_ls_logicex_loaded, lgx_ls_after_dynamic_style, lgx_ls_logo_width_property, lgx_ls_edition_slug, lgx_ls_bulk_upload_normalize_details and lgx_ls_builder_after_modals.
 
 = 6.3.0 =
 * Performance: The plugin no longer loads the media library and colour picker on admin screens that are not its own (about 600 KB less on the WordPress Dashboard).

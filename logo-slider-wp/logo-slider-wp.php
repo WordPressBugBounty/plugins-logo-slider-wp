@@ -10,7 +10,7 @@
  * Plugin Name:       Logo Slider WP
  * Plugin URI:        https://logichunt.com/product/wordpress-logo-slider/
  * Description:       Ultimate & Most Popular Responsive Logo Showcase Slider. Display Unlimited Client, Supporter, Partner, Sponsor, or Brand Logo with Infinite Slides Loop.
- * Version:           6.3.0
+ * Version:           6.5.1
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            LogicHunt
@@ -37,8 +37,14 @@ logo-slider-wp is free version slug not needed now
 //defined( 'LGX_LS_WP_PLUGIN' ) or define( 'LGX_LS_WP_PLUGIN', 'logo-slider-wp-pro' );
 
 
+// Detect if the other edition (or another copy) already loaded in this request
+// before any constants or classes below are defined.
+$lgx_ls_other_edition_loaded = ( defined( 'LGX_LS_PLUGIN_BASE' ) && plugin_basename( __FILE__ ) !== LGX_LS_PLUGIN_BASE )
+    || class_exists( 'Logo_Slider_WP', false )
+    || class_exists( 'Lgx_Pro_Locking', false );
+
 //plugin definition specific constants
-defined( 'LGX_LS_PLUGIN_VERSION' )        or define( 'LGX_LS_PLUGIN_VERSION', '6.3.0' );
+defined( 'LGX_LS_PLUGIN_VERSION' )        or define( 'LGX_LS_PLUGIN_VERSION', '6.5.1' );
 defined( 'LGX_LS_PLUGIN_BASE' )           or define( 'LGX_LS_PLUGIN_BASE', plugin_basename( __FILE__ ) );
 defined( 'LGX_LS_PLUGIN_ROOT_PATH' )      or define( 'LGX_LS_PLUGIN_ROOT_PATH', plugin_dir_path( __FILE__ ) );
 defined( 'LGX_LS_PLUGIN_ROOT_URL' )       or define( 'LGX_LS_PLUGIN_ROOT_URL', plugin_dir_url( __FILE__ ) );
@@ -58,42 +64,6 @@ defined( 'LGX_LS_PLUGIN_TEXT_DOMAIN')     or define( 'LGX_LS_PLUGIN_TEXT_DOMAIN'
  * Free: false
  */
 defined( 'LGX_LS_IS_PRO' ) || define( 'LGX_LS_IS_PRO', false ); // true in Pro
-
-if ( ! function_exists( 'lgx_ls_is_pro' ) ) {
-    /**
-     * Determine whether the current plugin build is the Pro edition.
-     *
-     * @return bool True for Pro, false for Free.
-     */
-    function lgx_ls_is_pro(): bool {
-        return false;
-    }
-}
-
-/**
- * Dashboard video tutorials readiness flag.
- *
- * The Dashboard's video tutorials block currently has no real video
- * content — flip to true once real YouTube URLs/durations are in place.
- */
-defined( 'LGX_LS_VIDEOS_READY' ) || define( 'LGX_LS_VIDEOS_READY', false );
-
-/**
- * Backward compatibility.
- *
- * Legacy code still references LGX_LS_PLUGIN_META_FIELD_PRO.
- * New code should use LGX_LS_IS_PRO or lgx_ls_is_pro().
- *
- * This constant should be removed once all legacy references have
- * been migrated.
- */
-defined( 'LGX_LS_PLUGIN_META_FIELD_PRO' ) || define(
-    'LGX_LS_PLUGIN_META_FIELD_PRO',
-    lgx_ls_is_pro() ? 'enabled' : 'disabled'
-);
-
-
-
 
 register_activation_hook( __FILE__, function ( $network_wide ) {
 
@@ -239,6 +209,50 @@ if ( ! function_exists( 'lgx_ls_suppress_activated_banner_after_refusal' ) ) {
         unset( $_GET['activate'], $_REQUEST['activate'] );
     }
 }
+
+// If the other edition already loaded in this request (e.g. during wp-admin
+// plugin_sandbox_scrape() activation), stop here: activation/conflict hooks
+// above will resolve the conflict and the next request will load only the
+// active edition.
+if ( $lgx_ls_other_edition_loaded ) {
+    return;
+}
+
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-logo-slider-wp-pro-locking.php';
+
+if ( ! function_exists( 'lgx_ls_is_pro' ) ) {
+    /**
+     * Determine whether the current plugin build is the Pro edition.
+     *
+     * @return bool True for Pro, false for Free.
+     */
+    function lgx_ls_is_pro(): bool {
+        return false;
+    }
+}
+
+/**
+ * Dashboard video tutorials readiness flag.
+ *
+ * The Dashboard's video tutorials block currently has no real video
+ * content — flip to true once real YouTube URLs/durations are in place.
+ */
+defined( 'LGX_LS_VIDEOS_READY' ) || define( 'LGX_LS_VIDEOS_READY', false );
+
+/**
+ * Backward compatibility.
+ *
+ * Legacy code still references LGX_LS_PLUGIN_META_FIELD_PRO.
+ * Internal code should use Lgx_Pro_Locking::is_pro_ready() (`lgx_ls_is_pro()`
+ * is the public compatibility wrapper).
+ *
+ * This constant should be removed once all legacy references have
+ * been migrated.
+ */
+defined( 'LGX_LS_PLUGIN_META_FIELD_PRO' ) || define(
+    'LGX_LS_PLUGIN_META_FIELD_PRO',
+    ( class_exists( 'Lgx_Pro_Locking', false ) && method_exists( 'Lgx_Pro_Locking', 'is_pro_ready' ) && Lgx_Pro_Locking::is_pro_ready() ) ? 'enabled' : 'disabled'
+);
 
 /**
  * The core plugin class that is used to define internationalization,

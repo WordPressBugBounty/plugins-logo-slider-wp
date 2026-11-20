@@ -122,8 +122,35 @@ $lgx_logo_width_property = lgx_ls_css_value( isset($lgx_shortcodes_meta['lgx_log
 // is required to stop that stored Pro-only choice from taking visible effect
 // once the site is no longer entitled to it. Height has no equivalent gating
 // (fully Free, all 3 options), so no analogous check applies there.
-if ( ! lgx_ls_is_pro() && in_array( $lgx_logo_width_property, array( 'width', 'min-width' ), true ) ) {
-    $lgx_logo_width_property = 'max-width';
+$lgx_logo_width_property_raw  = $lgx_logo_width_property;
+$lgx_logo_width_property_free = in_array( $lgx_logo_width_property_raw, array( 'width', 'min-width' ), true )
+    ? 'max-width'
+    : $lgx_logo_width_property_raw;
+/**
+ * Filter the resolved CSS width property for logo items.
+ *
+ * Free defaults to clamping `'width'` / `'min-width'` to `'max-width'`.
+ * Pro (`logicex/loader.php`) restores the raw property value.
+ *
+ * @param string $lgx_logo_width_property_free Free-clamped property value.
+ * @param string $lgx_logo_width_property_raw  Sanitized stored property value.
+ * @param array  $lgx_shortcodes_meta          Showcase metadata array.
+ */
+$lgx_logo_width_property = apply_filters(
+    'lgx_ls_logo_width_property',
+    $lgx_logo_width_property_free,
+    $lgx_logo_width_property_raw,
+    $lgx_shortcodes_meta
+);
+if ( ! Lgx_Pro_Locking::is_pro_ready() ) {
+    $lgx_logo_width_property = $lgx_logo_width_property_free;
+} elseif ( is_string( $lgx_logo_width_property ) ) {
+    $lgx_logo_width_property_trimmed = trim( $lgx_logo_width_property );
+    $lgx_logo_width_property = in_array( $lgx_logo_width_property_trimmed, array( 'max-width', 'width', 'min-width' ), true )
+        ? $lgx_logo_width_property_trimmed
+        : $lgx_logo_width_property_free;
+} else {
+    $lgx_logo_width_property = $lgx_logo_width_property_free;
 }
 
 

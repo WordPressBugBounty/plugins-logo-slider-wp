@@ -299,7 +299,7 @@ if ( ! defined( 'LGX_LS_SHOWCASE_TEMPLATE_ENABLED' ) ) {
                     <span class="dashicons dashicons-sos" aria-hidden="true"></span>
                     <span class="lgx-builder__header-link-text"><?php esc_html_e( 'Support', 'logo-slider-wp' ); ?></span>
                 </a>
-                <?php if ( ! function_exists( 'lgx_ls_is_pro' ) || ! lgx_ls_is_pro() ): ?>
+                <?php if ( ! class_exists( 'Lgx_Pro_Locking' ) || ! Lgx_Pro_Locking::is_pro_ready() ): ?>
                     <span class="lgx-builder__header-link-sep">&bull;</span>
                     <a href="https://logichunt.com/product/wordpress-logo-slider/" target="_blank" class="lgx-builder__header-link--upgrade">
                         <span class="dashicons dashicons-star-filled" aria-hidden="true"></span>
@@ -467,7 +467,7 @@ if ( ! defined( 'LGX_LS_SHOWCASE_TEMPLATE_ENABLED' ) ) {
                 <?php endforeach; ?>
             </div>
             
-            <?php if ( ! function_exists( 'lgx_ls_is_pro' ) || ! lgx_ls_is_pro() ): ?>
+            <?php if ( ! class_exists( 'Lgx_Pro_Locking' ) || ! Lgx_Pro_Locking::is_pro_ready() ): ?>
             <div class="lgx-builder__upgrade-sidebar">
                 <span class="dashicons dashicons-star-filled lgx-upgrade-icon"></span>
                 <h4><?php esc_html_e( 'Unlock More Features', 'logo-slider-wp' ); ?></h4>
@@ -884,77 +884,7 @@ if ( ! defined( 'LGX_LS_SHOWCASE_TEMPLATE_ENABLED' ) ) {
         </div>
     </div>
 
-    <?php if ( function_exists( 'lgx_ls_is_pro' ) && lgx_ls_is_pro() ) : ?>
-    <?php
-    /* T-280 (B205): Ticker speed recommendation dialog. Pro edition only. Opened by
-       initTickerSpeedModal() when the user switches Ticker Mode on with a speed outside
-       2000-6000. Same shared .lgx-layout-gallery shell as the Pro and Usage windows;
-       moved to document.body by JS. */
-    ?>
-    <div class="lgx-layout-gallery-overlay" id="lgx-ticker-modal-overlay"></div>
-
-    <div
-        class="lgx-layout-gallery lgx-ticker-modal"
-        id="lgx-ticker-modal"
-        role="dialog"
-        aria-labelledby="lgx-ticker-modal-title"
-        aria-modal="true"
-    >
-        <div class="lgx-layout-gallery__header">
-            <h3 class="lgx-layout-gallery__title" id="lgx-ticker-modal-title">
-                <?php esc_html_e( 'Recommended Ticker speed', 'logo-slider-wp' ); ?>
-            </h3>
-            <button
-                type="button"
-                class="lgx-layout-gallery__close"
-                id="lgx-ticker-modal-close"
-                aria-label="<?php esc_attr_e( 'Close', 'logo-slider-wp' ); ?>"
-            >&times;</button>
-        </div>
-
-        <div class="lgx-layout-gallery__body lgx-ticker-modal__body">
-            <p class="lgx-ticker-modal__text">
-                <?php esc_html_e( 'For a smooth ticker we recommend a Transition Speed between 2000 and 6000 ms. A higher value scrolls slower.', 'logo-slider-wp' ); ?>
-            </p>
-            <p class="lgx-ticker-modal__current">
-                <?php esc_html_e( 'Your current value:', 'logo-slider-wp' ); ?>
-                <strong><span id="lgx-ticker-modal-current"></span></strong>
-            </p>
-
-            <div class="lgx-ticker-modal__choices" role="radiogroup" aria-label="<?php esc_attr_e( 'Quick choices', 'logo-slider-wp' ); ?>">
-                <label class="lgx-ticker-modal__choice">
-                    <input type="radio" name="lgx_ticker_modal_choice" value="2000">
-                    <span class="lgx-ticker-modal__choice-label"><?php esc_html_e( 'Fast - 2000 ms', 'logo-slider-wp' ); ?></span>
-                </label>
-                <label class="lgx-ticker-modal__choice">
-                    <input type="radio" name="lgx_ticker_modal_choice" value="3000" checked>
-                    <span class="lgx-ticker-modal__choice-label"><?php esc_html_e( 'Balanced - 3000 ms', 'logo-slider-wp' ); ?></span>
-                    <span class="lgx-ticker-modal__badge"><?php esc_html_e( 'Recommended', 'logo-slider-wp' ); ?></span>
-                </label>
-                <label class="lgx-ticker-modal__choice">
-                    <input type="radio" name="lgx_ticker_modal_choice" value="4500">
-                    <span class="lgx-ticker-modal__choice-label"><?php esc_html_e( 'Slow - 4500 ms', 'logo-slider-wp' ); ?></span>
-                </label>
-                <label class="lgx-ticker-modal__choice">
-                    <input type="radio" name="lgx_ticker_modal_choice" value="6000">
-                    <span class="lgx-ticker-modal__choice-label"><?php esc_html_e( 'Very slow - 6000 ms', 'logo-slider-wp' ); ?></span>
-                </label>
-            </div>
-
-            <div class="lgx-ticker-modal__custom">
-                <label for="lgx-ticker-modal-custom"><?php esc_html_e( 'Custom value (ms)', 'logo-slider-wp' ); ?></label>
-                <input type="number" step="1" min="1" id="lgx-ticker-modal-custom" class="lgx-input" value="3000" aria-describedby="lgx-ticker-modal-soft lgx-ticker-modal-error">
-                <p class="lgx-ticker-modal__soft" id="lgx-ticker-modal-soft" hidden><?php esc_html_e( 'This value is outside the recommended range. You can still use it.', 'logo-slider-wp' ); ?></p>
-                <p class="lgx-ticker-modal__error" id="lgx-ticker-modal-error" role="alert" hidden><?php esc_html_e( 'Enter a whole number above 0.', 'logo-slider-wp' ); ?></p>
-            </div>
-
-            <div class="lgx-ticker-modal__actions">
-                <button type="button" class="lgx-btn lgx-btn-primary lgx-btn-lg" id="lgx-ticker-modal-update"><?php esc_html_e( 'Update value', 'logo-slider-wp' ); ?></button>
-                <button type="button" class="lgx-btn lgx-btn-secondary lgx-btn-lg" id="lgx-ticker-modal-later"><?php esc_html_e( 'Later', 'logo-slider-wp' ); ?></button>
-            </div>
-        </div>
-    </div>
-    <?php endif; ?>
+    <?php do_action( 'lgx_ls_builder_after_modals' ); ?>
 
     <?php
     /* 007R-d: single shared field-help popover, reused for every ⓘ icon across

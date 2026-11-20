@@ -86,6 +86,14 @@ class Logo_Slider_WP_Gutenberg {
 
         $asset = require $asset_file;
 
+        if ( ! wp_script_is( 'react-jsx-runtime', 'registered' ) ) {
+            wp_register_script( 'react-jsx-runtime', false, array( 'wp-element' ), $this->version, true );
+            wp_add_inline_script(
+                'react-jsx-runtime',
+                'window.ReactJSXRuntime=window.ReactJSXRuntime||(function(e){function j(t,p,k){var d=p||{};if(k!==undefined){d=Object.assign({},d,{key:k});}var c=d.children;if(c!==undefined){d=Object.assign({},d);delete d.children;return Array.isArray(c)?e.createElement.apply(e,[t,d].concat(c)):e.createElement(t,d,c);}return e.createElement(t,d);}return{jsx:j,jsxs:j,Fragment:e.Fragment};})(window.wp.element);'
+            );
+        }
+
         wp_register_script(
             self::SCRIPT_HANDLE,
             plugin_dir_url( __FILE__ ) . 'logo-slider-showcase/index.js',
@@ -94,15 +102,31 @@ class Logo_Slider_WP_Gutenberg {
             true
         );
 
-        wp_set_script_translations( self::SCRIPT_HANDLE, 'logo-slider-wp' );
+		wp_set_script_translations( self::SCRIPT_HANDLE, 'logo-slider-wp' );
 
-        register_block_type(
-            $block_dir,
-            array(
-                'editor_script'   => self::SCRIPT_HANDLE,
-                'render_callback' => array( $this, 'render_callback' ),
-            )
-        );
+		$downgrade_api_version = version_compare( get_bloginfo( 'version' ), '6.3', '<' );
+		$api_version_filter    = null;
+		if ( $downgrade_api_version ) {
+			$api_version_filter = function ( $metadata ) {
+				if ( isset( $metadata['name'] ) && 'logo-slider-wp/logo-slider-showcase' === $metadata['name'] ) {
+					$metadata['apiVersion'] = 2;
+				}
+				return $metadata;
+			};
+			add_filter( 'block_type_metadata', $api_version_filter );
+		}
+
+		register_block_type(
+			$block_dir,
+			array(
+				'editor_script'   => self::SCRIPT_HANDLE,
+				'render_callback' => array( $this, 'render_callback' ),
+			)
+		);
+
+		if ( $downgrade_api_version && $api_version_filter ) {
+			remove_filter( 'block_type_metadata', $api_version_filter );
+		}
 
         // Register RTL stylesheet variant for the editor style.
         wp_style_add_data( 'logo-slider-wp-logo-slider-showcase-editor-style', 'rtl', 'replace' );
@@ -138,24 +162,6 @@ class Logo_Slider_WP_Gutenberg {
             )
         );
 
-        // --- Part 2: Enqueue slider preview assets (REQUIRED for styled SSR preview) ---
-        // wp_enqueue_scripts never fires on edit-post.php, and the
-        // ServerSideRender preview is fetched via a separate REST request
-        // whose own wp_enqueue_* calls never reach this page's <head> or
-        // footer — see GUTENBERG_BLOCK_PROMPT.md §7. The preview will be
-        // completely unstyled (no layout, no fonts, no carousel) unless
-        // these handles are explicitly enqueued here too.
-        if ( $this->plugin_public ) {
-            $this->plugin_public->enqueue_scripts();
-        } else if ( class_exists( 'Logo_Slider_WP_Public' ) ) {
-            $plugin_public = new Logo_Slider_WP_Public( $this->plugin_name, $this->version );
-            $plugin_public->enqueue_scripts();
-        }
-
-        wp_enqueue_script( 'logo-slider-wp-swiper-js' );
-        wp_enqueue_script( 'logo-slider-wp-tooltipster-js' );
-        wp_enqueue_script( 'logo-slider-wp-public' );
-
     }
 
     /**
@@ -166,19 +172,33 @@ class Logo_Slider_WP_Gutenberg {
      * @since 4.1.1
      */
     public function enqueue_block_assets() {
-        if ( is_admin() ) {
-            if ( $this->plugin_public ) {
-                $this->plugin_public->enqueue_styles();
-            } else if ( class_exists( 'Logo_Slider_WP_Public' ) ) {
-                $plugin_public = new Logo_Slider_WP_Public( $this->plugin_name, $this->version );
-                $plugin_public->enqueue_styles();
-            }
-
-            wp_enqueue_style( 'logo-slider-wp-font' );
-            wp_enqueue_style( 'logo-slider-wp-swiper-css' );
-            wp_enqueue_style( 'logo-slider-wp-tooltipster-css' );
-            wp_enqueue_style( 'lgx-logo-slider-style' );
+        if ( ! is_admin() ) {
+            return;
         }
+
+        $screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+        if ( ! $screen || ! method_exists( $screen, 'is_block_editor' ) || ! $screen->is_block_editor() ) {
+            return;
+        }
+
+        $plugin_public = $this->plugin_public;
+        if ( ! $plugin_public && class_exists( 'Logo_Slider_WP_Public' ) ) {
+            $plugin_public = new Logo_Slider_WP_Public( $this->plugin_name, $this->version );
+        }
+
+        if ( $plugin_public ) {
+            $plugin_public->enqueue_styles();
+            $plugin_public->enqueue_scripts();
+        }
+
+        wp_enqueue_style( 'logo-slider-wp-font' );
+        wp_enqueue_style( 'logo-slider-wp-swiper-css' );
+        wp_enqueue_style( 'logo-slider-wp-tooltipster-css' );
+        wp_enqueue_style( 'lgx-logo-slider-style' );
+
+        wp_enqueue_script( 'logo-slider-wp-swiper-js' );
+        wp_enqueue_script( 'logo-slider-wp-tooltipster-js' );
+        wp_enqueue_script( 'logo-slider-wp-public' );
     }
 
     /**

@@ -402,14 +402,15 @@ class Logo_Slider_WP_Admin {
                 }
 
                 // Pro field locking & grandfathering enforcement (ADR-023).
+                $is_pro_ready = class_exists( 'Lgx_Pro_Locking' ) && Lgx_Pro_Locking::is_pro_ready();
                 if ( ! class_exists( 'Lgx_Logo_Field_Lock' ) ) {
-                    if ( ! lgx_ls_is_pro() ) {
+                    if ( ! $is_pro_ready ) {
                         error_log( 'Logo Slider WP: Lgx_Logo_Field_Lock is unavailable during save_post_metadata_of_logosliderwp() — refusing to save rather than write Pro/Free values with no enforcement. Check that includes/class-logo-slider-wp-logo-field-lock.php is loaded.' );
                         return;
                     }
                 } else {
                     $existing_meta_array = is_array( $existing_meta ) ? $existing_meta : array();
-                    $savable_Data        = Lgx_Logo_Field_Lock::enforce( $savable_Data, $existing_meta_array, $postData, lgx_ls_is_pro() );
+                    $savable_Data        = Lgx_Logo_Field_Lock::enforce( $savable_Data, $existing_meta_array, $postData, $is_pro_ready );
                 }
 
                 update_post_meta( $post_id, '_logosliderwpmeta', $savable_Data );
@@ -933,7 +934,7 @@ class Logo_Slider_WP_Admin {
             return;
         }
 
-        $is_pro = function_exists( 'lgx_ls_is_pro' ) && lgx_ls_is_pro();
+        $is_pro = class_exists( 'Lgx_Pro_Locking' ) && Lgx_Pro_Locking::is_pro_ready();
 
         // Output our required custom nonce so the native save_post hook passes validation
         wp_nonce_field( 'metaboxlogosliderwp', 'metaboxlogosliderwp[nonce]' );
@@ -1008,7 +1009,7 @@ class Logo_Slider_WP_Admin {
                 $metavalues = get_post_meta( $post_id, '_logosliderwpmeta', true );
                 $url = isset( $metavalues['company_url'] ) ? $metavalues['company_url'] : '';
                 $brand_name = isset( $metavalues['company_name'] ) ? $metavalues['company_name'] : '';
-                $is_pro_row = function_exists( 'lgx_ls_is_pro' ) && lgx_ls_is_pro();
+                $is_pro_row = class_exists( 'Lgx_Pro_Locking' ) && Lgx_Pro_Locking::is_pro_ready();
                 $company_locked_row = class_exists( 'Lgx_Logo_Field_Lock' ) ? Lgx_Logo_Field_Lock::is_locked( $is_pro_row, isset( $metavalues['company_name'] ) ? $metavalues['company_name'] : null ) : false;
 
                 // Hidden div for Quick Edit JS

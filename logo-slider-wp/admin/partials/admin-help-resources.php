@@ -123,8 +123,8 @@ $lgx_help_faq = array(
 				<a class="lgx-dashboard__brand-link" href="https://logichunt.com/" target="_blank" rel="noopener noreferrer">
 					<img class="lgx-dashboard__brand-logo" src="<?php echo esc_url( LGX_LS_PLUGIN_ROOT_URL . 'admin/modules/img/logichunt-dashborad-logo.png' ); ?>" alt="LogicHunt">
 				</a>
-				<div class="lgx-dashboard__edition-status <?php echo ( function_exists( 'lgx_ls_is_pro' ) && lgx_ls_is_pro() ) ? 'lgx-dashboard__edition-status--pro' : 'lgx-dashboard__edition-status--free'; ?>">
-					<?php if ( function_exists( 'lgx_ls_is_pro' ) && lgx_ls_is_pro() ) : ?>
+				<div class="lgx-dashboard__edition-status <?php echo ( class_exists( 'Lgx_Pro_Locking' ) && Lgx_Pro_Locking::is_pro_ready() ) ? 'lgx-dashboard__edition-status--pro' : 'lgx-dashboard__edition-status--free'; ?>">
+					<?php if ( class_exists( 'Lgx_Pro_Locking' ) && Lgx_Pro_Locking::is_pro_ready() ) : ?>
 						<span class="lgx-dashboard__edition-mark" aria-hidden="true">&#10003;</span>
 						<span><?php echo esc_html( 'Activated' ); ?></span>
 					<?php else : ?>
@@ -273,7 +273,7 @@ $lgx_help_faq = array(
 					</div>
 				</section>
 
-				<?php if ( ! ( function_exists( 'lgx_ls_is_pro' ) && lgx_ls_is_pro() ) ) : ?>
+				<?php if ( ! ( class_exists( 'Lgx_Pro_Locking' ) && Lgx_Pro_Locking::is_pro_ready() ) ) : ?>
 				<!-- Free-user upgrade CTA (Round 3) — presentation only, not a
 				     capability-gating system. Copy/URL reused verbatim from the
 				     Showcase Builder's own existing sidebar upgrade CTA

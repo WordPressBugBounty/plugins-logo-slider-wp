@@ -38,6 +38,24 @@
 	*/
 
 	// Update date : 05.07.2026, By : @VibeLogic
+	function applySwiperFallback( el, showcaseId, spaceAttr, err ) {
+		if (el.classList.contains('lgx-swiper-fallback')) {
+			return;
+		}
+		el.classList.add('lgx-swiper-fallback');
+		var spaceVal = parseInt(spaceAttr, 10);
+		if (!isNaN(spaceVal) && spaceVal >= 0) {
+			el.style.setProperty('--lgx-swiper-fallback-gap', spaceVal + 'px');
+		}
+		if (window.console && typeof window.console.warn === 'function') {
+			if (err) {
+				window.console.warn('Logo Slider WP: LgxSwiper init failed for showcase ' + (showcaseId || '(unknown)'), err);
+			} else {
+				window.console.warn('Logo Slider WP: LgxSwiper unavailable for showcase ' + (showcaseId || '(unknown)'));
+			}
+		}
+	}
+
 	function lgxLogoSliderInit( scope ) {
 		var $ = window.jQuery;
 		var $scope = typeof scope !== 'undefined' ? $( scope ) : $( document );
@@ -68,15 +86,41 @@
 					window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 				if (lgx_logo_carousel_item.length > 0) {
+					if (lgxLogoCarouselDataAttr.lazy) {
+						lgx_logo_carousel_item.find('.swiper-lazy-preloader').each(function () {
+							var $preloader = $(this);
+							var $img = $preloader.closest('.swiper-slide').find('img').first();
+							if (!$img.length || $img[0].complete) {
+								$preloader.remove();
+								return;
+							}
+							$img.one('load error', function () {
+								$preloader.remove();
+							});
+							if ($img[0].complete) {
+								$preloader.remove();
+							}
+						});
+					}
+
+					var ownerWin = (this.ownerDocument && this.ownerDocument.defaultView) || window;
+					var SwiperCtor = ownerWin.LgxSwiper || window.LgxSwiper;
+
+					if (typeof SwiperCtor !== 'function') {
+						applySwiperFallback(this, lgx_logo_carousel_id, lgxLogoCarouselDataAttr.space);
+						return;
+					}
+
 					var $appArea = lgx_logo_carousel_item.closest('.lgx_app_content_area');
 					var $nextBtn = $appArea.find('.lgx_lsw_nav_button_next');
 					var $prevBtn = $appArea.find('.lgx_lsw_nav_button_prev');
 					var $pagination = $appArea.find('.swiper-pagination');
 
-					// Pass the raw DOM node (this) to Swiper instead of string selector for iframe compatibility
-					var lgxLogoSwiper = new Swiper(this, {
-						lazy: lgxLogoCarouselDataAttr.lazy,
-						loop: lgxLogoTicker == true ? true : lgxLogoCarouselDataAttr.infinite,
+					// Pass the raw DOM node (this) to LgxSwiper instead of string selector for iframe compatibility
+					var lgxLogoSwiper;
+					try {
+						lgxLogoSwiper = new SwiperCtor(this, {
+							loop: lgxLogoTicker == true ? true : lgxLogoCarouselDataAttr.infinite,
 						speed: parseInt(lgxLogoCarouselDataAttr.speed),
 						autoplay:
 							lgxLogoAutoplay == true
@@ -139,7 +183,8 @@
 							lgxLogoNavigation == true
 								? {
 									nextEl: $nextBtn.length ? $nextBtn[0] : '.lgx_lsw_nav_button_next',
-									prevEl: $prevBtn.length ? $prevBtn[0] : '.lgx_lsw_nav_button_prev'
+									prevEl: $prevBtn.length ? $prevBtn[0] : '.lgx_lsw_nav_button_prev',
+									addIcons: false
 								}
 								: false,
 
@@ -157,14 +202,45 @@
 								slidesPerView: parseInt(lgxLogoCarouselDataAttr.item_large),
 							},
 						},
-						loopFillGroupWithBlank: true,
+						loopAddBlankSlides: true,
 						fadeEffect: {
 							crossFade: true
 						},
 						keyboard: {
 							enabled: true
 						},
-					})
+						});
+					} catch (err) {
+						applySwiperFallback(this, lgx_logo_carousel_id, lgxLogoCarouselDataAttr.space, err);
+						return;
+					}
+					try {
+						if (
+							lgxLogoSwiper &&
+							lgxLogoSwiper.a11y &&
+							lgxLogoSwiper.wrapperEl &&
+							lgxLogoSwiper.wrapperEl.id &&
+							lgxLogoSwiper.navigation
+						) {
+							var wrapperId = lgxLogoSwiper.wrapperEl.id;
+							var navTargets = [lgxLogoSwiper.navigation.nextEl, lgxLogoSwiper.navigation.prevEl];
+							for (var i = 0; i < navTargets.length; i++) {
+								var target = navTargets[i];
+								if (!target) {
+									continue;
+								}
+								var els = typeof target.length === 'number' && !target.nodeType ? target : [target];
+								for (var j = 0; j < els.length; j++) {
+									var navEl = els[j];
+									if (navEl && typeof navEl.hasAttribute === 'function' && !navEl.hasAttribute('aria-controls')) {
+										navEl.setAttribute('aria-controls', wrapperId);
+									}
+								}
+							}
+						}
+					} catch (a11yErr) {
+						// Non-fatal: keep slider and subsequent carousels running.
+					}
 					if (lgxLogoCarouselDataAttr.autoplay === false) {
 						lgxLogoSwiper.autoplay.stop()
 					}
@@ -233,10 +309,10 @@
 					}
 					/*Final End*/
 
-					$(window).off('resize.lgx_' + lgx_logo_carousel_id).on('resize.lgx_' + lgx_logo_carousel_id, function () {
+					$(ownerWin).off('resize.lgx_' + lgx_logo_carousel_id).on('resize.lgx_' + lgx_logo_carousel_id, function () {
 						lgxLogoSwiper.update()
 					})
-					$(window).trigger('resize.lgx_' + lgx_logo_carousel_id)
+					$(ownerWin).trigger('resize.lgx_' + lgx_logo_carousel_id)
 				}
 
 			}); //Swiper Each

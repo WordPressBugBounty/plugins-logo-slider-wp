@@ -231,7 +231,7 @@ if ( class_exists( 'Lgx_Showcase_Renderer' ) ) {
 				 * exactly what is stored; a missing or non-text stored value renders it
 				 * disabled (nothing posted, the save keeps the stored value).
 				 */
-				$lgx_picker_locked   = ! function_exists( 'lgx_ls_is_pro' ) || ! lgx_ls_is_pro();
+				$lgx_picker_locked   = ! class_exists( 'Lgx_Pro_Locking' ) || ! Lgx_Pro_Locking::is_pro_ready();
 				$lgx_term_ids_raw    = array_key_exists( 'lgx_woo_product_brand_term_ids', $lgx_brand_meta ) ? $lgx_brand_meta['lgx_woo_product_brand_term_ids'] : null;
 				$lgx_term_ids_on     = is_string( $lgx_term_ids_raw );
 				$lgx_term_ids_value  = $lgx_term_ids_on ? htmlspecialchars( $lgx_term_ids_raw, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', true ) : '';
@@ -328,7 +328,7 @@ if ( class_exists( 'Lgx_Showcase_Renderer' ) ) {
 		<?php /* T-214 (spec section 5): Company URL hint, both editions. */ ?>
 		<p class="lgx-source-panel__note lgx-brand-panel__note"><?php esc_html_e( 'Each brand logo links to its brand page when the Company URL switch in Essential is on.', 'logo-slider-wp' ); ?></p>
 		<?php /* T-214 (S-09): Free note, Free edition only (same edition check as builder-wrapper.php). */ ?>
-		<?php if ( ! function_exists( 'lgx_ls_is_pro' ) || ! lgx_ls_is_pro() ) : ?>
+		<?php if ( ! class_exists( 'Lgx_Pro_Locking' ) || ! Lgx_Pro_Locking::is_pro_ready() ) : ?>
 			<p class="lgx-source-panel__note lgx-brand-panel__note lgx-brand-panel__note--free"><span class="dashicons dashicons-lock lgx-brand-panel__note-icon" aria-hidden="true"></span><?php esc_html_e( 'These settings are part of Logo Slider Pro. Choices saved in Pro are shown and kept when you save here.', 'logo-slider-wp' ); ?></p>
 		<?php endif; ?>
 	</div>
